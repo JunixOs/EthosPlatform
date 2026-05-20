@@ -1,4 +1,4 @@
-# **ADR-002: Use MVC Architecture In Backend**
+# **ADR-002: Apply 3-Tier Model In Backend**
 
 **Author:** Ordoñez Silva, Junior
 
