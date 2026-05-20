@@ -33,7 +33,7 @@ Separar el Frontend y Backend de la aplicación.
 - **Escalabilidad**: Permite escalar el Frontend o el Backend sin romper el otro.
 - **Actualizaciones Rápidas**: Cambios en una parte de la aplicación puede publicarse sin modificar la otra.
 
-### Desventajas
+### Negative
 
 - **Complejidad Inicial**: Requiere configurar dos proyectos distintos, manejar rutas, autenticación por tokens y dominios cruzados (`CORS`).
 - **Duplicación de Código**: Ciertas validaciones o modelos deben escribirse tanto en el Fontend como en el Backend.
