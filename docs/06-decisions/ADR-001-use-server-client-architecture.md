@@ -1,5 +1,17 @@
 # ADR-001: Use Server-Client Architecture
 
+**Author:** Ordoñez Silva, Junior
+
+**Version:** 1.0
+
+**Created At:** 19-05-2026
+
+**Modified By:** 
+
+**Accepted By:**
+- Ordoñez Silva, Junior
+
+
 ## Status
 
 Pendiente
@@ -8,13 +20,11 @@ Pendiente
 
 Se está desarrollando un sistema web comunitario que permite a los usuarios compartir experiencias personales estructurales relacionadas con reflexiones y morales.
 
-Se requiere una arquitectura que permita que el sistema escale de forma sencilla, que facilite el trabajo colaborativo y que simplifique el mantenimiento del codigo.
+Se requiere una arquitectura que permita que el sistema escale de forma sencilla, que facilite el trabajo colaborativo y que simplifique el mantenimiento del código.
 
 ## Decision
 
 Usar una arquitectura Cliente-Servidor para el sistema en general.
-
-Se usará un Modelo de `Tres Capas (3-tier)`, el cual añade un servidor de aplicaciones intermedio (API) que procesa la lógica del negocio antes de consultar los datos.
 
 ## Consequences
 ### Positive
