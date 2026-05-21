@@ -24,7 +24,18 @@ Se requiere una arquitectura sencilla, que permita la separación de responsabil
 
 ## Decision
 
-Se usará un Modelo de `Tres Capas (3-tier)` (Presentación, Lógica y Datos) para la Arquitectura Cliente-Servidor, este enfoque se basa en la Arquitectura MVC, y añade un servidor de aplicaciones intermedio (API) que procesa la lógica del negocio antes de consultar los datos.
+Se usará un Modelo de `Tres Capas (3-tier)` (`Presentación`, `Lógica` y `Datos`) para la Arquitectura Cliente-Servidor, este enfoque se basa en la Arquitectura MVC, y añade un servidor de aplicaciones intermedio (API) que procesa la lógica del negocio antes de consultar los datos.
+
+En resumen el flujo sería el siguiente:
+
+```mermaid
+graph TD
+    Presentacion --> Logica
+    Logica --> Datos
+
+    Datos --> Logica
+    Logica --> Presentacion
+```
 
 ## Consequences
 ### Positive
