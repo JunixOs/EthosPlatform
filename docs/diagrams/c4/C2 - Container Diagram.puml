@@ -1,0 +1,37 @@
+@startuml C2-Container-Diagram
+/' Importar Paquetes '/
+!include ../../../../Packages/C4-PlantUML/C4_Container.puml
+
+/' Definir Iconos y Fuentes '/
+!define DEVICONS ../../../../Packages/plantuml-icon-font-sprites/icons/devicons
+!define FONTAWESOME ../../../../Packages/plantuml-icon-font-sprites/icons/font-awesome-5
+
+/' Definir Fuentes '/
+!include FONTAWESOME/users.puml
+
+!include DEVICONS/postgresql.puml
+!include DEVICONS/nodejs.puml
+
+left to right direction
+
+LAYOUT_WITH_LEGEND()
+
+Person(user_1 , "Usuario")
+
+System_Boundary(ethosplatform , "EthosPlatform") {
+
+    Container(web_app_frontend , "Web App" , "Node.js" , "Interfaz de Usuario" , $sprite="nodejs")
+
+    Container(api_backend , "API" , "Node.js" , "Expone lógica" , $sprite="nodejs")
+
+}
+
+System_Ext(db_postgresql , "PostgreSQL" , "Database" , "Almacena datos" , $sprite="postgresql")
+
+Rel(user_1 , web_app_frontend , "Usa" , "HTTPS")
+
+Rel(web_app_frontend , api_backend , "Consume" , "JSON/HTTPS")
+
+Rel(api_backend , db_postgresql , "Lee/Escribe" , "Sequelize ORM")
+
+@enduml

@@ -1,0 +1,43 @@
+@startuml C3-Component-Diagram
+/' Importar Paquetes '/
+!include ../../../../Packages/C4-PlantUML/C4_Component.puml
+
+/' Definir Iconos y Fuentes '/
+!define DEVICONS ../../../../Packages/plantuml-icon-font-sprites/icons/devicons
+!define FONTAWESOME ../../../../Packages/plantuml-icon-font-sprites/icons/font-awesome-5
+
+/' Definir Fuentes '/
+!include FONTAWESOME/users.puml
+
+!include DEVICONS/postgresql.puml
+!include DEVICONS/nodejs.puml
+
+left to right direction
+
+LAYOUT_WITH_LEGEND()
+LAYOUT_TOP_DOWN()
+
+Container(web_api , "EthosPlatform API" , "Node.js")
+
+Component(interface_adapters , "ExperiencesController" , "Node.js Controller" , "Endpoints REST.")
+
+Component(iapplication , "ICreateExperienceUseCase" , "Interface Application Service" , "Establece un contrato para acceso a UseCase.")
+Component(application , "CreateExperienceUseCase" , "Application Service" , "Implementa interfaz de UseCase y orquesta lógica de negocio.")
+
+Component(irepo , "IExperienceRepository" , "Interface Repository" , "Establece un contrato para acceso a datos.")
+
+Component(repo , "ExperienceRepository" , "Repository" , "Implementa interfaz de repositorio y brinda acceso a datos.")
+
+Component(entity , "ExperienceDomainEntity" , "Domain Entity" , "Entidad de dominio.")
+
+Rel(interface_adapters , iapplication , "Invoca")
+
+Rel(application , iapplication , "Implementa")
+
+Rel(application , irepo , "Invoca")
+
+Rel(repo, irepo , "Implementa")
+
+Rel(application , entity , "Manipula")
+
+@enduml
