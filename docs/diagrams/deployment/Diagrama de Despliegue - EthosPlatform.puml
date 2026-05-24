@@ -1,0 +1,44 @@
+@startuml Diagrama-Despliegue-v1-EthosPlatform
+top to bottom direction
+
+skinparam shadowing false
+skinparam node {
+    BackgroundColor #F8F9FA
+    BorderColor #2C3E50
+}
+skinparam database {
+    BackgroundColor #FFF4E6
+    BorderColor #D35400
+}
+skinparam artifact {
+    BackgroundColor #E8F8F5
+    BorderColor #16A085
+}
+
+node "Client PC" as client {
+    component "Web Browser" as clientbrowser {
+        
+    }
+}
+
+node "Virtual Private Server (VPS)" as vps {
+    card "Contenedor Docker 24" {
+        artifact "Node.js 22 Frontend" as nodejsfrontend
+
+        artifact "Node.js 22 Backend" as nodejsbackend
+    }
+
+    database "PostgreSQL 18" as postgresql {
+        artifact "Application Database Instance" as dbinstance1 {
+
+        }
+    }
+}
+
+clientbrowser -(0- nodejsfrontend : "HTTPS (443)"
+
+nodejsfrontend -(0- nodejsbackend : "HTTPS (16001)"
+
+nodejsbackend -(0- dbinstance1 : "TCP 5432"
+
+@enduml
