@@ -11,10 +11,9 @@
 **Accepted By:**
 - Ordoñez Silva, Junior
 
-
 ## Status
 
-Pendiente
+Propuesto
 
 ## Context
 

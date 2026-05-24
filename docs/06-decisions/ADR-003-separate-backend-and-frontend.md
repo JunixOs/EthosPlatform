@@ -13,7 +13,7 @@
 
 ## Status
 
-Pendiente
+Propuesto
 
 ## Context
 

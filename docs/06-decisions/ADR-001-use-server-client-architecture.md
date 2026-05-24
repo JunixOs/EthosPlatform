@@ -14,7 +14,7 @@
 
 ## Status
 
-Pendiente
+Propuesto
 
 ## Context
 
