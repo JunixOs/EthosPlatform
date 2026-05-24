@@ -1,0 +1,144 @@
+@startuml ER-EthosPlatform
+title Diagrama Entidad-Relación — EthosPlatform
+
+!define TABLE(name,desc) class name as "desc" << (T,#FFAAAA) >>
+!define PK(x) <u>x</u>
+!define FK(x) #x
+
+hide methods
+hide stereotypes
+
+skinparam classAttributeIconSize 0
+skinparam class {
+  BackgroundColor #FFF9F0
+  BorderColor #B5651D
+  ArrowColor #8B4513
+  FontName Monospace
+}
+
+' ──────────────── ENTIDADES ────────────────
+
+class Usuario {
+  PK(id_usuario) : UUID
+  nombre_visible : VARCHAR(100)
+  correo : VARCHAR(255) UNIQUE
+  password_hash : VARCHAR(255)
+  foto_perfil : VARCHAR(500)
+  biografia : VARCHAR(300)
+  es_privado : BOOLEAN
+  rol : ENUM('usuario','admin')
+  esta_suspendido : BOOLEAN
+  suspension_fin : TIMESTAMP
+  modo_ui : ENUM('claro','oscuro')
+  total_likes_recibidos : INT
+  fecha_registro : TIMESTAMP
+  fecha_actualizacion : TIMESTAMP
+}
+
+class Experiencia {
+  PK(id_experiencia) : UUID
+  FK(id_autor) : UUID
+  titulo : VARCHAR(255)
+  descripcion : TEXT
+  perspectiva_moral : TEXT
+  perspectiva_etica : TEXT
+  estado : ENUM('borrador','publicada','oculta')
+  es_visible : BOOLEAN
+  total_likes : INT
+  total_respuestas : INT
+  fecha_creacion : TIMESTAMP
+  fecha_modificacion : TIMESTAMP
+  fecha_publicacion : TIMESTAMP
+}
+
+class Respuesta {
+  PK(id_respuesta) : UUID
+  FK(id_experiencia) : UUID
+  FK(id_autor) : UUID
+  contenido : TEXT
+  es_visible : BOOLEAN
+  fecha_creacion : TIMESTAMP
+  fecha_modificacion : TIMESTAMP
+}
+
+class Etiqueta {
+  PK(id_etiqueta) : UUID
+  nombre : VARCHAR(50) UNIQUE
+  fecha_creacion : TIMESTAMP
+}
+
+class ExperienciaEtiqueta {
+  FK(id_experiencia) : UUID
+  FK(id_etiqueta) : UUID
+  fecha_asignacion : TIMESTAMP
+}
+
+class Reaccion {
+  PK(id_reaccion) : UUID
+  FK(id_usuario) : UUID
+  FK(id_experiencia) : UUID
+  fecha_reaccion : TIMESTAMP
+}
+
+class Favorito {
+  PK(id_favorito) : UUID
+  FK(id_usuario) : UUID
+  FK(id_experiencia) : UUID
+  fecha_guardado : TIMESTAMP
+}
+
+class Seguimiento {
+  PK(id_seguimiento) : UUID
+  FK(id_seguidor) : UUID
+  FK(id_seguido) : UUID
+  fecha_seguimiento : TIMESTAMP
+}
+
+class Bloqueo {
+  PK(id_bloqueo) : UUID
+  FK(id_bloqueador) : UUID
+  FK(id_bloqueado) : UUID
+  fecha_bloqueo : TIMESTAMP
+}
+
+class Reporte {
+  PK(id_reporte) : UUID
+  FK(id_reportante) : UUID
+  FK(id_experiencia) : UUID
+  FK(id_respuesta) : UUID
+  motivo : VARCHAR(500)
+  estado : ENUM('pendiente','revisado','resuelto')
+  fecha_reporte : TIMESTAMP
+  fecha_resolucion : TIMESTAMP
+}
+
+class Borrador {
+  PK(id_borrador) : UUID
+  FK(id_usuario) : UUID
+  FK(id_experiencia) : UUID
+  datos_json : TEXT
+  fecha_guardado : TIMESTAMP
+}
+
+' ──────────────── RELACIONES ────────────────
+
+Usuario          "1" --o{ "N" Experiencia        : "publica >"
+Usuario          "1" --o{ "N" Respuesta          : "escribe >"
+Experiencia      "1" --o{ "N" Respuesta          : "tiene >"
+Experiencia      "1" --o{ "N" ExperienciaEtiqueta : "tiene >"
+Etiqueta         "1" --o{ "N" ExperienciaEtiqueta : "clasifica >"
+Usuario          "1" --o{ "N" Reaccion           : "da >"
+Experiencia      "1" --o{ "N" Reaccion           : "recibe >"
+Usuario          "1" --o{ "N" Favorito           : "guarda >"
+Experiencia      "1" --o{ "N" Favorito           : "guardada en >"
+Usuario          "1" --o{ "N" Seguimiento        : "sigue (seguidor) >"
+Usuario          "1" --o{ "N" Seguimiento        : "es seguido >"
+Usuario          "1" --o{ "N" Bloqueo            : "bloquea >"
+Usuario          "1" --o{ "N" Bloqueo            : "bloqueado por >"
+Usuario          "1" --o{ "N" Reporte            : "reporta >"
+Experiencia      "1" --o{ "N" Reporte            : "reportada >"
+Respuesta        "1" --o{ "N" Reporte            : "reportada >"
+Usuario          "1" --o{ "N" Borrador           : "tiene >"
+Experiencia      "1" --o| "1" Borrador           : "guardada como >"
+
+@enduml
