@@ -13,7 +13,7 @@
 
 ## Status
 
-Pendiente
+Sustituido (ADR-008)
 
 ### Context
 
