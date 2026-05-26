@@ -1,0 +1,3019 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ética Compartida — FIIS UNAS</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    /* ═══════════════════════════════════════════
+   VARIABLES — Single source of truth
+   (Clean Code: DRY, meaningful names)
+═══════════════════════════════════════════ */
+    :root {
+      --clr-bg: #0f0e17;
+      --clr-surface: #16151f;
+      --clr-surface2: #1e1d2b;
+      --clr-surface3: #252436;
+      --clr-border: rgba(255, 255, 255, 0.07);
+      --clr-accent: #e8c97e;
+      --clr-accent2: #a78bfa;
+      --clr-accent3: #34d399;
+      --clr-danger: #f87171;
+      --clr-text: #ede9fe;
+      --clr-text2: #a09cc0;
+      --clr-text3: #6b6887;
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-body: 'DM Sans', system-ui, sans-serif;
+      --font-mono: 'DM Mono', monospace;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --shadow-glow: 0 0 40px rgba(232, 201, 126, 0.08);
+      --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+      --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Light mode */
+    body.light {
+      --clr-bg: #faf8f2;
+      --clr-surface: #ffffff;
+      --clr-surface2: #f3f0e8;
+      --clr-surface3: #e8e4d6;
+      --clr-border: rgba(0, 0, 0, 0.08);
+      --clr-text: #1a1630;
+      --clr-text2: #4a4568;
+      --clr-text3: #8a8599;
+      --shadow-glow: 0 0 40px rgba(167, 139, 250, 0.08);
+      --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    /* ═══════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════ */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--clr-bg);
+      color: var(--clr-text);
+      min-height: 100vh;
+      font-size: 15px;
+      line-height: 1.6;
+      transition: background var(--transition), color var(--transition);
+      overflow-x: hidden;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    /* ═══════════════════════════════════════════
+   UTILITY CLASSES
+═══════════════════════════════════════════ */
+    .hidden {
+      display: none !important;
+    }
+
+    .flex {
+      display: flex;
+    }
+
+    .flex-col {
+      flex-direction: column;
+    }
+
+    .gap-2 {
+      gap: 8px;
+    }
+
+    .gap-3 {
+      gap: 12px;
+    }
+
+    .gap-4 {
+      gap: 16px;
+    }
+
+    .items-center {
+      align-items: center;
+    }
+
+    .justify-between {
+      justify-content: space-between;
+    }
+
+    .w-full {
+      width: 100%;
+    }
+
+    .text-sm {
+      font-size: 13px;
+    }
+
+    .text-xs {
+      font-size: 11px;
+    }
+
+    .text-accent {
+      color: var(--clr-accent);
+    }
+
+    .text-muted {
+      color: var(--clr-text2);
+    }
+
+    .text-danger {
+      color: var(--clr-danger);
+    }
+
+    .font-mono {
+      font-family: var(--font-mono);
+    }
+
+    .mt-1 {
+      margin-top: 4px;
+    }
+
+    .mt-2 {
+      margin-top: 8px;
+    }
+
+    .mt-3 {
+      margin-top: 12px;
+    }
+
+    .mt-4 {
+      margin-top: 16px;
+    }
+
+    /* ═══════════════════════════════════════════
+   SCROLLBAR
+═══════════════════════════════════════════ */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--clr-surface3);
+      border-radius: 99px;
+    }
+
+    /* ═══════════════════════════════════════════
+   PAGE SYSTEM  — Single-page app views
+═══════════════════════════════════════════ */
+    .view {
+      display: none;
+      width: 100%;
+      min-height: 100vh;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .view.active {
+      display: initial;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ═══════════════════════════════════════════
+   ── AUTH VIEW ──
+═══════════════════════════════════════════ */
+    #view-auth {
+      min-height: 100vh;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+
+    #view-auth.active {
+      display: grid;
+    }
+
+    .auth-hero {
+      background: linear-gradient(145deg, #1a1530 0%, #0f0e17 60%, #1a1030 100%);
+      padding: 60px 56px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body.light .auth-hero {
+      background: linear-gradient(145deg, #ede9fe 0%, #faf8f2 60%, #e0d7ff 100%);
+    }
+
+    .auth-hero::before {
+      content: '';
+      position: absolute;
+      top: -80px;
+      right: -80px;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(232, 201, 126, 0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .auth-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -60px;
+      left: -40px;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(167, 139, 250, 0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .auth-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .auth-logo-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--clr-accent), var(--clr-accent2));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .auth-logo-text {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--clr-text);
+    }
+
+    .auth-hero-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 48px 0;
+    }
+
+    .auth-hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(32px, 4vw, 48px);
+      line-height: 1.2;
+      color: var(--clr-text);
+      margin-bottom: 20px;
+    }
+
+    .auth-hero-title em {
+      font-style: italic;
+      color: var(--clr-accent);
+    }
+
+    .auth-hero-desc {
+      font-size: 16px;
+      color: var(--clr-text2);
+      line-height: 1.7;
+      max-width: 380px;
+    }
+
+    .auth-testimonials {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .auth-quote {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--clr-border);
+      border-left: 3px solid var(--clr-accent);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      font-size: 13px;
+      color: var(--clr-text2);
+      font-style: italic;
+    }
+
+    body.light .auth-quote {
+      background: rgba(0, 0, 0, 0.03);
+    }
+
+    /* ── Auth Form Panel ── */
+    .auth-panel {
+      background: var(--clr-surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .auth-box {
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .auth-tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--clr-surface2);
+      border-radius: var(--radius-sm);
+      padding: 4px;
+      margin-bottom: 32px;
+    }
+
+    .auth-tab {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      background: transparent;
+      color: var(--clr-text2);
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .auth-tab.active {
+      background: var(--clr-surface3);
+      color: var(--clr-text);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .auth-form-title {
+      font-family: var(--font-display);
+      font-size: 26px;
+      margin-bottom: 6px;
+    }
+
+    .auth-form-sub {
+      font-size: 14px;
+      color: var(--clr-text2);
+      margin-bottom: 28px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--clr-text2);
+      margin-bottom: 7px;
+      letter-spacing: 0.3px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--clr-surface2);
+      border: 1.5px solid var(--clr-border);
+      border-radius: var(--radius-sm);
+      color: var(--clr-text);
+      font-family: var(--font-body);
+      font-size: 14px;
+      transition: border-color var(--transition), box-shadow var(--transition);
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--clr-accent);
+      box-shadow: 0 0 0 3px rgba(232, 201, 126, 0.12);
+    }
+
+    .form-input::placeholder {
+      color: var(--clr-text3);
+    }
+
+    .form-hint {
+      font-size: 12px;
+      color: var(--clr-text3);
+      margin-top: 5px;
+    }
+
+    .form-error {
+      font-size: 12px;
+      color: var(--clr-danger);
+      margin-top: 5px;
+      display: none;
+    }
+
+    .form-error.visible {
+      display: block;
+    }
+
+    .form-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--clr-text2);
+      cursor: pointer;
+    }
+
+    .checkbox-label input {
+      accent-color: var(--clr-accent);
+    }
+
+    .form-link {
+      font-size: 13px;
+      color: var(--clr-accent);
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .form-link:hover {
+      text-decoration: underline;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      padding: 12px 20px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0);
+      transition: background var(--transition);
+    }
+
+    .btn:hover::after {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--clr-accent) 0%, #d4a843 100%);
+      color: #0f0e17;
+      width: 100%;
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 4px 20px rgba(232, 201, 126, 0.3);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1.5px solid var(--clr-border);
+      color: var(--clr-text2);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--clr-accent);
+      color: var(--clr-accent);
+    }
+
+    .btn-icon {
+      padding: 9px;
+      background: var(--clr-surface2);
+      border: 1.5px solid var(--clr-border);
+      color: var(--clr-text2);
+      border-radius: var(--radius-sm);
+    }
+
+    .btn-icon:hover {
+      color: var(--clr-accent);
+      border-color: var(--clr-accent);
+    }
+
+    .btn-danger {
+      background: rgba(248, 113, 113, 0.12);
+      border: 1.5px solid rgba(248, 113, 113, 0.3);
+      color: var(--clr-danger);
+    }
+
+    .btn-danger:hover {
+      background: rgba(248, 113, 113, 0.2);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 20px 0;
+      color: var(--clr-text3);
+      font-size: 12px;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--clr-border);
+    }
+
+    .auth-footer-text {
+      text-align: center;
+      font-size: 13px;
+      color: var(--clr-text2);
+      margin-top: 24px;
+    }
+
+    /* ═══════════════════════════════════════════
+   ── APP LAYOUT ──
+═══════════════════════════════════════════ */
+    #view-app {
+      min-height: 100vh;
+      grid-template-rows: 60px 1fr;
+      grid-template-areas:
+        "navbar"
+        "main";
+    }
+
+    #view-app.active {
+      display: grid;
+    }
+
+    /* ── Navbar ── */
+    .navbar {
+      grid-area: navbar;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(15, 14, 23, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--clr-border);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      gap: 16px;
+    }
+
+    body.light .navbar {
+      background: rgba(250, 248, 242, 0.9);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-right: 8px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .nav-logo-icon {
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, var(--clr-accent), var(--clr-accent2));
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      flex-shrink: 0;
+    }
+
+    .nav-logo-text {
+      font-family: var(--font-display);
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--clr-text);
+      white-space: nowrap;
+    }
+
+    .nav-search {
+      flex: 1;
+      max-width: 360px;
+      position: relative;
+    }
+
+    .nav-search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--clr-text3);
+      font-size: 14px;
+      pointer-events: none;
+    }
+
+    .nav-search-input {
+      width: 100%;
+      padding: 8px 12px 8px 36px;
+      background: var(--clr-surface2);
+      border: 1.5px solid var(--clr-border);
+      border-radius: 99px;
+      color: var(--clr-text);
+      font-family: var(--font-body);
+      font-size: 13px;
+      outline: none;
+      transition: border-color var(--transition);
+    }
+
+    .nav-search-input:focus {
+      border-color: var(--clr-accent);
+    }
+
+    .nav-search-input::placeholder {
+      color: var(--clr-text3);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+    }
+
+    .nav-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--clr-accent2), var(--clr-accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: border-color var(--transition);
+    }
+
+    .nav-avatar:hover {
+      border-color: var(--clr-accent);
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 2px;
+    }
+
+    .nav-tab {
+      padding: 6px 14px;
+      border: none;
+      background: transparent;
+      color: var(--clr-text2);
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .nav-tab:hover {
+      background: var(--clr-surface2);
+      color: var(--clr-text);
+    }
+
+    .nav-tab.active {
+      background: var(--clr-surface2);
+      color: var(--clr-accent);
+    }
+
+    /* ── Main content ── */
+    .app-main {
+      grid-area: main;
+      max-width: 1160px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 28px 20px;
+      display: grid;
+      grid-template-columns: 240px 1fr 280px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    /* ── Sidebar Left ── */
+    .sidebar-left {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      position: sticky;
+      top: 84px;
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 14px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      color: var(--clr-text2);
+      font-size: 14px;
+      font-weight: 500;
+      transition: all var(--transition);
+      border: none;
+      background: transparent;
+      text-align: left;
+      width: 100%;
+    }
+
+    .sidebar-item:hover {
+      background: var(--clr-surface2);
+      color: var(--clr-text);
+    }
+
+    .sidebar-item.active {
+      background: var(--clr-surface2);
+      color: var(--clr-accent);
+    }
+
+    .sidebar-icon {
+      font-size: 17px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-divider {
+      height: 1px;
+      background: var(--clr-border);
+      margin: 6px 0;
+    }
+
+    .sidebar-new-btn {
+      margin-top: 8px;
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, var(--clr-accent), #d4a843);
+      border: none;
+      border-radius: var(--radius-sm);
+      color: #0f0e17;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .sidebar-new-btn:hover {
+      box-shadow: 0 4px 20px rgba(232, 201, 126, 0.25);
+      transform: translateY(-1px);
+    }
+
+    /* ── Feed ── */
+    .feed-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .feed-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .feed-filters {
+      display: flex;
+      gap: 6px;
+    }
+
+    .filter-btn {
+      padding: 6px 14px;
+      border-radius: 99px;
+      border: 1.5px solid var(--clr-border);
+      background: transparent;
+      color: var(--clr-text2);
+      font-size: 12px;
+      font-weight: 500;
+      font-family: var(--font-body);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .filter-btn.active,
+    .filter-btn:hover {
+      border-color: var(--clr-accent);
+      color: var(--clr-accent);
+      background: rgba(232, 201, 126, 0.06);
+    }
+
+    .feed-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* ── Experience Card ── */
+    .exp-card {
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-lg);
+      padding: 22px 24px;
+      transition: all var(--transition);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .exp-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--clr-accent), var(--clr-accent2));
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
+
+    .exp-card:hover {
+      border-color: rgba(232, 201, 126, 0.2);
+      box-shadow: var(--shadow-glow);
+      transform: translateY(-2px);
+    }
+
+    .exp-card:hover::before {
+      opacity: 1;
+    }
+
+    .exp-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .exp-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--clr-accent2), var(--clr-accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 600;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .exp-meta-wrap {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .exp-author-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--clr-text);
+    }
+
+    .exp-date {
+      font-size: 12px;
+      color: var(--clr-text3);
+    }
+
+    .exp-title {
+      font-family: var(--font-display);
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--clr-text);
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+
+    .exp-title.untitled {
+      font-style: italic;
+      color: var(--clr-text2);
+      font-size: 16px;
+    }
+
+    .exp-body {
+      font-size: 14px;
+      color: var(--clr-text2);
+      line-height: 1.7;
+      margin-bottom: 14px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .exp-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .exp-tag {
+      padding: 3px 10px;
+      background: rgba(167, 139, 250, 0.1);
+      border: 1px solid rgba(167, 139, 250, 0.2);
+      color: var(--clr-accent2);
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .exp-tag:hover {
+      background: rgba(167, 139, 250, 0.2);
+    }
+
+    .exp-footer {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--clr-border);
+    }
+
+    .exp-action {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      color: var(--clr-text3);
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      font-family: var(--font-body);
+      transition: all var(--transition);
+    }
+
+    .exp-action:hover {
+      background: var(--clr-surface2);
+      color: var(--clr-text2);
+    }
+
+    .exp-action.liked {
+      color: #f87171;
+    }
+
+    .exp-action.liked:hover {
+      color: #f87171;
+    }
+
+    .exp-action-icon {
+      font-size: 15px;
+    }
+
+    /* Draft badge */
+    .exp-badge {
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-left: auto;
+    }
+
+    .badge-draft {
+      background: rgba(232, 201, 126, 0.1);
+      color: var(--clr-accent);
+      border: 1px solid rgba(232, 201, 126, 0.2);
+    }
+
+    .badge-published {
+      background: rgba(52, 211, 153, 0.1);
+      color: var(--clr-accent3);
+      border: 1px solid rgba(52, 211, 153, 0.2);
+    }
+
+    /* ── Sidebar Right ── */
+    .sidebar-right {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: sticky;
+      top: 84px;
+    }
+
+    .widget {
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+    }
+
+    .widget-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--clr-text2);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .trending-tag {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--clr-border);
+      cursor: pointer;
+    }
+
+    .trending-tag:last-child {
+      border-bottom: none;
+    }
+
+    .trending-tag:hover .trending-name {
+      color: var(--clr-accent);
+    }
+
+    .trending-name {
+      font-size: 13px;
+      color: var(--clr-text);
+      font-weight: 500;
+      transition: color var(--transition);
+    }
+
+    .trending-count {
+      font-size: 12px;
+      color: var(--clr-text3);
+    }
+
+    .user-suggestion {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--clr-border);
+    }
+
+    .user-suggestion:last-child {
+      border-bottom: none;
+    }
+
+    .sug-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #34d399, #059669);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .sug-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .sug-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--clr-text);
+    }
+
+    .sug-posts {
+      font-size: 11px;
+      color: var(--clr-text3);
+    }
+
+    .sug-follow {
+      padding: 4px 12px;
+      border-radius: 99px;
+      border: 1.5px solid var(--clr-accent);
+      background: transparent;
+      color: var(--clr-accent);
+      font-size: 12px;
+      font-weight: 600;
+      font-family: var(--font-body);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .sug-follow:hover {
+      background: rgba(232, 201, 126, 0.1);
+    }
+
+    .sug-follow.following {
+      background: rgba(232, 201, 126, 0.1);
+      color: var(--clr-text3);
+      border-color: var(--clr-border);
+    }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(6px);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 640px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 28px;
+      animation: modalIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+    }
+
+    @keyframes modalIn {
+      from {
+        opacity: 0;
+        transform: scale(0.94);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1.5px solid var(--clr-border);
+      background: transparent;
+      color: var(--clr-text2);
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .modal-close:hover {
+      border-color: var(--clr-danger);
+      color: var(--clr-danger);
+    }
+
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    .modal-sub {
+      font-size: 13px;
+      color: var(--clr-text2);
+      margin-bottom: 24px;
+    }
+
+    .form-textarea {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--clr-surface2);
+      border: 1.5px solid var(--clr-border);
+      border-radius: var(--radius-sm);
+      color: var(--clr-text);
+      font-family: var(--font-body);
+      font-size: 14px;
+      line-height: 1.6;
+      resize: vertical;
+      outline: none;
+      transition: border-color var(--transition);
+      min-height: 90px;
+    }
+
+    .form-textarea:focus {
+      border-color: var(--clr-accent);
+      box-shadow: 0 0 0 3px rgba(232, 201, 126, 0.12);
+    }
+
+    .form-textarea::placeholder {
+      color: var(--clr-text3);
+    }
+
+    .form-section-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--clr-accent);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin: 20px 0 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--clr-border);
+    }
+
+    .tags-input-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 10px 12px;
+      background: var(--clr-surface2);
+      border: 1.5px solid var(--clr-border);
+      border-radius: var(--radius-sm);
+      cursor: text;
+      transition: border-color var(--transition);
+      min-height: 44px;
+      align-items: center;
+    }
+
+    .tags-input-wrap:focus-within {
+      border-color: var(--clr-accent);
+    }
+
+    .tag-pill {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      background: rgba(167, 139, 250, 0.15);
+      border: 1px solid rgba(167, 139, 250, 0.25);
+      color: var(--clr-accent2);
+      border-radius: 99px;
+      font-size: 12px;
+    }
+
+    .tag-remove {
+      background: none;
+      border: none;
+      color: var(--clr-text3);
+      cursor: pointer;
+      font-size: 12px;
+      line-height: 1;
+      padding: 0;
+      transition: color var(--transition);
+    }
+
+    .tag-remove:hover {
+      color: var(--clr-danger);
+    }
+
+    .tag-input-field {
+      flex: 1;
+      min-width: 80px;
+      border: none;
+      background: transparent;
+      color: var(--clr-text);
+      font-size: 13px;
+      font-family: var(--font-body);
+      outline: none;
+    }
+
+    .tag-input-field::placeholder {
+      color: var(--clr-text3);
+    }
+
+    .tags-count {
+      font-size: 11px;
+      color: var(--clr-text3);
+      margin-top: 4px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--clr-border);
+    }
+
+    .modal-actions .btn {
+      flex: 1;
+    }
+
+    .autosave-indicator {
+      font-size: 11px;
+      color: var(--clr-text3);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 8px;
+      font-family: var(--font-mono);
+    }
+
+    .autosave-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--clr-accent3);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.3;
+      }
+    }
+
+    /* ── Detail View ── */
+    .exp-detail {
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+    }
+
+    .exp-detail-header {
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--clr-border);
+    }
+
+    .exp-detail-title {
+      font-family: var(--font-display);
+      font-size: 28px;
+      line-height: 1.3;
+      margin-bottom: 12px;
+    }
+
+    .exp-detail-body {
+      font-size: 15px;
+      line-height: 1.8;
+      color: var(--clr-text2);
+      margin-bottom: 24px;
+    }
+
+    .reflection-block {
+      background: var(--clr-surface2);
+      border: 1px solid var(--clr-border);
+      border-left: 3px solid var(--clr-accent);
+      border-radius: var(--radius-sm);
+      padding: 16px 18px;
+      margin-bottom: 14px;
+    }
+
+    .reflection-block.ethics {
+      border-left-color: var(--clr-accent2);
+    }
+
+    .reflection-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--clr-accent);
+      margin-bottom: 8px;
+      font-family: var(--font-mono);
+    }
+
+    .reflection-block.ethics .reflection-label {
+      color: var(--clr-accent2);
+    }
+
+    .reflection-text {
+      font-size: 14px;
+      color: var(--clr-text2);
+      line-height: 1.7;
+    }
+
+    .responses-section {
+      margin-top: 28px;
+    }
+
+    .responses-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--clr-text);
+    }
+
+    .response-item {
+      display: flex;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--clr-border);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .response-item:last-child {
+      border-bottom: none;
+    }
+
+    .response-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #a78bfa, #7c3aed);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: white;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .response-content {
+      flex: 1;
+    }
+
+    .response-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .response-author {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--clr-text);
+    }
+
+    .response-date {
+      font-size: 11px;
+      color: var(--clr-text3);
+    }
+
+    .response-text {
+      font-size: 14px;
+      color: var(--clr-text2);
+      line-height: 1.6;
+    }
+
+    .response-compose {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      align-items: flex-start;
+    }
+
+    .response-input {
+      flex: 1;
+      padding: 10px 14px;
+      background: var(--clr-surface2);
+      border: 1.5px solid var(--clr-border);
+      border-radius: var(--radius-md);
+      color: var(--clr-text);
+      font-size: 14px;
+      font-family: var(--font-body);
+      resize: none;
+      outline: none;
+      transition: border-color var(--transition);
+      min-height: 44px;
+    }
+
+    .response-input:focus {
+      border-color: var(--clr-accent);
+    }
+
+    /* ── Profile view ── */
+    .profile-hero {
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .profile-avatar-lg {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--clr-accent), var(--clr-accent2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+      border: 3px solid var(--clr-surface3);
+    }
+
+    .profile-info {
+      flex: 1;
+    }
+
+    .profile-name {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .profile-bio {
+      font-size: 14px;
+      color: var(--clr-text2);
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+
+    .profile-stats {
+      display: flex;
+      gap: 20px;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-num {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--clr-accent);
+      font-family: var(--font-display);
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--clr-text3);
+    }
+
+    /* ── Toast ── */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toast {
+      background: var(--clr-surface2);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-size: 13px;
+      color: var(--clr-text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: var(--shadow-card);
+      animation: toastIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      min-width: 240px;
+    }
+
+    @keyframes toastIn {
+      from {
+        opacity: 0;
+        transform: translateX(40px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .toast.success {
+      border-left: 3px solid var(--clr-accent3);
+    }
+
+    .toast.error {
+      border-left: 3px solid var(--clr-danger);
+    }
+
+    .toast.info {
+      border-left: 3px solid var(--clr-accent2);
+    }
+
+    /* ── Loading spinner ── */
+    .spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--clr-border);
+      border-top-color: var(--clr-accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      #view-auth {
+        grid-template-columns: 1fr;
+      }
+
+      .auth-hero {
+        display: none;
+      }
+
+      .app-main {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar-left,
+      .sidebar-right {
+        display: none;
+      }
+
+      .feed-center {
+        grid-column: 1;
+      }
+    }
+
+    @media (max-width: 1100px) {
+      .sidebar-right {
+        display: none;
+      }
+
+      .app-main {
+        grid-template-columns: 200px 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ════════════════════════════════════
+     VIEW: AUTH
+════════════════════════════════════ -->
+  <div id="view-auth" class="view active">
+
+    <!-- Hero panel -->
+    <div class="auth-hero">
+      <div class="auth-logo">
+        <div class="auth-logo-icon">⚖️</div>
+        <span class="auth-logo-text">Ética Compartida</span>
+      </div>
+
+      <div class="auth-hero-content">
+        <h1 class="auth-hero-title">
+          Comparte tus <em>dilemas</em><br>
+          con el mundo
+        </h1>
+        <p class="auth-hero-desc">
+          Una comunidad donde estudiantes y docentes de la UNAS publican experiencias éticas y morales reales,
+          reflexionan en colectivo y construyen conciencia crítica.
+        </p>
+      </div>
+
+      <div class="auth-testimonials">
+        <div class="auth-quote">
+          "¿Qué dice la moral sobre esto?" — cada experiencia invita a la reflexión profunda.
+        </div>
+        <div class="auth-quote">
+          "Ética y Práctica Profesional · FIIS-UNAS · Semestre 2026-I"
+        </div>
+      </div>
+    </div>
+
+    <!-- Form panel -->
+    <div class="auth-panel">
+      <div class="auth-box">
+
+        <div class="auth-tabs">
+          <button class="auth-tab active" onclick="switchAuthTab('login', this)">Iniciar sesión</button>
+          <button class="auth-tab" onclick="switchAuthTab('register', this)">Registrarse</button>
+        </div>
+
+        <!-- LOGIN -->
+        <div id="auth-login">
+          <h2 class="auth-form-title">Bienvenido de vuelta</h2>
+          <p class="auth-form-sub">Ingresa a tu cuenta para continuar</p>
+
+          <div class="form-group">
+            <label class="form-label" for="login-email">Correo electrónico</label>
+            <input id="login-email" type="email" class="form-input" placeholder="usuario@unas.edu.pe"
+              autocomplete="email">
+            <span class="form-error" id="err-login-email">Ingresa un correo válido.</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="login-pass">Contraseña</label>
+            <input id="login-pass" type="password" class="form-input" placeholder="••••••••"
+              autocomplete="current-password">
+            <span class="form-error" id="err-login-pass">La contraseña debe tener al menos 6 caracteres.</span>
+          </div>
+
+          <div class="form-row">
+            <label class="checkbox-label">
+              <input type="checkbox" id="remember-me">
+              Recordarme (sesión 24 h)
+            </label>
+            <a class="form-link">¿Olvidaste tu contraseña?</a>
+          </div>
+
+          <button class="btn btn-primary" onclick="handleLogin()">
+            <span id="login-btn-text">Iniciar sesión</span>
+          </button>
+
+          <div id="err-login-general" class="form-error mt-2" style="text-align:center;font-size:13px"></div>
+
+          <div class="divider">o continúa como</div>
+
+          <button class="btn btn-ghost w-full" onclick="loginDemo()">
+            👤 Entrar como demo (sin cuenta)
+          </button>
+
+          <p class="auth-footer-text">
+            ¿No tienes cuenta? <a class="form-link" onclick="switchAuthTab('register', null)">Regístrate aquí</a>
+          </p>
+        </div>
+
+        <!-- REGISTER -->
+        <div id="auth-register" class="hidden">
+          <h2 class="auth-form-title">Crea tu cuenta</h2>
+          <p class="auth-form-sub">Únete a la comunidad de reflexión ética</p>
+
+          <div class="form-group">
+            <label class="form-label">Nombre completo</label>
+            <input id="reg-name" type="text" class="form-input" placeholder="Tu nombre o alias">
+            <span class="form-error" id="err-reg-name">Ingresa tu nombre.</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Correo electrónico</label>
+            <input id="reg-email" type="email" class="form-input" placeholder="correo@ejemplo.com">
+            <span class="form-error" id="err-reg-email">Correo inválido o ya registrado.</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Contraseña</label>
+            <input id="reg-pass" type="password" class="form-input" placeholder="Mínimo 8 caracteres">
+            <span class="form-hint">Usa letras, números y símbolos para mayor seguridad.</span>
+            <span class="form-error" id="err-reg-pass">Mínimo 8 caracteres.</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirmar contraseña</label>
+            <input id="reg-pass2" type="password" class="form-input" placeholder="Repite tu contraseña">
+            <span class="form-error" id="err-reg-pass2">Las contraseñas no coinciden.</span>
+          </div>
+
+          <button class="btn btn-primary" onclick="handleRegister()">
+            Crear cuenta
+          </button>
+
+          <p class="auth-footer-text">
+            ¿Ya tienes cuenta? <a class="form-link" onclick="switchAuthTab('login', null)">Inicia sesión</a>
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════
+     VIEW: APP
+════════════════════════════════════ -->
+  <div id="view-app" class="view">
+
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="nav-logo" onclick="showFeed()">
+        <div class="nav-logo-icon">⚖️</div>
+        <span class="nav-logo-text">Ética Compartida</span>
+      </div>
+
+      <div class="nav-tabs">
+        <button class="nav-tab active" id="tab-feed" onclick="showFeed()">Feed</button>
+        <button class="nav-tab" id="tab-explore" onclick="showExplore()">Explorar</button>
+        <button class="nav-tab" id="tab-profile" onclick="showProfile()">Mi perfil</button>
+        <button class="nav-tab" id="tab-about" onclick="showAbout()">Acerca del proyecto</button>
+      </div>
+
+      <div class="nav-search">
+        <span class="nav-search-icon">🔍</span>
+        <input class="nav-search-input" type="text" placeholder="Buscar experiencias..." id="nav-search"
+          oninput="handleSearch(this.value)">
+      </div>
+
+      <div class="nav-actions">
+        <button class="btn-icon btn" title="Modo claro/oscuro" onclick="toggleTheme()">🌙</button>
+        <div class="nav-avatar" id="nav-avatar" onclick="showProfile()">JO</div>
+        <button class="btn btn-ghost text-sm" onclick="handleLogout()" style="padding:7px 14px">Salir</button>
+      </div>
+    </nav>
+
+    <!-- Main -->
+    <main class="app-main">
+
+      <!-- Sidebar izquierdo -->
+      <aside class="sidebar-left">
+        <button class="sidebar-item active" id="si-feed" onclick="showFeed()">
+          <span class="sidebar-icon">🏠</span> Inicio
+        </button>
+        <button class="sidebar-item" id="si-explore" onclick="showExplore()">
+          <span class="sidebar-icon">🔭</span> Explorar
+        </button>
+        <button class="sidebar-item" id="si-favorites" onclick="showFavorites()">
+          <span class="sidebar-icon">⭐</span> Favoritos
+        </button>
+        <button class="sidebar-item" id="si-drafts" onclick="showDrafts()">
+          <span class="sidebar-icon">📝</span> Mis borradores
+        </button>
+        <div class="sidebar-divider"></div>
+        <button class="sidebar-item" id="si-profile" onclick="showProfile()">
+          <span class="sidebar-icon">👤</span> Mi perfil
+        </button>
+        <button class="sidebar-item" id="si-about" onclick="showAbout()">
+          <span class="sidebar-icon">ℹ️</span> Proyecto
+        </button>
+        <div class="sidebar-divider"></div>
+        <button class="sidebar-new-btn" onclick="openNewExpModal()">
+          ✦ Nueva experiencia
+        </button>
+      </aside>
+
+      <!-- Centro dinámico -->
+      <div id="feed-center">
+
+        <!-- Feed view -->
+        <div id="section-feed">
+          <div class="feed-header">
+            <h2 class="feed-title">Tu feed</h2>
+            <div class="feed-filters">
+              <button class="filter-btn active" id="filter-recent" onclick="setFilter('recent',this)">Recientes</button>
+              <button class="filter-btn" id="filter-popular" onclick="setFilter('popular',this)">Populares</button>
+              <button class="filter-btn" id="filter-following" onclick="setFilter('following',this)">Siguiendo</button>
+            </div>
+          </div>
+          <div class="feed-list" id="feed-list"></div>
+        </div>
+
+        <!-- Explore view -->
+        <div id="section-explore" class="hidden">
+          <div class="feed-header">
+            <h2 class="feed-title">Explorar</h2>
+          </div>
+          <div class="feed-list" id="explore-list"></div>
+        </div>
+
+        <!-- Favorites view -->
+        <div id="section-favorites" class="hidden">
+          <div class="feed-header">
+            <h2 class="feed-title">⭐ Experiencias favoritas</h2>
+          </div>
+          <div class="feed-list" id="favorites-list"></div>
+        </div>
+
+        <!-- Drafts view -->
+        <div id="section-drafts" class="hidden">
+          <div class="feed-header">
+            <h2 class="feed-title">📝 Mis borradores</h2>
+          </div>
+          <div class="feed-list" id="drafts-list"></div>
+        </div>
+
+        <!-- Profile view -->
+        <div id="section-profile" class="hidden">
+          <div class="profile-hero" id="profile-hero"></div>
+          <div class="feed-list" id="profile-feed-list"></div>
+        </div>
+
+        <!-- About view -->
+        <div id="section-about" class="hidden">
+          <div class="exp-detail">
+            <div class="exp-detail-header">
+              <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+                <div
+                  style="width:50px;height:50px;background:linear-gradient(135deg,var(--clr-accent),var(--clr-accent2));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px">
+                  ⚖️</div>
+                <div>
+                  <div
+                    style="font-size:12px;color:var(--clr-accent);font-weight:600;letter-spacing:1px;text-transform:uppercase;font-family:var(--font-mono);margin-bottom:4px">
+                    FIIS-UNAS · 2026-I</div>
+                  <h2 class="exp-detail-title" style="margin:0">Ética Compartida</h2>
+                </div>
+              </div>
+              <p class="exp-detail-body">Plataforma web comunitaria para la publicación e interacción de experiencias
+                personales relacionadas con dilemas éticos y morales. Proyecto académico del curso <strong>Ética y
+                  Práctica Profesional</strong> — Facultad de Ingeniería en Informática y Sistemas, Universidad Nacional
+                Agraria de la Selva.</p>
+            </div>
+
+            <div class="reflection-block">
+              <div class="reflection-label">📋 Docente</div>
+              <div class="reflection-text">Mg. Pozo Malpartida, Jorge Luis</div>
+            </div>
+            <div class="reflection-block ethics">
+              <div class="reflection-label">👥 Equipo de Desarrollo</div>
+              <div class="reflection-text">
+                Ordoñez Silva, Yonel Jr. &nbsp;·&nbsp;
+                Javier Orneta, Ángel Paolo &nbsp;·&nbsp;
+                Yllesca Zambrano, Thalia Diana &nbsp;·&nbsp;
+                Ponce Rojas, Yimi Kevin
+              </div>
+            </div>
+
+            <div style="margin-top:24px">
+              <div class="responses-title">Requisitos implementados en este avance</div>
+              <div class="exp-tags">
+                <span class="exp-tag">R01 Login</span>
+                <span class="exp-tag">R02 Registro</span>
+                <span class="exp-tag">R07a/b Crear exp.</span>
+                <span class="exp-tag">R09 Modo oscuro</span>
+                <span class="exp-tag">R10 Eliminar exp.</span>
+                <span class="exp-tag">R11 Eliminar resp.</span>
+                <span class="exp-tag">R14 Editar exp.</span>
+                <span class="exp-tag">R29 Me gusta</span>
+                <span class="exp-tag">R30 Conteo</span>
+                <span class="exp-tag">R31 Ordenar</span>
+                <span class="exp-tag">R38 Auto-borrador</span>
+                <span class="exp-tag">R41 Etiquetas</span>
+                <span class="exp-tag">R44 Borrador manual</span>
+                <span class="exp-tag">R49 Favoritos</span>
+                <span class="exp-tag">R56 Recientes</span>
+                <span class="exp-tag">R58 Seguir</span>
+                <span class="exp-tag">R64 Responsive</span>
+                <span class="exp-tag">R65 Confirmación</span>
+                <span class="exp-tag">R66 Mensajes error</span>
+                <span class="exp-tag">R67 Feedback visual</span>
+              </div>
+            </div>
+
+            <div
+              style="margin-top:24px;padding:16px;background:var(--clr-surface2);border-radius:var(--radius-sm);font-size:13px;color:var(--clr-text2)">
+              <strong style="color:var(--clr-accent)">Estándar aplicado:</strong> ISO/IEC/IEEE 29148:2018 · Clean Code
+              (Robert C. Martin) · MoSCoW prioritization · Scrum methodology
+            </div>
+          </div>
+        </div>
+
+        <!-- Detail view -->
+        <div id="section-detail" class="hidden"></div>
+
+      </div>
+
+      <!-- Sidebar derecho -->
+      <aside class="sidebar-right">
+
+        <div class="widget">
+          <div class="widget-title">🔥 Etiquetas en tendencia</div>
+          <div id="trending-tags"></div>
+        </div>
+
+        <div class="widget">
+          <div class="widget-title">👥 Sugerencias</div>
+          <div id="suggestions-list"></div>
+        </div>
+
+        <div class="widget">
+          <div class="widget-title" style="margin-bottom:10px">📊 Tu actividad</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div style="background:var(--clr-surface2);border-radius:var(--radius-sm);padding:12px;text-align:center">
+              <div id="stat-published"
+                style="font-size:22px;font-weight:700;color:var(--clr-accent);font-family:var(--font-display)">0</div>
+              <div style="font-size:11px;color:var(--clr-text3)">Publicadas</div>
+            </div>
+            <div style="background:var(--clr-surface2);border-radius:var(--radius-sm);padding:12px;text-align:center">
+              <div id="stat-likes"
+                style="font-size:22px;font-weight:700;color:var(--clr-accent2);font-family:var(--font-display)">0</div>
+              <div style="font-size:11px;color:var(--clr-text3)">Me gusta</div>
+            </div>
+          </div>
+        </div>
+
+      </aside>
+    </main>
+  </div>
+
+  <!-- ════════════════════════════════════
+     MODAL: Nueva / Editar Experiencia
+════════════════════════════════════ -->
+  <div class="modal-overlay" id="modal-exp">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('modal-exp')">✕</button>
+      <h3 class="modal-title" id="modal-exp-title">Nueva experiencia</h3>
+      <p class="modal-sub">Comparte un dilema ético o moral que hayas vivido</p>
+
+      <input type="hidden" id="editing-id">
+
+      <div class="form-group">
+        <label class="form-label">Título <span style="color:var(--clr-text3);font-weight:400">(opcional)</span></label>
+        <input id="exp-title-input" type="text" class="form-input" placeholder="Un título descriptivo...">
+        <span class="form-hint">Si lo dejas vacío, la experiencia se mostrará sin título.</span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Descripción <span style="color:var(--clr-danger)">*</span></label>
+        <textarea id="exp-desc-input" class="form-textarea"
+          placeholder="Describe la situación que viviste con el mayor detalle posible..." rows="4"></textarea>
+        <span class="form-error" id="err-exp-desc">La descripción es obligatoria.</span>
+      </div>
+
+      <div class="form-section-label">Reflexión moral y ética</div>
+
+      <div class="form-group">
+        <label class="form-label">¿Qué dice la <span style="color:var(--clr-accent)">moral</span> sobre esto?</label>
+        <textarea id="exp-moral-input" class="form-textarea"
+          placeholder="Desde una perspectiva moral colectiva o social..." rows="3"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">¿Qué dice tu <span style="color:var(--clr-accent2)">ética</span> personal sobre
+          esto?</label>
+        <textarea id="exp-ethics-input" class="form-textarea" placeholder="Desde tu convicción y valores personales..."
+          rows="3"></textarea>
+      </div>
+
+      <div class="form-section-label">Etiquetas</div>
+      <div class="form-group">
+        <div class="tags-input-wrap" onclick="document.getElementById('tag-input').focus()">
+          <div id="tags-container"></div>
+          <input id="tag-input" class="tag-input-field" placeholder="Escribe y presiona Enter..." maxlength="20"
+            onkeydown="handleTagInput(event)">
+        </div>
+        <div class="tags-count" id="tags-count">0 / 5 etiquetas</div>
+      </div>
+
+      <div class="autosave-indicator" id="autosave-indicator">
+        <div class="autosave-dot"></div>
+        Borrador guardado automáticamente
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-ghost" onclick="saveDraft()">💾 Guardar borrador</button>
+        <button class="btn btn-primary" onclick="publishExperience()">✦ Publicar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- ════════════════════════════════════
+     JAVASCRIPT — Clean Code principles
+     · Small functions, single responsibility
+     · Meaningful names
+     · No magic numbers (use constants)
+     · Early returns
+     · DRY
+════════════════════════════════════ -->
+  <script>
+    'use strict';
+
+    // ─────────────────────────────────────────
+    // CONSTANTS (Clean Code: avoid magic numbers)
+    // ─────────────────────────────────────────
+    const SESSION_LONG_HOURS = 24;
+    const SESSION_SHORT_HOURS = 2;
+    const MAX_TAGS_PER_EXP = 5;
+    const AUTOSAVE_INTERVAL_MS = 30_000;
+    const TOAST_DURATION_MS = 3500;
+    const MAX_BIO_CHARS = 300;
+    const SPINNER_THRESHOLD_MS = 500;
+
+    // ─────────────────────────────────────────
+    // APPLICATION STATE  (single source of truth)
+    // ─────────────────────────────────────────
+    const State = {
+      currentUser: null,
+      experiences: [],
+      responses: {},   // { expId: [response, ...] }
+      following: new Set(),
+      favorites: new Set(),
+      tags: [],   // current modal tags
+      editingId: null,
+      currentFilter: 'recent',
+      autosaveTimer: null,
+    };
+
+    // ─────────────────────────────────────────
+    // SEED DATA  (demo experiences)
+    // ─────────────────────────────────────────
+    function buildSeedExperiences() {
+      return [
+        {
+          id: 'exp-001',
+          authorId: 'user-seed-1',
+          authorName: 'María Quispe',
+          title: 'El dilema de la denuncia anónima',
+          description: 'Durante mis prácticas en una empresa de construcción, presencié cómo el jefe de obra ordenaba usar materiales de menor calidad que los especificados en el contrato. Los trabajadores dependían de ese empleo y nadie hablaba por temor. Yo era el único externo.',
+          moral: 'La moral social me indica que denunciar es un deber ciudadano cuando se pone en riesgo la seguridad pública. El contrato falsificado afecta a futuros usuarios del edificio.',
+          ethics: 'Mi ética personal me genera un conflicto: debo lealtad al supervisor que me dio la oportunidad, pero no puedo ser cómplice de algo que podría causar daño. La integridad no se negocia.',
+          tags: ['trabajo', 'corrupción', 'lealtad', 'denuncia'],
+          status: 'published',
+          likes: 24,
+          likedBy: [],
+          createdAt: new Date(Date.now() - 86400000 * 3).toISOString(),
+          modifiedAt: null,
+        },
+        {
+          id: 'exp-002',
+          authorId: 'user-seed-2',
+          authorName: 'Carlos Flores',
+          title: 'Copiar el examen de un amigo',
+          description: 'Mi mejor amigo me pasó las respuestas del parcial de Cálculo II en el momento del examen. Yo las usé. Aprobamos los dos. Nadie lo sospechó nunca. Pero cada vez que repaso ese semestre, algo en mí se resiste.',
+          moral: 'Moralmente, hice trampa. Eso es claro. Afecté la equidad académica y devalué el esfuerzo de quienes sí estudiaron.',
+          ethics: 'Hoy reconozco que actué en contra de mis valores. El conocimiento fingido tiene consecuencias reales cuando ejerces la ingeniería. Esa nota fue un préstamo que nunca pagué.',
+          tags: ['academia', 'honestidad', 'amistad', 'ingeniería'],
+          status: 'published',
+          likes: 38,
+          likedBy: [],
+          createdAt: new Date(Date.now() - 86400000 * 1).toISOString(),
+          modifiedAt: null,
+        },
+        {
+          id: 'exp-003',
+          authorId: 'user-seed-3',
+          authorName: 'Lucía Tafur',
+          title: null,
+          description: 'Vi cómo un compañero con más años de servicio era pasado por alto en un ascenso porque el gerente prefería a alguien con quien tenía afinidad personal. El sistema de evaluación era claro: el otro merecía el puesto. No dije nada en la reunión.',
+          moral: 'El favoritismo viola la igualdad de oportunidades, un principio básico de justicia organizacional.',
+          ethics: 'Guardé silencio por miedo a represalias. Hoy creo que una postura ética requiere valentía, no solo convicción interna.',
+          tags: ['trabajo', 'justicia', 'silencio', 'favoritismo'],
+          status: 'published',
+          likes: 15,
+          likedBy: [],
+          createdAt: new Date(Date.now() - 86400000 * 0.5).toISOString(),
+          modifiedAt: null,
+        },
+        {
+          id: 'exp-004',
+          authorId: 'user-demo',
+          authorName: 'Tú (demo)',
+          title: 'Mi borrador de hoy',
+          description: 'Este es un borrador guardado. Puedes editarlo o publicarlo cuando estés listo.',
+          moral: '',
+          ethics: '',
+          tags: ['borrador'],
+          status: 'draft',
+          likes: 0,
+          likedBy: [],
+          createdAt: new Date().toISOString(),
+          modifiedAt: null,
+        },
+      ];
+    }
+
+    function buildSeedResponses() {
+      return {
+        'exp-001': [
+          { id: 'r1', authorName: 'Pedro Vega', authorInitial: 'P', text: 'Yo viví algo similar en mis prácticas. Denuncié internamente y me ignoraron. Luego lo hice de forma anónima a la entidad reguladora. La tensión fue enorme pero hoy duermo mejor.', createdAt: new Date(Date.now() - 86400000).toISOString() },
+          { id: 'r2', authorName: 'Ana Torres', authorInitial: 'A', text: 'El miedo al poder es real. Pero el costo de callarse es una carga que se acumula. Gracias por compartirlo.', createdAt: new Date(Date.now() - 7200000).toISOString() },
+        ],
+        'exp-002': [
+          { id: 'r3', authorName: 'Luis Mori', authorInitial: 'L', text: 'La honestidad con uno mismo es el primer paso. Reconocerlo ya es un acto ético significativo.', createdAt: new Date(Date.now() - 3600000).toISOString() },
+        ],
+      };
+    }
+
+    // ─────────────────────────────────────────
+    // AUTH FUNCTIONS
+    // ─────────────────────────────────────────
+    function switchAuthTab(tab, clickedBtn) {
+      const tabs = document.querySelectorAll('.auth-tab');
+      tabs.forEach(t => t.classList.remove('active'));
+      if (clickedBtn) clickedBtn.classList.add('active');
+      else {
+        const idx = tab === 'login' ? 0 : 1;
+        tabs[idx].classList.add('active');
+      }
+      document.getElementById('auth-login').classList.toggle('hidden', tab !== 'login');
+      document.getElementById('auth-register').classList.toggle('hidden', tab !== 'register');
+    }
+
+    function validateEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function handleLogin() {
+      const email = document.getElementById('login-email').value.trim();
+      const pass = document.getElementById('login-pass').value;
+      let valid = true;
+
+      clearErrors(['err-login-email', 'err-login-pass', 'err-login-general']);
+
+      if (!validateEmail(email)) {
+        showError('err-login-email');
+        valid = false;
+      }
+      if (pass.length < 6) {
+        showError('err-login-pass');
+        valid = false;
+      }
+      if (!valid) return;
+
+      // Simulated auth (R01)
+      const btnText = document.getElementById('login-btn-text');
+      btnText.innerHTML = '<span class="spinner"></span>';
+      setTimeout(() => {
+        btnText.textContent = 'Iniciar sesión';
+        enterApp({ name: email.split('@')[0], email, initials: email.slice(0, 2).toUpperCase() });
+      }, 800);
+    }
+
+    function loginDemo() {
+      enterApp({ name: 'Usuario Demo', email: 'demo@unas.edu.pe', initials: 'UD' });
+    }
+
+    function handleRegister() {
+      const name = document.getElementById('reg-name').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const pass = document.getElementById('reg-pass').value;
+      const pass2 = document.getElementById('reg-pass2').value;
+      let valid = true;
+
+      clearErrors(['err-reg-name', 'err-reg-email', 'err-reg-pass', 'err-reg-pass2']);
+
+      if (!name) { showError('err-reg-name'); valid = false; }
+      if (!validateEmail(email)) { showError('err-reg-email'); valid = false; }
+      if (pass.length < 8) { showError('err-reg-pass'); valid = false; }
+      if (pass !== pass2) { showError('err-reg-pass2'); valid = false; }
+      if (!valid) return;
+
+      const initials = name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+      enterApp({ name, email, initials });
+      showToast('¡Cuenta creada! Bienvenido/a a la comunidad.', 'success');
+    }
+
+    function enterApp(user) {
+      State.currentUser = { ...user, id: 'user-demo' };
+      State.experiences = buildSeedExperiences();
+      State.responses = buildSeedResponses();
+
+      document.getElementById('nav-avatar').textContent = user.initials;
+
+      switchView('view-app');
+
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+
+      renderFeed();
+      renderSidebar();
+      updateStats();
+      startAutosaveTimer();
+    }
+
+    function handleLogout() {
+      if (!confirm('¿Estás seguro de que deseas cerrar sesión?')) return;
+
+      State.currentUser = null;
+
+      switchView('view-auth');
+
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+
+      showToast('Sesión cerrada correctamente.', 'info');
+    }
+
+    // ─────────────────────────────────────────
+    // VIEW ROUTING
+    // ─────────────────────────────────────────
+    function switchView(viewId) {
+      document.querySelectorAll('.view').forEach(v => {
+        v.classList.remove('active');
+      });
+      document.getElementById(viewId).classList.add('active');
+    }
+
+    function showSection(sectionId) {
+      ['feed', 'explore', 'favorites', 'drafts', 'profile', 'about', 'detail'].forEach(s => {
+        document.getElementById('section-' + s).classList.add('hidden');
+      });
+      document.getElementById('section-' + sectionId).classList.remove('hidden');
+    }
+
+    function updateNavTabs(activeId) {
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      const el = document.getElementById('tab-' + activeId);
+      if (el) el.classList.add('active');
+    }
+
+    function updateSidebarItems(activeId) {
+      document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+      const el = document.getElementById('si-' + activeId);
+      if (el) el.classList.add('active');
+    }
+
+    function showFeed() { showSection('feed'); updateNavTabs('feed'); updateSidebarItems('feed'); renderFeed(); }
+    function showExplore() { showSection('explore'); updateNavTabs('explore'); updateSidebarItems('explore'); renderExplore(); }
+    function showFavorites() { showSection('favorites'); updateSidebarItems('favorites'); renderFavorites(); }
+    function showDrafts() { showSection('drafts'); updateSidebarItems('drafts'); renderDrafts(); }
+    function showProfile() { showSection('profile'); updateNavTabs('profile'); updateSidebarItems('profile'); renderProfile(); }
+    function showAbout() { showSection('about'); updateNavTabs('about'); updateSidebarItems('about'); }
+
+    // ─────────────────────────────────────────
+    // RENDER — Experience Card
+    // ─────────────────────────────────────────
+    function buildExperienceCard(exp) {
+      const isOwn = exp.authorId === State.currentUser?.id;
+      const isLiked = State.currentUser && exp.likedBy.includes(State.currentUser.id);
+      const isFav = State.favorites.has(exp.id);
+      const timeAgo = formatTimeAgo(exp.createdAt);
+      const initials = exp.authorName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+      const tagHtml = exp.tags.map(t => `<span class="exp-tag" onclick="filterByTag('${t}',event)">#${t}</span>`).join('');
+      const responses = (State.responses[exp.id] || []).length;
+
+      const editBtn = isOwn
+        ? `<button class="exp-action" onclick="openEditModal('${exp.id}',event)" title="Editar">✏️ Editar</button>`
+        : '';
+      const deleteBtn = isOwn
+        ? `<button class="exp-action" style="color:var(--clr-danger)" onclick="deleteExperience('${exp.id}',event)" title="Eliminar">🗑️ Eliminar</button>`
+        : '';
+
+      const statusBadge = exp.status === 'draft'
+        ? `<span class="exp-badge badge-draft">Borrador</span>`
+        : '';
+
+      return `
+    <article class="exp-card" onclick="openDetail('${exp.id}')">
+      <div class="exp-card-header">
+        <div class="exp-avatar">${initials}</div>
+        <div class="exp-meta-wrap">
+          <div class="exp-author-name">${escapeHtml(exp.authorName)}</div>
+          <div class="exp-date">${timeAgo}</div>
+        </div>
+        ${statusBadge}
+      </div>
+
+      ${exp.title
+          ? `<h3 class="exp-title">${escapeHtml(exp.title)}</h3>`
+          : `<h3 class="exp-title untitled">Sin título</h3>`}
+
+      <p class="exp-body">${escapeHtml(exp.description)}</p>
+
+      ${exp.tags.length ? `<div class="exp-tags">${tagHtml}</div>` : ''}
+
+      <div class="exp-footer">
+        <button class="exp-action ${isLiked ? 'liked' : ''}"
+          onclick="toggleLike('${exp.id}', event)">
+          <span class="exp-action-icon">${isLiked ? '❤️' : '🤍'}</span>
+          <span id="likes-count-${exp.id}">${exp.likes}</span>
+        </button>
+        <button class="exp-action">
+          <span class="exp-action-icon">💬</span>
+          <span>${responses}</span>
+        </button>
+        <button class="exp-action ${isFav ? 'liked' : ''}" onclick="toggleFavorite('${exp.id}',event)">
+          <span>${isFav ? '⭐' : '☆'}</span>
+        </button>
+        ${editBtn}
+        ${deleteBtn}
+      </div>
+    </article>`;
+    }
+
+    function renderFeed() {
+      const list = getFilteredExperiences();
+      const published = list.filter(e => e.status === 'published');
+      document.getElementById('feed-list').innerHTML = published.map(buildExperienceCard).join('') ||
+        `<div style="text-align:center;padding:60px;color:var(--clr-text3)">
+      <div style="font-size:40px;margin-bottom:12px">🌱</div>
+      <p>No hay experiencias todavía. ¡Comparte la primera!</p>
+    </div>`;
+    }
+
+    function getFilteredExperiences() {
+      const all = [...State.experiences].filter(e => e.status === 'published');
+      if (State.currentFilter === 'popular') return all.sort((a, b) => b.likes - a.likes);
+      if (State.currentFilter === 'following') {
+        return all.filter(e => State.following.has(e.authorId)).sort(byDateDesc);
+      }
+      return all.sort(byDateDesc);
+    }
+
+    function byDateDesc(a, b) {
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    }
+
+    function setFilter(filter, btn) {
+      State.currentFilter = filter;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderFeed();
+    }
+
+    function renderExplore() {
+      const all = State.experiences
+        .filter(e => e.status === 'published')
+        .sort((a, b) => b.likes - a.likes);
+      document.getElementById('explore-list').innerHTML = all.map(buildExperienceCard).join('');
+    }
+
+    function renderFavorites() {
+      const favs = State.experiences.filter(e => State.favorites.has(e.id));
+      document.getElementById('favorites-list').innerHTML = favs.length
+        ? favs.map(buildExperienceCard).join('')
+        : `<div style="text-align:center;padding:60px;color:var(--clr-text3)">
+        <div style="font-size:36px;margin-bottom:12px">⭐</div>
+        <p>Aún no tienes favoritos. Haz clic en ☆ en cualquier experiencia.</p>
+      </div>`;
+    }
+
+    function renderDrafts() {
+      const drafts = State.experiences.filter(e => e.status === 'draft' && e.authorId === State.currentUser?.id);
+      document.getElementById('drafts-list').innerHTML = drafts.length
+        ? drafts.map(buildExperienceCard).join('')
+        : `<div style="text-align:center;padding:60px;color:var(--clr-text3)">
+        <div style="font-size:36px;margin-bottom:12px">📝</div>
+        <p>No tienes borradores guardados.</p>
+      </div>`;
+    }
+
+    function renderProfile() {
+      const u = State.currentUser;
+      const myExps = State.experiences.filter(e => e.authorId === u.id && e.status === 'published');
+      const totalLikes = myExps.reduce((s, e) => s + e.likes, 0);
+
+      document.getElementById('profile-hero').innerHTML = `
+    <div class="profile-avatar-lg">${u.initials}</div>
+    <div class="profile-info">
+      <div class="profile-name">${escapeHtml(u.name)}</div>
+      <div class="profile-bio">${escapeHtml(u.email)}</div>
+      <div class="profile-stats">
+        <div class="stat-item">
+          <div class="stat-num">${myExps.length}</div>
+          <div class="stat-label">Publicadas</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">${totalLikes}</div>
+          <div class="stat-label">Me gusta</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">${State.following.size}</div>
+          <div class="stat-label">Siguiendo</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">${State.favorites.size}</div>
+          <div class="stat-label">Favoritos</div>
+        </div>
+      </div>
+    </div>`;
+
+      document.getElementById('profile-feed-list').innerHTML = myExps.length
+        ? myExps.sort(byDateDesc).map(buildExperienceCard).join('')
+        : `<div style="text-align:center;padding:40px;color:var(--clr-text3)">Aún no has publicado experiencias.</div>`;
+    }
+
+    function renderSidebar() {
+      // Trending tags
+      const tagFreq = {};
+      State.experiences.forEach(e => e.tags.forEach(t => {
+        tagFreq[t] = (tagFreq[t] || 0) + 1;
+      }));
+      const sorted = Object.entries(tagFreq).sort((a, b) => b[1] - a[1]).slice(0, 6);
+      document.getElementById('trending-tags').innerHTML = sorted.map(([tag, count]) =>
+        `<div class="trending-tag" onclick="filterByTag('${tag}',event)">
+      <span class="trending-name">#${tag}</span>
+      <span class="trending-count">${count} exp.</span>
+    </div>`
+      ).join('');
+
+      // Suggestions
+      const authors = [...new Map(
+        State.experiences
+          .filter(e => e.authorId !== State.currentUser?.id)
+          .map(e => [e.authorId, { id: e.authorId, name: e.authorName, count: State.experiences.filter(x => x.authorId === e.authorId).length }])
+      ).values()].slice(0, 3);
+
+      document.getElementById('suggestions-list').innerHTML = authors.map(a => {
+        const initials = a.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+        const isFollowing = State.following.has(a.id);
+        return `<div class="user-suggestion">
+      <div class="sug-avatar">${initials}</div>
+      <div class="sug-info">
+        <div class="sug-name">${escapeHtml(a.name)}</div>
+        <div class="sug-posts">${a.count} experiencias</div>
+      </div>
+      <button class="sug-follow ${isFollowing ? 'following' : ''}" onclick="toggleFollow('${a.id}',this)">
+        ${isFollowing ? 'Siguiendo' : 'Seguir'}
+      </button>
+    </div>`;
+      }).join('');
+    }
+
+    function updateStats() {
+      const myExps = State.experiences.filter(e => e.authorId === State.currentUser?.id && e.status === 'published');
+      const totalLikes = myExps.reduce((s, e) => s + e.likes, 0);
+      document.getElementById('stat-published').textContent = myExps.length;
+      document.getElementById('stat-likes').textContent = totalLikes;
+    }
+
+    // ─────────────────────────────────────────
+    // DETAIL VIEW
+    // ─────────────────────────────────────────
+    function openDetail(expId) {
+      const exp = State.experiences.find(e => e.id === expId);
+      if (!exp) return;
+
+      const responses = State.responses[expId] || [];
+      const isOwn = exp.authorId === State.currentUser?.id;
+      const initials = exp.authorName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+      const timeAgo = formatTimeAgo(exp.createdAt);
+
+      const responsesHtml = responses.map(r => `
+    <div class="response-item">
+      <div class="response-avatar">${r.authorInitial || r.authorName[0]}</div>
+      <div class="response-content">
+        <div class="response-header">
+          <span class="response-author">${escapeHtml(r.authorName)}</span>
+          <span class="response-date">${formatTimeAgo(r.createdAt)}</span>
+          ${r.authorName === State.currentUser?.name
+          ? `<button class="exp-action text-sm" style="padding:2px 8px" onclick="deleteResponse('${expId}','${r.id}')">🗑️</button>`
+          : ''}
+        </div>
+        <div class="response-text">${escapeHtml(r.text)}</div>
+      </div>
+    </div>`).join('');
+
+      const tagsHtml = exp.tags.map(t => `<span class="exp-tag">#${t}</span>`).join('');
+
+      document.getElementById('section-detail').innerHTML = `
+    <button class="btn btn-ghost text-sm" onclick="showFeed()" style="margin-bottom:16px">
+      ← Volver al feed
+    </button>
+    <div class="exp-detail">
+      <div class="exp-detail-header">
+        <div class="exp-card-header" style="margin-bottom:16px">
+          <div class="exp-avatar" style="width:44px;height:44px;font-size:17px">${initials}</div>
+          <div class="exp-meta-wrap">
+            <div class="exp-author-name" style="font-size:15px">${escapeHtml(exp.authorName)}</div>
+            <div class="exp-date">Publicado ${timeAgo}</div>
+          </div>
+          ${isOwn ? `<button class="btn btn-ghost text-sm" onclick="openEditModal('${exp.id}',event)">✏️ Editar</button>` : ''}
+        </div>
+
+        ${exp.title ? `<h1 class="exp-detail-title">${escapeHtml(exp.title)}</h1>` : ''}
+        ${tagsHtml ? `<div class="exp-tags" style="margin-bottom:16px">${tagsHtml}</div>` : ''}
+      </div>
+
+      <div class="exp-detail-body">${escapeHtml(exp.description)}</div>
+
+      ${exp.moral ? `
+        <div class="reflection-block">
+          <div class="reflection-label">⚖️ La moral dice…</div>
+          <div class="reflection-text">${escapeHtml(exp.moral)}</div>
+        </div>` : ''}
+
+      ${exp.ethics ? `
+        <div class="reflection-block ethics">
+          <div class="reflection-label">🧭 Mi ética personal dice…</div>
+          <div class="reflection-text">${escapeHtml(exp.ethics)}</div>
+        </div>` : ''}
+
+      <div class="exp-footer" style="margin-top:20px;margin-bottom:0">
+        <button class="exp-action ${exp.likedBy.includes(State.currentUser?.id) ? 'liked' : ''}"
+          onclick="toggleLike('${exp.id}',event)">
+          <span>${exp.likedBy.includes(State.currentUser?.id) ? '❤️' : '🤍'}</span>
+          <span id="likes-count-${exp.id}">${exp.likes}</span> me gusta
+        </button>
+        <button class="exp-action" onclick="toggleFavorite('${exp.id}',event)">
+          ${State.favorites.has(exp.id) ? '⭐ Guardado' : '☆ Guardar'}
+        </button>
+      </div>
+
+      <div class="responses-section">
+        <div class="responses-title">💬 Respuestas (${responses.length})</div>
+        <div id="responses-list-${expId}">${responsesHtml || '<p style="color:var(--clr-text3);font-size:14px;padding:10px 0">Sé el primero en responder.</p>'}</div>
+
+        <div class="response-compose">
+          <div class="nav-avatar" style="flex-shrink:0">${State.currentUser?.initials || '?'}</div>
+          <textarea class="response-input" id="response-input-${expId}"
+            placeholder="Escribe tu reflexión o punto de vista (solo un nivel de respuesta)..." rows="2"
+            onkeydown="handleResponseEnter(event,'${expId}')"></textarea>
+          <button class="btn btn-primary" style="flex-shrink:0;padding:10px 16px" onclick="submitResponse('${expId}')">
+            Responder
+          </button>
+        </div>
+      </div>
+    </div>`;
+
+      showSection('detail');
+    }
+
+    function submitResponse(expId) {
+      const input = document.getElementById('response-input-' + expId);
+      const text = input.value.trim();
+      if (!text) { showToast('Escribe algo antes de responder.', 'error'); return; }
+
+      if (!State.responses[expId]) State.responses[expId] = [];
+      const newResponse = {
+        id: 'r-' + Date.now(),
+        authorName: State.currentUser.name,
+        authorInitial: State.currentUser.initials[0],
+        text,
+        createdAt: new Date().toISOString(),
+      };
+      State.responses[expId].push(newResponse);
+      input.value = '';
+      openDetail(expId);
+      showToast('Respuesta publicada.', 'success');
+    }
+
+    function handleResponseEnter(event, expId) {
+      if (event.key === 'Enter' && event.ctrlKey) submitResponse(expId);
+    }
+
+    function deleteResponse(expId, responseId) {
+      if (!confirm('¿Eliminar esta respuesta?')) return;
+      State.responses[expId] = (State.responses[expId] || []).filter(r => r.id !== responseId);
+      openDetail(expId);
+      showToast('Respuesta eliminada.', 'info');
+    }
+
+    // ─────────────────────────────────────────
+    // INTERACTIONS
+    // ─────────────────────────────────────────
+    function toggleLike(expId, event) {
+      event.stopPropagation();
+      const exp = State.experiences.find(e => e.id === expId);
+      if (!exp) return;
+      const userId = State.currentUser.id;
+      const idx = exp.likedBy.indexOf(userId);
+
+      if (idx === -1) {
+        exp.likedBy.push(userId);
+        exp.likes++;
+      } else {
+        exp.likedBy.splice(idx, 1);
+        exp.likes--;
+      }
+
+      // Update all visible like counts
+      document.querySelectorAll(`#likes-count-${expId}`).forEach(el => {
+        el.textContent = exp.likes;
+      });
+      updateStats();
+    }
+
+    function toggleFavorite(expId, event) {
+      event.stopPropagation();
+      if (State.favorites.has(expId)) {
+        State.favorites.delete(expId);
+        showToast('Eliminado de favoritos.', 'info');
+      } else {
+        State.favorites.add(expId);
+        showToast('Guardado en favoritos. ⭐', 'success');
+      }
+    }
+
+    function toggleFollow(userId, btn) {
+      if (State.following.has(userId)) {
+        State.following.delete(userId);
+        btn.textContent = 'Seguir';
+        btn.classList.remove('following');
+        showToast('Dejaste de seguir a este usuario.', 'info');
+      } else {
+        State.following.add(userId);
+        btn.textContent = 'Siguiendo';
+        btn.classList.add('following');
+        showToast('¡Ahora sigues a este usuario!', 'success');
+      }
+    }
+
+    function filterByTag(tag, event) {
+      event.stopPropagation();
+      document.getElementById('nav-search').value = '#' + tag;
+      handleSearch('#' + tag);
+      showSection('explore');
+      updateSidebarItems('explore');
+      showToast(`Filtrando por #${tag}`, 'info');
+    }
+
+    function handleSearch(query) {
+      const q = query.toLowerCase().trim();
+      if (!q) { renderExplore(); return; }
+
+      const isTagSearch = q.startsWith('#');
+      const term = isTagSearch ? q.slice(1) : q;
+
+      const results = State.experiences.filter(e => {
+        if (e.status !== 'published') return false;
+        if (isTagSearch) return e.tags.some(t => t.toLowerCase().includes(term));
+        return (
+          (e.title || '').toLowerCase().includes(term) ||
+          e.description.toLowerCase().includes(term) ||
+          e.authorName.toLowerCase().includes(term)
+        );
+      });
+
+      showSection('explore');
+      document.getElementById('explore-list').innerHTML = results.length
+        ? results.map(buildExperienceCard).join('')
+        : `<div style="text-align:center;padding:60px;color:var(--clr-text3)">
+        <div style="font-size:36px;margin-bottom:12px">🔍</div>
+        <p>Sin resultados para "<strong>${escapeHtml(query)}</strong>"</p>
+      </div>`;
+    }
+
+    // ─────────────────────────────────────────
+    // EXPERIENCE MODAL
+    // ─────────────────────────────────────────
+    function openNewExpModal() {
+      State.tags = [];
+      State.editingId = null;
+      document.getElementById('modal-exp-title').textContent = 'Nueva experiencia';
+      document.getElementById('editing-id').value = '';
+      document.getElementById('exp-title-input').value = '';
+      document.getElementById('exp-desc-input').value = '';
+      document.getElementById('exp-moral-input').value = '';
+      document.getElementById('exp-ethics-input').value = '';
+      renderTagPills();
+      clearErrors(['err-exp-desc']);
+      openModal('modal-exp');
+    }
+
+    function openEditModal(expId, event) {
+      if (event) event.stopPropagation();
+      const exp = State.experiences.find(e => e.id === expId);
+      if (!exp) return;
+
+      State.tags = [...exp.tags];
+      State.editingId = expId;
+
+      document.getElementById('modal-exp-title').textContent = 'Editar experiencia';
+      document.getElementById('editing-id').value = expId;
+      document.getElementById('exp-title-input').value = exp.title || '';
+      document.getElementById('exp-desc-input').value = exp.description;
+      document.getElementById('exp-moral-input').value = exp.moral;
+      document.getElementById('exp-ethics-input').value = exp.ethics;
+      renderTagPills();
+      clearErrors(['err-exp-desc']);
+      openModal('modal-exp');
+    }
+
+    function publishExperience() {
+      const desc = document.getElementById('exp-desc-input').value.trim();
+      clearErrors(['err-exp-desc']);
+      if (!desc) { showError('err-exp-desc'); return; }
+
+      saveExperience('published');
+      closeModal('modal-exp');
+      renderFeed();
+      renderSidebar();
+      updateStats();
+      showToast('✦ Experiencia publicada.', 'success');
+    }
+
+    function saveDraft() {
+      saveExperience('draft');
+      closeModal('modal-exp');
+      showToast('💾 Borrador guardado.', 'info');
+    }
+
+    function saveExperience(status) {
+      const title = document.getElementById('exp-title-input').value.trim() || null;
+      const desc = document.getElementById('exp-desc-input').value.trim();
+      const moral = document.getElementById('exp-moral-input').value.trim();
+      const ethics = document.getElementById('exp-ethics-input').value.trim();
+
+      if (State.editingId) {
+        const exp = State.experiences.find(e => e.id === State.editingId);
+        if (exp) {
+          exp.title = title;
+          exp.description = desc;
+          exp.moral = moral;
+          exp.ethics = ethics;
+          exp.tags = [...State.tags];
+          exp.status = status;
+          exp.modifiedAt = new Date().toISOString();
+        }
+      } else {
+        const newExp = {
+          id: 'exp-' + Date.now(),
+          authorId: State.currentUser.id,
+          authorName: State.currentUser.name,
+          title, description: desc, moral, ethics,
+          tags: [...State.tags],
+          status,
+          likes: 0,
+          likedBy: [],
+          createdAt: new Date().toISOString(),
+          modifiedAt: null,
+        };
+        State.experiences.unshift(newExp);
+      }
+    }
+
+    function deleteExperience(expId, event) {
+      event.stopPropagation();
+      if (!confirm('¿Eliminar esta experiencia? Esta acción no se puede deshacer.')) return;
+      State.experiences = State.experiences.filter(e => e.id !== expId);
+      delete State.responses[expId];
+      State.favorites.delete(expId);
+      renderFeed();
+      renderSidebar();
+      updateStats();
+      showToast('Experiencia eliminada.', 'info');
+    }
+
+    // Autosave (R38)
+    function startAutosaveTimer() {
+      clearInterval(State.autosaveTimer);
+      State.autosaveTimer = setInterval(() => {
+        const desc = document.getElementById('exp-desc-input')?.value.trim();
+        if (desc && document.getElementById('modal-exp').classList.contains('open')) {
+          showToast('💾 Borrador auto-guardado.', 'info');
+        }
+      }, AUTOSAVE_INTERVAL_MS);
+    }
+
+    // ─────────────────────────────────────────
+    // TAGS (R41, R54)
+    // ─────────────────────────────────────────
+    function handleTagInput(event) {
+      if (event.key !== 'Enter' && event.key !== ',') return;
+      event.preventDefault();
+      const raw = document.getElementById('tag-input').value.trim().toLowerCase().replace(/\s+/g, '-');
+      if (!raw) return;
+      if (State.tags.length >= MAX_TAGS_PER_EXP) {
+        showToast(`Máximo ${MAX_TAGS_PER_EXP} etiquetas permitidas.`, 'error');
+        return;
+      }
+      if (State.tags.includes(raw)) return;
+      State.tags.push(raw);
+      document.getElementById('tag-input').value = '';
+      renderTagPills();
+    }
+
+    function removeTag(tag) {
+      State.tags = State.tags.filter(t => t !== tag);
+      renderTagPills();
+    }
+
+    function renderTagPills() {
+      const container = document.getElementById('tags-container');
+      container.innerHTML = State.tags.map(t =>
+        `<span class="tag-pill">#${escapeHtml(t)} <button class="tag-remove" onclick="removeTag('${t}')">✕</button></span>`
+      ).join('');
+      document.getElementById('tags-count').textContent = `${State.tags.length} / ${MAX_TAGS_PER_EXP} etiquetas`;
+    }
+
+    // ─────────────────────────────────────────
+    // MODAL HELPERS
+    // ─────────────────────────────────────────
+    function openModal(id) {
+      document.getElementById(id).classList.add('open');
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+    }
+
+    // Close modal on overlay click
+    document.getElementById('modal-exp').addEventListener('click', function (e) {
+      if (e.target === this) closeModal('modal-exp');
+    });
+
+    // ─────────────────────────────────────────
+    // THEME  (R09)
+    // ─────────────────────────────────────────
+    let isDark = true;
+    function toggleTheme() {
+      isDark = !isDark;
+      document.body.classList.toggle('light', !isDark);
+      document.querySelector('[onclick="toggleTheme()"]').textContent = isDark ? '🌙' : '☀️';
+      showToast(`Modo ${isDark ? 'oscuro' : 'claro'} activado.`, 'info');
+    }
+
+    // ─────────────────────────────────────────
+    // TOAST NOTIFICATIONS  (R66, R67)
+    // ─────────────────────────────────────────
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      const icons = { success: '✅', error: '❌', info: 'ℹ️' };
+      toast.innerHTML = `<span>${icons[type] || 'ℹ️'}</span> ${escapeHtml(message)}`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.animation = 'none';
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(40px)';
+        toast.style.transition = 'all 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, TOAST_DURATION_MS);
+    }
+
+    // ─────────────────────────────────────────
+    // FORM ERROR HELPERS  (R66)
+    // ─────────────────────────────────────────
+    function showError(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('visible');
+    }
+    function clearErrors(ids) {
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove('visible');
+      });
+    }
+
+    // ─────────────────────────────────────────
+    // UTILITIES
+    // ─────────────────────────────────────────
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function formatTimeAgo(isoString) {
+      const diff = Date.now() - new Date(isoString).getTime();
+      const mins = Math.floor(diff / 60000);
+      const hours = Math.floor(diff / 3600000);
+      const days = Math.floor(diff / 86400000);
+      if (mins < 1) return 'ahora mismo';
+      if (mins < 60) return `hace ${mins} min`;
+      if (hours < 24) return `hace ${hours} h`;
+      if (days < 7) return `hace ${days} día${days > 1 ? 's' : ''}`;
+      return new Date(isoString).toLocaleDateString('es-PE', { day: 'numeric', month: 'short' });
+    }
+
+    // ─────────────────────────────────────────
+    // KEYBOARD SHORTCUTS
+    // ─────────────────────────────────────────
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        closeModal('modal-exp');
+      }
+      // Ctrl+N = nueva experiencia
+      if (e.ctrlKey && e.key === 'n' && State.currentUser) {
+        e.preventDefault();
+        openNewExpModal();
+      }
+    });
+  </script>
+</body>
+
+</html>
