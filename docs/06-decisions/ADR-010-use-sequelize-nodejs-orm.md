@@ -13,7 +13,7 @@
 
 ## Status
 
-Propuesto
+Sustituido (ADR-013)
 
 ## Context
 
