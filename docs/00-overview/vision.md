@@ -1,22 +1,27 @@
-# **VISION DEL PROYECTO**
+# **Visión del Proyecto**
 
+## 1. Introducción
 
+La tecnología forma parte de la vida cotidiana de muchas personas en todo el mundo y tiene un profundo impacto en la educación, la comunicación y la sociedad. En una época en donde las decisiones digitales pueden afectarnos de forma negativa a nosotros y a los demás, la ética y moral se convierten en pilares fundamentales de la formación humana y profesional.
 
-El proyecto consiste en el desarrollo de una plataforma web comunitaria que permite a sus usuarios registrarse, autenticarse y compartir experiencias personales estructuradas relacionadas con reflexiones éticas y morales. La plataforma combina características de un blog social con las de una comunidad interactiva, incorporando:
+Situaciones como compartir información falsa o participar en dinámicas de acoso en redes sociales se han vuelto comunes en amplios sectores de la población. Frente a esta realidad, surge la necesidad de crear herramientas que inviten a la reflexión y que normalicen el debate moral y que construyan conciencia colectiva.
 
+## 2. Visión del Proyecto
 
+`Ética Compartida` aspira a convertirse en una plataforma digital de referencia a nivel nacional e iberoamericano para la promoción de la ética, la moral y la responsabilidad digital, fomentando comunidades reflexivas, participativas y comprometidas con los valores que exige la vida profesional y social contemporánea.
 
-* Publicación de experiencias con campos reflexivos sobre moral y ética personal.
-* Interacción comunitaria: respuestas (un solo nivel), reacciones «me gusta» y favoritos.
-* Sistema de etiquetado, búsqueda y paginación de contenidos.
-* Feed personalizado basado en usuarios seguidos.
-* Panel de administración con herramientas de moderación y gestión.
-* Seguridad: autenticación JWT/sesiones, cifrado de contraseñas, bloqueo por intentos fallidos.
-* UX moderna: modo claro/oscuro, diseño responsive, borradores automáticos.
+## 3. Objetivos 
 
+- Diseñar una interfaz interactiva, accesible e inclusiva para la plataforma web.
+- Permitir la publicación de experiencias y dilemas éticos de manera segura y anónima.
+- Fomentar la reflexión colectiva mediante comentarios, reacciones e interacción entre usuarios.
+- Promover valores éticos y responsabilidad digital en la comunidad universitaria y en la sociedad general.
 
+## 4. Propuesta de Valor
 
-El sistema será accesible desde navegadores web modernos (Chrome, Firefox, Edge, Safari) y estará optimizado para dispositivos de escritorio y móviles.
+`Etica Compartida` fomenta la ética y la moral en la sociedad digital, mediante la publicación y reflexión compartida de experiencias reales, con especial énfasis en estudiantes y profesionales de Ingeniería de Sistemas de la UNAS.
 
+## 5. Métricas de Éxito
 
-
+- Aumentar la conciencia ética.
+- Normalizar la reflexión sobre dilemas morales.

@@ -1,11 +1,37 @@
-# **STAKEHOLDERS**
+# **Stakeholders**
 
-De acuerdo con ISO/IEC/IEEE 29148:2018, un stakeholder es cualquier individuo, organización o sistema que tenga interés legítimo en el sistema o que sea afectado por él. Se identificaron los siguientes:
+## 1. Stakeholders Internos
 
-| **Stakeholder**		| **Descripción**             | **Rol en el Sistema** 	| **Prioridad (MoSCoW)**	|
-|-----------------------|-----------------------------|-------------------------|---------------------------|
-| Docente de Ética		| Imparte el curso; evalúa las publicaciones y el correcto funcionamiento de la plataforma.	| Usuario / Administrador 	| Must 				|
-| Estudiantes de Ética  | Alumnos del curso en la UNAS; usuarios principales de la plataforma.				| Usuario Estándar		| Must 				|
-| Estudiantes en General| Estudiantes de secundaria o universidad interesados en ética.					| Usuario Estándar		| Could  			|
-| Público en General	| Personas no académicas interesadas en reflexiones éticas.					| Visitante / Usuario		| Should 		 	|
-| Equipo de Desarrollo	| Ordoñez, Javier Orneta, Yllesca Zambrano, Yimi. Responsables de diseño, desarrollo y pruebas.	| Administrador			| Must  			|
+| **Stakeholder**		| **Descripción**             | **Prioridad (MoSCoW)**	|
+|-----------------------|-----------------------------|-------------------------|
+| **Product Owner**		| Clave para el éxito del producto.	| Must 				|
+| **Equipo de Desarrollo**	| Responsables de implementar | Must  			|
+| **QA**                    | Calidad y Pruebas.                     | Must            |
+| **Soporte**                    | Atención de Usuarios                     | Must            |
+
+## 2. Stakeholders Externos
+
+| **Stakeholder**		| **Descripción**             | **Prioridad (MoSCoW)**	|
+|-----------------------|-----------------------------|-------------------------|
+| Docente de Ética      | Imparte el curso de Ética y evalúa la plataforma,				| Must 				|
+| Estudiantes de Ética  | Alumnos del curso en la UNAS; usuarios principales de la plataforma.				| Must 				|
+| Estudiantes en General| Estudiantes de secundaria o universidad interesados en ética.					| Could  			|
+| Público en General	| Personas no académicas interesadas en reflexiones éticas.					| Should 		 	|
+
+## 3. Necesidades
+
+### 3.1. Docente de Ética
+
+Necesita:
+
+- Concientizar sobre Ética.
+- Difundir prácticas Éticas.
+- Motivar a la reflexión sobre nuestras acciones.
+
+### 3.2. Estudiantes de Ética, en General y Público en General
+
+Necesita:
+
+- Reflexionar sobre dilemas éticos.
+- Compartir sus experiencias personales.
+- Compartir su ética personal.
