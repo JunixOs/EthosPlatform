@@ -1,0 +1,50 @@
+@startuml CU-02-Modulo-Gestion-de-Usuarios
+
+' =====================================================
+' Figura 2 - CU-02: Módulo Gestión de Usuarios
+' Requisitos: R06, R12, R21, R22, R25-R28, R37, R46-R48
+' =====================================================
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor Usuario
+actor Administrador
+
+rectangle "Gestión de Usuarios" {
+    rectangle "Administrar Cuenta" {
+        usecase "R06 Modificar Cuenta" as UC01
+        usecase "R25 Visualizar\nPerfiles Públicos" as UC02
+        usecase "R26 Configurar\nBiografía" as UC03
+        usecase "R27 Subir Foto\nPerfil" as UC04
+        usecase "R28 Configurar\nPrivacidad" as UC05
+        usecase "R12 Eliminar Cuenta" as UC06
+
+        usecase "R47 Editar\nNombre Visible" as UC07
+        usecase "R48 Ver Estadísticas" as UC08
+        usecase "R46 Ver Experiencias\nen Perfil" as UC09
+    }
+
+    rectangle "Administrar Usuarios" {
+        usecase "R22 Editar\nUsuario" as UC10
+        usecase "R21 Eliminar\nUsuario" as UC11
+        usecase "R37 Suspender\nUsuario" as UC12
+    }
+}
+
+Usuario --> UC01
+Usuario --> UC02
+Usuario --> UC03
+Usuario --> UC04
+Usuario --> UC05
+Usuario --> UC06
+Usuario --> UC07
+Usuario --> UC08
+Usuario --> UC09
+
+Administrador --> UC10
+Administrador --> UC11
+Administrador --> UC12
+
+@enduml

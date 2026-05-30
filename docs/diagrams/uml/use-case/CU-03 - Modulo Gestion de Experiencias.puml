@@ -1,0 +1,70 @@
+@startuml Modulo-Gestion-de-Experiencias
+
+' =====================================================
+' Figura 3 - CU-03: Módulo Gestión de Experiencias
+' Requisitos: R07a/b, R10, R13, R14, R31, R32,
+'             R38, R39, R43, R44, R45,
+'             R49, R51, R52, R55
+' =====================================================
+
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor Usuario
+actor Administrador
+actor Visitante
+
+rectangle "Gestión de Experiencias" {
+    rectangle "Añadir Experiencias" {
+        usecase "R07a Crear Experiencia" as UC01
+        usecase "R07b Completar\nCampos Reflexivos" as UC02
+
+        usecase "R38 Auto Guardar\nBorrador" as UC03
+        usecase "R44 Guardar\nBorrador Manual" as UC04
+        usecase "R39 Retomar\nBorrador" as UC05
+
+        usecase "R43 Vista Previa" as UC06
+        usecase "R45 Registrar\nFechas\nCreación y Modificación" as UC07
+    }
+
+    rectangle "Modificar Experiencias" {
+        usecase "R14 Editar\nExperiencia" as UC08
+        usecase "R10 Eliminar\nExperiencia" as UC09
+    }
+
+    rectangle "Visualizar Experiencias" {
+        usecase "R31 Ordenar\npor Fecha" as UC10
+        usecase "R32 Ordenar por\nPopularidad" as UC11
+
+        usecase "R51 Búsqueda\nGeneral" as UC12
+        usecase "R13 Filtrar por\nTítulo" as UC13
+        usecase "R52 Paginar\nResultados" as UC14
+
+        usecase "R55 Experiencias\nRelacionadas" as UC15
+        usecase "R49 Marcar\nFavoritos" as UC16
+    }
+}
+
+Usuario --> UC01
+Usuario --> UC08
+Usuario --> UC09
+Usuario --> UC16
+
+Visitante --> UC10
+Visitante --> UC11
+Visitante --> UC12
+Visitante --> UC13
+Visitante --> UC14
+Visitante --> UC15
+
+Administrador --> UC08
+Administrador --> UC09
+
+UC01 ..> UC02 : <<include>>
+UC04 ..> UC03 : <<extend>>
+UC01 ..> UC06 : <<include>>
+UC01 ..> UC07 : <<include>>
+UC01 ..> UC04 : <<extend>>
+UC04 ..> UC05 : <<extend>>
+
+@enduml
