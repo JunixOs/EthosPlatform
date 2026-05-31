@@ -15,7 +15,10 @@
   "dependencies": {
     "@packages/shared": "workspace:*",
     "@packages/types": "workspace:*",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "pg": "^8.21.0",
+    "reflect-metadata": "^0.2.2",
+    "typeorm": "^1.0.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
