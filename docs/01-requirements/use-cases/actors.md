@@ -1,4 +1,4 @@
-# **ACTORES DEL SISTEMA**
+# **Actores del Sistema**
 
 | Actor        | Descripción |
 |--------------|--------------|
