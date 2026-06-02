@@ -1,0 +1,27 @@
+@startuml C3-Component-Diagram-general-2
+
+/' Importar Paquetes '/
+!include %getenv("PLANTUML_C4_HOME")/C4_Component.puml
+
+/' Definir Iconos y Fuentes '/
+!define DEVICONS %getenv("PLANTUML_ICON_FONT_SPRITES")/icons/devicons
+!define FONTAWESOME %getenv("PLANTUML_ICON_FONT_SPRITES")/icons/font-awesome-5
+
+left to right direction
+
+LAYOUT_WITH_LEGEND()
+LAYOUT_TOP_DOWN()
+
+Container(web_app_features , "EthosPlatform Web App - Features" , "React" , "Implementa las funcionalidades clave del negocio.")
+Container(web_app_app , "EthosPlatform Web App - App" , "React / Vite" , "Punto de entrada global de la aplicación, se encarga de coordinar toda la aplicación.")
+Container(web_app_pages , "EthosPlatform Web App - Pages" , "React / Vite" , "Paginas de más alto nivel de la aplicacion, coordinan varias features y usan widgets.")
+Container(web_app_widgets , "EthosPlatform Web App - Widgets" , "React / Vite" , "Bloques funcionales grandes de interfaz que combinan multiples componentes y features.")
+
+Rel(web_app_pages , web_app_app , "Usa" , "Styles , Store")
+Rel(web_app_widgets , web_app_app , "Usa" , "Styles , Store")
+Rel(web_app_features , web_app_app , "Usa" , "Styles , Store")
+
+Rel(web_app_app , web_app_features , "Define rutas con" , "Pages")
+Rel(web_app_app , web_app_pages , "Define rutas con")
+
+@enduml

@@ -1,0 +1,40 @@
+@startuml C3-Component-Diagram-shared
+
+/' Importar Paquetes '/
+!include %getenv("PLANTUML_C4_HOME")/C4_Component.puml
+
+/' Definir Iconos y Fuentes '/
+!define DEVICONS %getenv("PLANTUML_ICON_FONT_SPRITES")/icons/devicons
+!define FONTAWESOME %getenv("PLANTUML_ICON_FONT_SPRITES")/icons/font-awesome-5
+
+left to right direction
+
+LAYOUT_WITH_LEGEND()
+LAYOUT_TOP_DOWN()
+
+Container(web_app_shared , "EthosPlatform Web App - Shared" , "React / Typescript" , "Elementos, objetos o funciones reutilizables por cualquier feature.")
+Container_Boundary(web_app_shared_boundary , "EthosPlatform Web App - Shared"){
+    Component(assets , "Assets" , "Images" , "Recursos estáticos compartidos.")
+    Component(components , "Components" , "React" , "Componentes UI reutilizables.")
+    Component(hooks , "Hooks" , "React" , "Hooks reutilizables que dependen de React.")
+    Component(lib , "Lib" , "Typescript" , "Contiene funciones puras reutilizables que no dependen de React.")
+    Component(services , "Services" , "Typescript" , "Servicios técnicos compartidos.")
+    Component(styles , "Styles" , "CSS / SCSS" , "Estilos reutilizables.")
+    Component(types , "Types" , "Typescript" , "Tipos reutilizables globalmente.")
+}
+Container_Ext(web_app_features_ext , "EthosPlatform Web App - Features" , "Implementa las funcionalidades clave del negocio.")
+
+web_app_shared ..> web_app_shared_boundary
+
+Rel(services , lib , "Usa")
+Rel(hooks , lib , "Usa")
+
+Rel(web_app_features_ext , services , "Usa")
+Rel(web_app_features_ext , lib , "Usa")
+Rel(web_app_features_ext , styles , "Usa")
+Rel(web_app_features_ext , assets , "Usa")
+Rel(web_app_features_ext , components , "Usa")
+Rel(web_app_features_ext , hooks , "Usa")
+Rel(web_app_features_ext , types , "Usa")
+
+@enduml
