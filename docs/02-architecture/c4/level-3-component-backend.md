@@ -1,12 +1,12 @@
 # **C3 - Component - Backend**
 
-![Diagrama C3 - Component - General](../../diagrams/c4/c3/backend/C3-Component-Diagram.png)
+![Diagrama C3 - Component - General](../../diagrams/images/c4/c3/backend/C3-Component-Diagram.png)
 
 ## 1. Capa de Lógica
 
 ### 1.1. Capa `Application`
 
-![Diagrama C3 - Application](../../diagrams/c4/c3/backend/C3-Component-Diagram-Application.png)
+![Diagrama C3 - Application](../../diagrams/images/c4/c3/backend/C3-Component-Diagram-Application.png)
 
 - **UseCase**: Orquestan flujos para cumplir con una funcionalidad especifica de la aplicación.
 - **IUseCase**: Interfaces que son implementadas por los `UseCase` y que son usadas por los `Controllers` en la capa de `InterfaceAdapters` para desacoplamiento.
@@ -18,7 +18,7 @@
 
 ### 1.2. Capa `Domain`
 
-![Diagrama C3 - Application](../../diagrams/c4/c3/backend/C3-Component-Diagram-Domain.png)
+![Diagrama C3 - Application](../../diagrams/images/c4/c3/backend/C3-Component-Diagram-Domain.png)
 
 - **DomainEntity**: Entidades del dominio.
 - **Rules**: Contiene reglas propias del núcleo del negocio que deben validarse.
@@ -27,7 +27,7 @@
 
 ### 1.3. Capa `InterfaceAdapters`
 
-![Diagrama C3 - Application](../../diagrams/c4/c3/backend/C3-Component-Diagram-InterfaceAdapters.png)
+![Diagrama C3 - Application](../../diagrams/images/c4/c3/backend/C3-Component-Diagram-InterfaceAdapters.png)
 
 - **Middleware**: Interceptan la petición original del usuario antes de pasarla al siguiente componente, sirve para insertar lógica transversal como validaciones, captura de excepciones o logging. 
 - **Controller**: Controladores `API REST` que recibirán las peticiones del Frontend, usan métodos `HTTP` (GET, POST, PUT y DELETE).
@@ -37,7 +37,7 @@
 
 ## 2. Capa de Datos
 
-![Diagrama C3 - Application](../../diagrams/c4/c3/backend/C3-Component-Diagram-Datos.png)
+![Diagrama C3 - Application](../../diagrams/images/c4/c3/backend/C3-Component-Diagram-Datos.png)
 
 - **Connections**: Definen conexiones a bases de datos específicos.
 - **Entities**: Clases TypeScript que representan tablas de la base de datos, son manejados por los `ORM`.

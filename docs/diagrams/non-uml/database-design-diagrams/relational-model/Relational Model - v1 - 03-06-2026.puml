@@ -1,0 +1,217 @@
+@startuml
+
+hide methods
+hide stereotypes
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+entity "users" as users {
+    *id : uuid <<PK>>
+
+    --
+    name : varchar(150)
+    email : varchar(255) <<UK>>
+    password_hash : text
+
+    role : varchar(30)
+
+    is_public : boolean
+    is_suspended : boolean
+
+    suspended_until : timestamptz
+
+    created_at : timestamptz
+    updated_at : timestamptz
+    deleted_at : timestamptz
+}
+
+entity "experiences" as experiences {
+    *id : uuid <<PK>>
+    --
+    author_id : uuid <<FK>>
+
+    title : varchar(250)
+    description : text
+
+    moral_reflection : text
+    ethical_reflection : text
+
+    status : varchar(30)
+
+    created_at : timestamptz
+    updated_at : timestamptz
+    deleted_at : timestamptz
+}
+
+entity "responses" as responses {
+    *id : uuid <<PK>>
+    --
+    experience_id : uuid <<FK>>
+    author_id : uuid <<FK>>
+
+    content : text
+
+    created_at : timestamptz
+    updated_at : timestamptz
+    deleted_at : timestamptz
+}
+
+entity "reactions" as reactions {
+    *id : uuid <<PK>>
+    --
+    experience_id : uuid <<FK>>
+    user_id : uuid <<FK>>
+
+    reaction_type : varchar(30)
+
+    created_at : timestamptz
+}
+
+entity "tags" as tags {
+    *id : uuid <<PK>>
+    --
+    name : varchar(100) <<UK>>
+    slug : varchar(120) <<UK>>
+
+    created_at : timestamptz
+}
+
+entity "experience_tags" as experience_tags {
+    *experience_id : uuid <<PK,FK>>
+    *tag_id : uuid <<PK,FK>>
+
+    assigned_by : uuid <<FK>>
+
+    assigned_at : timestamptz
+}
+
+entity "favorites" as favorites {
+    *user_id : uuid <<PK,FK>>
+    *experience_id : uuid <<PK,FK>>
+
+    created_at : timestamptz
+}
+
+entity "follows" as follows {
+    *follower_id : uuid <<PK,FK>>
+    *followed_id : uuid <<PK,FK>>
+
+    created_at : timestamptz
+}
+
+entity "blocks" as blocks {
+    *blocker_id : uuid <<PK,FK>>
+    *blocked_id : uuid <<PK,FK>>
+
+    created_at : timestamptz
+}
+
+entity "sessions" as sessions {
+    *id : uuid <<PK>>
+    --
+    user_id : uuid <<FK>>
+
+    session_type : varchar(30)
+
+    token_hash : text
+
+    expires_at : timestamptz
+    revoked_at : timestamptz
+
+    created_at : timestamptz
+}
+
+entity "failed_login_attempts" as failed_login_attempts {
+    *id : uuid <<PK>>
+
+    email : varchar(255)
+    ip_address : inet
+
+    attempted_at : timestamptz
+}
+
+entity "reports" as reports {
+    *id : uuid <<PK>>
+
+    reporter_id : uuid <<FK>>
+    reviewed_by : uuid <<FK>>
+
+    experience_id : uuid <<FK>>
+    response_id : uuid <<FK>>
+
+    reason : text
+
+    status : varchar(30)
+
+    reviewed_at : timestamptz
+    created_at : timestamptz
+}
+
+entity "audit_logs" as audit_logs {
+    *id : uuid <<PK>>
+
+    actor_id : uuid <<FK>>
+
+    action : varchar(100)
+
+    entity_type : varchar(100)
+
+    entity_id : uuid
+
+    old_values : jsonb
+    new_values : jsonb
+    metadata : jsonb
+
+    created_at : timestamptz
+}
+
+entity "project_pages" as project_pages {
+    *id : uuid <<PK>>
+
+    title : varchar(250)
+    content : text
+
+    last_editor_id : uuid <<FK>>
+
+    created_at : timestamptz
+    updated_at : timestamptz
+}
+
+' =========================
+' RELACIONES
+' =========================
+
+users ||--o{ experiences
+
+users ||--o{ responses
+experiences ||--o{ responses
+
+users ||--o{ reactions
+experiences ||--o{ reactions
+
+experiences ||--o{ experience_tags
+tags ||--o{ experience_tags
+users ||--o{ experience_tags
+
+users ||--o{ favorites
+experiences ||--o{ favorites
+
+users ||--o{ follows : follower
+users ||--o{ follows : followed
+
+users ||--o{ blocks : blocker
+users ||--o{ blocks : blocked
+
+users ||--o{ sessions
+
+users ||--o{ reports : reporter
+users ||--o{ reports : reviewer
+
+experiences ||--o{ reports
+responses ||--o{ reports
+
+users ||--o{ audit_logs
+
+users ||--o{ project_pages
+
+@enduml

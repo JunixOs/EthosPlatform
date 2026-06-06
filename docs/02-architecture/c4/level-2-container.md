@@ -1,6 +1,6 @@
 # **C2 - Container**
 
-![Diagrama C2 - Container](../../diagrams/c4/C2-Container-Diagram.png)
+![Diagrama C2 - Container](../../diagrams/images/c4/C2-Container-Diagram.png)
 
 | Container | Tecnología | Responsabilidad |
 | --------- | ---------- | --------------- |

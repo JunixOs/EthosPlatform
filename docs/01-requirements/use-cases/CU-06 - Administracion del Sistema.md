@@ -1,6 +1,6 @@
 # **CU-06 Administración del Sistema**
 
-![CU-06 Administración del Sistema](./diagrams/CU-06-Administracion-del-Sistema.png)
+![CU-06 Administración del Sistema](../../diagrams/images/use-case/CU-06-Administracion-del-Sistema.png)
 
 ## 1. Nombre
 

@@ -1,6 +1,6 @@
 # **C1 - Context**
 
-![Diagrama C1 - Context](../../diagrams/c4/C1-System-Context-Diagram.png)
+![Diagrama C1 - Context](../../diagrams/images/c4/C1-System-Context-Diagram.png)
 
 ## 1. Actores
 

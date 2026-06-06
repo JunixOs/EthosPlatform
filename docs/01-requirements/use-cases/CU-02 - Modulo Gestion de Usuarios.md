@@ -1,6 +1,6 @@
 # **CU-02 - Módulo Gestión de Usuarios**
 
-![CU-02 - Modulo Gestion de Usuarios](./diagrams/CU-02-Modulo-Gestion-de-Usuarios.png)
+![CU-02 - Módulo Gestión de Usuarios](../../diagrams/images/use-case/CU-02-Modulo-Gestion-de-Usuarios.png)
 
 ## 1. Nombre
 

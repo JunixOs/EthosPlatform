@@ -1,6 +1,6 @@
 # **CU-03 Módulo Gestión de Experiencias**
 
-![CU-03 Modulo Gestion de Experiencias](./diagrams/CU-03-Modulo-Gestion-de-Experiencias.png)
+![CU-03 Módulo Gestión de Experiencias](../../diagrams/images/use-case/CU-03-Modulo-Gestion-de-Experiencias.png)
 
 ## 1. Nombre
 

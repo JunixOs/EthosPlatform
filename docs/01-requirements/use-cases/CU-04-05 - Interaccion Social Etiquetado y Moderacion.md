@@ -1,6 +1,6 @@
 # **CU-04-05 - Interacción Social, Etiquetado y Moderación**
 
-![CU-04-05 - Interacción Social Etiquetado y Moderación](./diagrams/CU-04-05-Interaccion-Social-Etiquetado-y-Moderacion.png)
+![CU-04-05 - Interacción Social Etiquetado y Moderación](../../diagrams/images/use-case/CU-04-05-Interaccion-Social-Etiquetado-y-Moderacion.png)
 
 ## 1. Nombre
 

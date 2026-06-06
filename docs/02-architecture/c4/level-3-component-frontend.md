@@ -1,12 +1,12 @@
 # **C3 - Component - Frontend**
 
-![Diagrama C3 - General](../../diagrams/c4/c3/frontend/C3-Component-Diagram-general-1.png)
+![Diagrama C3 - General](../../diagrams/images/c4/c3/frontend/C3-Component-Diagram-general-1.png)
 
 ## 1. Capa `Presentación`
 
 ### 1.1. `app`
 
-![Diagrama C3 - app](../../diagrams/c4/c3/frontend/C3-Component-Diagram-general-2.png)
+![Diagrama C3 - app](../../diagrams/images/c4/c3/frontend/C3-Component-Diagram-general-2.png)
 
 Contiene el punto de entrada principal a la aplicación, además de contener recursos y estados globales.
 
@@ -14,7 +14,7 @@ Contiene el punto de entrada principal a la aplicación, además de contener rec
 
 ### 1.2. `features`
 
-![Diagrama C3 - features](../../diagrams/c4/c3/frontend/C3-Component-Diagram-features.png)
+![Diagrama C3 - features](../../diagrams/images/c4/c3/frontend/C3-Component-Diagram-features.png)
 
 - **Pages**: Son páginas o rutas (/login, /experiencia) que pertenecen a una única `feature`.
 - **Hooks**: En el `Frontend`, sirven para enganchar características de `React` desde componentes funcionales, como `useState` o `useEffect`.
@@ -30,7 +30,7 @@ Contiene el punto de entrada principal a la aplicación, además de contener rec
 
 ### 1.4. `shared`
 
-![Diagrama C3 - shared](../../diagrams/c4/c3/frontend/C3-Component-Diagram-shared.png)
+![Diagrama C3 - shared](../../diagrams/images/c4/c3/frontend/C3-Component-Diagram-shared.png)
 
 - **Assets**: Es cualquier recurso estático compartido y usado por cualquier `feature`.
 - **Components**: Son pedazos pequeños de UI reutilizables por varias `feature`.

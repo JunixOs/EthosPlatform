@@ -1,6 +1,6 @@
 # **CU-01 - Módulo Autenticación y Sesiones**
 
-![CU-01 - Modulo Autenticación y Sesiones](./diagrams/CU-01-Modulo-Autenticacion-y-Sesiones.png)
+![CU-01 - Módulo Autenticación y Sesiones](../../diagrams/images/use-case/CU-01-Modulo-Autenticacion-y-Sesiones.png)
 
 ## 1. Nombre
 
