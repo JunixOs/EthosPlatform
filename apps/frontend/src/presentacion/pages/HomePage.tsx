@@ -1,0 +1,99 @@
+import { Link } from 'react-router-dom';
+import { useAuthStore } from '../features/auth/store/auth.store';
+
+export function HomePage() {
+  const { usuario } = useAuthStore();
+
+  return (
+    <div className="space-y-20">
+      {/* Hero */}
+      <section className="text-center py-20">
+        <h1 className="text-5xl font-extrabold text-gray-900 dark:text-gray-100 leading-tight mb-6">
+          Comparte tu experiencia <br />
+          <span className="text-indigo-600 dark:text-indigo-400">ética y moral</span>
+        </h1>
+        <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-10">
+          Un espacio para reflexionar sobre dilemas éticos reales, comparar lo que dice la moral
+          con lo que dicta tu propia ética personal, y aprender de las experiencias de otros.
+        </p>
+        <div className="flex justify-center gap-4">
+          <Link
+            to="/experiencias"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium text-lg transition-colors"
+          >
+            Ver experiencias
+          </Link>
+          {!usuario && (
+            <Link
+              to="/registro"
+              className="border border-indigo-600 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950 px-6 py-3 rounded-lg font-medium text-lg transition-colors"
+            >
+              Unirse gratis
+            </Link>
+          )}
+        </div>
+      </section>
+
+      {/* Qué es */}
+      <section className="grid md:grid-cols-3 gap-8">
+        <div className="bg-white dark:bg-gray-900 rounded-xl p-6 border border-gray-200 dark:border-gray-700 text-center">
+          <div className="text-4xl mb-4">🤔</div>
+          <h3 className="text-lg font-semibold mb-2">Reflexiona</h3>
+          <p className="text-gray-600 dark:text-gray-400 text-sm">
+            Analiza dilemas éticos reales a través de la doble perspectiva: la moral colectiva y tu ética personal.
+          </p>
+        </div>
+        <div className="bg-white dark:bg-gray-900 rounded-xl p-6 border border-gray-200 dark:border-gray-700 text-center">
+          <div className="text-4xl mb-4">✍️</div>
+          <h3 className="text-lg font-semibold mb-2">Comparte</h3>
+          <p className="text-gray-600 dark:text-gray-400 text-sm">
+            Cuenta tu experiencia, qué dijeron las normas y qué decidiste tú. Tu perspectiva importa.
+          </p>
+        </div>
+        <div className="bg-white dark:bg-gray-900 rounded-xl p-6 border border-gray-200 dark:border-gray-700 text-center">
+          <div className="text-4xl mb-4">🌐</div>
+          <h3 className="text-lg font-semibold mb-2">Aprende</h3>
+          <p className="text-gray-600 dark:text-gray-400 text-sm">
+            Descubre cómo otros enfrentaron situaciones similares y amplía tu visión ética del mundo.
+          </p>
+        </div>
+      </section>
+
+      {/* Diferencia moral vs ética */}
+      <section className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/30 dark:to-blue-950/30 rounded-2xl p-10">
+        <h2 className="text-2xl font-bold text-center mb-8">Moral vs. Ética</h2>
+        <div className="grid md:grid-cols-2 gap-8">
+          <div>
+            <h3 className="text-lg font-semibold text-purple-700 dark:text-purple-400 mb-3">La Moral</h3>
+            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+              Son las normas, valores y principios que una sociedad, cultura o religión
+              ha establecido como correctos o incorrectos. Es el conjunto de reglas
+              que heredamos y adoptamos de nuestro entorno.
+            </p>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-blue-700 dark:text-blue-400 mb-3">Tu Ética</h3>
+            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+              Es tu criterio personal, racional y reflexivo sobre lo que es correcto.
+              Es la disciplina que te lleva a cuestionar, evaluar y en ocasiones contradecir
+              la moral establecida cuando tu razón así lo indica.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      {usuario && (
+        <section className="text-center py-10">
+          <h2 className="text-2xl font-bold mb-4">¿Tienes una experiencia para compartir?</h2>
+          <Link
+            to="/experiencias/nueva"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-lg font-medium text-lg"
+          >
+            Compartir ahora
+          </Link>
+        </section>
+      )}
+    </div>
+  );
+}
