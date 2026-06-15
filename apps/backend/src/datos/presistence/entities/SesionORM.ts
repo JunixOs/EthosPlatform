@@ -1,12 +1,27 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { UsuarioORM } from './UsuarioORM';
 
 @Entity('sesiones')
 export class SesionORM {
   @PrimaryColumn({ type: 'uuid' })
   id!: string;
 
-  @Column({ type: 'uuid', name: 'usuario_id' })
+  // === Relacion con "Usuario" ===
+  @Column({
+    name: 'usuario_id',
+    type: 'uuid'
+  })
   usuarioId!: string;
+
+  @ManyToOne(
+    () => UsuarioORM,
+    usuario => usuario.sesiones
+  )
+  @JoinColumn({
+    name: 'usuario_id'
+  })
+  usuario!: UsuarioORM;
+  // === Relacion con "Usuario" ===
 
   @Column({ type: 'text', unique: true })
   token!: string;

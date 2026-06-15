@@ -1,4 +1,5 @@
 import { Sesion } from '../../../logica/domain/entities/Sesion';
+import { Usuario } from '../../../logica/domain/entities/Usuario';
 import { TipoSesionEnum } from '../../../logica/domain/enum/index';
 import type { SesionORM } from '../entities/SesionORM';
 

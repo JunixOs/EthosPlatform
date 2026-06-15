@@ -1,4 +1,8 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, OneToOne } from 'typeorm';
+
+import { ExperienciaORM } from './ExperienciaORM';
+import { ExperienciaEtiquetaORM } from './ExperienciaEtiquetaORM';
+import { SesionORM } from './SesionORM';
 
 @Entity('usuarios')
 export class UsuarioORM {
@@ -31,4 +35,28 @@ export class UsuarioORM {
 
   @UpdateDateColumn({ name: 'actualizado_en' })
   actualizadoEn!: Date;
+
+  // === Relacion con "Experiencia" ===
+  @OneToMany(
+    () => ExperienciaORM,
+    experiencia => experiencia.usuario
+  )
+  experiencias!: ExperienciaORM[];
+  // === Relacion con "Experiencia" ===
+  
+  // === Relacion con "Experiencia_Etiqueta" ===
+  @OneToOne(
+    () => ExperienciaEtiquetaORM,
+    ee => ee.usuario
+  )
+  experienciaEtiqueta!: ExperienciaEtiquetaORM;
+  // === Relacion con "Experiencia_Etiqueta" ===
+  
+  // === Relacion con "Sesion" ===
+  @OneToMany(
+    () => SesionORM,
+    sesion => sesion.usuario
+  )
+  sesiones!: SesionORM[];
+  // === Relacion con "Sesion" ===
 }

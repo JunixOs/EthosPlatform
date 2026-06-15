@@ -1,12 +1,34 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { 
+  Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn,
+  OneToMany, 
+  ManyToOne,
+  JoinColumn
+} from 'typeorm';
+
+import { UsuarioORM } from './UsuarioORM';
+import { ExperienciaEtiquetaORM } from './ExperienciaEtiquetaORM';
 
 @Entity('experiencias')
 export class ExperienciaORM {
   @PrimaryColumn({ type: 'uuid' })
   id!: string;
 
-  @Column({ type: 'uuid', name: 'usuario_id' })
+  // === Relacion con "Usuarios" FK ===
+  @Column({
+    name: 'usuario_id',
+    type: 'uuid'
+  })
   usuarioId!: string;
+  
+  @ManyToOne(
+    () => UsuarioORM,
+    usuario => usuario.experiencias
+  )
+  @JoinColumn({
+    name: 'usuario_id'
+  })
+  usuario!: UsuarioORM;
+  // === Relacion con "Usuarios" FK ===
 
   @Column({ type: 'varchar', length: 255 })
   titulo!: string;
@@ -28,4 +50,12 @@ export class ExperienciaORM {
 
   @UpdateDateColumn({ name: 'actualizada_en' })
   actualizadaEn!: Date;
+
+  // Relacion con "Experiencia_Etiquetas"
+  @OneToMany(
+    () => ExperienciaEtiquetaORM,
+    ee => ee.experiencia
+  )
+  etiquetas!: ExperienciaEtiquetaORM[];
+  // Relacion con "Experiencia_Etiquetas"
 }

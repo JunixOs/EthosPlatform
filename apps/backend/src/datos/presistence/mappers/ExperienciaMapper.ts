@@ -17,15 +17,17 @@ export class ExperienciaMapper {
     );
   }
 
-  static toORM(domain: Experiencia): Partial<ExperienciaORM> {
+  static toORM(
+    experiencia_domain_entity: Experiencia,
+  ): Partial<ExperienciaORM> {
     return {
-      id: domain.getId(),
-      usuarioId: domain.getUsuarioId(),
-      titulo: domain.getTitulo(),
-      descripcion: domain.getDescripcion(),
-      reflexionMoral: domain.getReflexionMoral(),
-      reflexionEtica: domain.getReflexionEtica(),
-      estado: domain.getEstado(),
+      id: experiencia_domain_entity.getId(),
+      usuarioId: experiencia_domain_entity.getUsuarioId(),
+      titulo: experiencia_domain_entity.getTitulo(),
+      descripcion: experiencia_domain_entity.getDescripcion(),
+      reflexionMoral: experiencia_domain_entity.getReflexionMoral(),
+      reflexionEtica: experiencia_domain_entity.getReflexionEtica(),
+      estado: experiencia_domain_entity.getEstado(),
     };
   }
 }
