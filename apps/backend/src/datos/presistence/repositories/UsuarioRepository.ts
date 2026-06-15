@@ -21,14 +21,21 @@ export class UsuarioRepository implements IUsuarioRepository {
     return orm ? UsuarioMapper.toDomain(orm) : null;
   }
 
+  async findAll(page: number, limit: number): Promise<{ data: Usuario[]; total: number }> {
+    const [orms, total] = await this.repo.findAndCount({
+      order: { creadoEn: 'DESC' },
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+    return { data: orms.map(UsuarioMapper.toDomain), total };
+  }
+
   async save(usuario: Usuario): Promise<void> {
-    const data = UsuarioMapper.toORM(usuario);
-    await this.repo.save(data);
+    await this.repo.save(UsuarioMapper.toORM(usuario));
   }
 
   async update(usuario: Usuario): Promise<void> {
-    const data = UsuarioMapper.toORM(usuario);
-    await this.repo.save(data);
+    await this.repo.save(UsuarioMapper.toORM(usuario));
   }
 
   async delete(id: string): Promise<void> {

@@ -13,6 +13,8 @@ export class UsuarioMapper {
       orm.rol as RolEnum,
       orm.perfilPublico,
       orm.creadoEn,
+      orm.biografia ?? null,
+      orm.fotoPerfil ?? null,
     );
     if (orm.suspendido && orm.suspendidoHasta) {
       usuario.suspender(orm.suspendidoHasta);
@@ -29,6 +31,9 @@ export class UsuarioMapper {
       rol: domain.getRol(),
       perfilPublico: domain.isPerfilPublico(),
       suspendido: domain.isSuspendido(),
+      suspendidoHasta: domain.getSuspendidoHasta(),
+      biografia: domain.getBiografia(),
+      fotoPerfil: domain.getFotoPerfil(),
     };
   }
 }

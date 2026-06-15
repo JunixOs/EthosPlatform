@@ -26,6 +26,12 @@ export class UsuarioORM {
   @Column({ type: 'timestamp', name: 'suspendido_hasta', nullable: true })
   suspendidoHasta!: Date | null;
 
+  @Column({ type: 'text', nullable: true })
+  biografia!: string | null;
+
+  @Column({ type: 'varchar', length: 500, name: 'foto_perfil', nullable: true })
+  fotoPerfil!: string | null;
+
   @CreateDateColumn({ name: 'creado_en' })
   creadoEn!: Date;
 

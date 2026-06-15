@@ -1,0 +1,97 @@
+import { useState, useEffect, useCallback } from 'react';
+import { useSearchParams, Link } from 'react-router-dom';
+import { experienciasService } from '../services/experiencias.service';
+import type { Experiencia } from '../types/experiencia.types';
+
+export function BuscarExperienciasPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [query, setQuery] = useState(searchParams.get('q') ?? '');
+  const [results, setResults] = useState<Experiencia[]>([]);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [searched, setSearched] = useState(false);
+
+  const search = useCallback(async (q: string) => {
+    if (!q.trim()) return;
+    setLoading(true);
+    setSearched(true);
+    try {
+      const res = await experienciasService.buscar(q.trim(), 1, 20);
+      setResults(res.data);
+      setTotal(res.total);
+      setSearchParams({ q: q.trim() });
+    } catch {
+      setResults([]);
+      setTotal(0);
+    } finally {
+      setLoading(false);
+    }
+  }, [setSearchParams]);
+
+  useEffect(() => {
+    const q = searchParams.get('q');
+    if (q) {
+      setQuery(q);
+      void search(q);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    void search(query);
+  };
+
+  return (
+    <div className="max-w-3xl mx-auto px-4 py-8">
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Buscar experiencias</h1>
+
+      <form onSubmit={handleSubmit} className="flex gap-2 mb-8">
+        <input
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Buscar por título o descripción..."
+          className="flex-1 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+        />
+        <button
+          type="submit"
+          disabled={loading || !query.trim()}
+          className="bg-indigo-600 text-white px-5 py-2.5 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors font-medium"
+        >
+          {loading ? '...' : 'Buscar'}
+        </button>
+      </form>
+
+      {loading && (
+        <div className="flex justify-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-4 border-indigo-500 border-t-transparent" />
+        </div>
+      )}
+
+      {!loading && searched && results.length === 0 && (
+        <div className="text-center py-12">
+          <p className="text-gray-500 dark:text-gray-400">No se encontraron experiencias para "{query}".</p>
+        </div>
+      )}
+
+      {!loading && results.length > 0 && (
+        <div>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{total} resultado{total !== 1 ? 's' : ''} para "{searchParams.get('q')}"</p>
+          <div className="space-y-4">
+            {results.map((exp) => (
+              <Link
+                key={exp.id}
+                to={`/experiencias/${exp.id}`}
+                className="block bg-white dark:bg-gray-800 rounded-xl shadow p-5 hover:shadow-md transition-shadow border border-gray-100 dark:border-gray-700"
+              >
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-1">{exp.titulo}</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-2">{exp.descripcion}</p>
+                <p className="text-xs text-gray-400">{new Date(exp.creadaEn).toLocaleDateString('es-ES')}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
