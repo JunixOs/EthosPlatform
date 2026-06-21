@@ -1,10 +1,10 @@
 export type Variant = 
-    | 'primary'
-    | 'secondary_gray'
-    | 'danger'
-    | 'navbar_button'
+    | 'navbar'
+    | 'navbar_main'
+    | 'primary_button_indigo'
+    | 'secondary_button_indigo_edge'
     | 'dropdown'
-    | 'pagination'
+    | 'card_type'
     | 'custom';
 
 export type Size = 
