@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { usuariosService } from '../services/usuarios.service';
-import { experienciasService } from '../../experiencias/services/experiencias.service';
-import type { PerfilUsuario } from '../types/usuario.types';
-import type { Experiencia } from '../../experiencias/types/experiencia.types';
-import { useAuthStore } from '../../auth/store/auth.store';
+
+import { usuariosService } from '@features/usuarios/services/usuarios.service';
+import type { PerfilUsuario } from '@features/usuarios/types/usuario.types';
+
+import { experienciasService } from '@features/experiencias/services/experiencias.service';
+import type { Experiencia } from '@features/experiencias/types/experiencia.types';
+import { useAuthStore } from '@features/auth/store/auth.store';
 
 export function PerfilPage() {
   const { id } = useParams<{ id: string }>();

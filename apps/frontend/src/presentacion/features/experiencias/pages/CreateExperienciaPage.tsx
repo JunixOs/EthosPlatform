@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { experienciasService } from '../services/experiencias.service';
+
+import { experienciasService } from '@features/experiencias/services/experiencias.service';
 
 export function CreateExperienciaPage() {
   const navigate = useNavigate();

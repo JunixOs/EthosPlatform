@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { usuariosService } from '../services/usuarios.service';
-import { useAuthStore } from '../../auth/store/auth.store';
-import type { PerfilUsuario } from '../types/usuario.types';
+
+import { usuariosService } from '@features/usuarios/services/usuarios.service';
+import type { PerfilUsuario } from '@features/usuarios/types/usuario.types';
+
+import { useAuthStore } from '@features/auth/store/auth.store';
 
 export function EditarPerfilPage() {
   const navigate = useNavigate();

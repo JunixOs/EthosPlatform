@@ -1,6 +1,6 @@
 import { api } from '../../../shared/services/api';
-import type { ApiResponse, PaginatedResponse } from '../../../shared/types/api.types';
-import type { Experiencia, CreateExperienciaDTO, UpdateExperienciaDTO } from '../types/experiencia.types';
+import type { ApiResponse, PaginatedResponse } from '@shared/types/api.types';
+import type { Experiencia, CreateExperienciaDTO, UpdateExperienciaDTO } from '@features/experiencias/types/experiencia.types';
 
 export interface ListarOptions {
   page?: number;

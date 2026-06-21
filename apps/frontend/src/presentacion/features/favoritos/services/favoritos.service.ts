@@ -1,5 +1,5 @@
-import { api } from '../../../shared/services/api';
-import type { Experiencia } from '../../experiencias/types/experiencia.types';
+import { api } from '@shared/services/api';
+import type { Experiencia } from '@features/experiencias/types/experiencia.types';
 
 export const favoritosService = {
   async toggle(experienciaId: string): Promise<{ accion: 'agregado' | 'eliminado'; experienciaId: string }> {

@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
+
+import { useAuth } from '@features/auth/hooks/useAuth';
 
 export function LoginPage() {
   const { login, loading, error } = useAuth();
@@ -65,6 +66,8 @@ export function LoginPage() {
               Recordarme (24h)
             </label>
           </div>
+
+          
 
           <button
             type="submit"

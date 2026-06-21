@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { favoritosService } from '../services/favoritos.service';
-import type { Experiencia } from '../../experiencias/types/experiencia.types';
+import { favoritosService } from '@features/favoritos/services/favoritos.service';
+import type { Experiencia } from '@features/experiencias/types/experiencia.types';
 
 export function MisFavoritosPage() {
   const [favoritos, setFavoritos] = useState<Experiencia[]>([]);

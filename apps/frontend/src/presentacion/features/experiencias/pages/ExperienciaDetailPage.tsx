@@ -1,10 +1,12 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { useExperiencia } from '../hooks/useExperiencias';
-import { useAuthStore } from '../../auth/store/auth.store';
-import { experienciasService } from '../services/experiencias.service';
-import { favoritosService } from '../../favoritos/services/favoritos.service';
 import { useState, useEffect } from 'react';
-import type { Experiencia } from '../types/experiencia.types';
+
+import { useExperiencia } from '@features/experiencias/hooks/useExperiencias';
+import { experienciasService } from '@features/experiencias/services/experiencias.service';
+import type { Experiencia } from '@features/experiencias/types/experiencia.types';
+
+import { useAuthStore } from '@features/auth/store/auth.store';
+import { favoritosService } from '@features/favoritos/services/favoritos.service';
 
 export function ExperienciaDetailPage() {
   const { id } = useParams<{ id: string }>();

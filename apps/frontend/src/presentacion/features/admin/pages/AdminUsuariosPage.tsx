@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { adminService, type UsuarioAdmin } from '../services/admin.service';
+
+import { adminService, type UsuarioAdmin } from '@features/admin/services/admin.service';
 
 const ROLES = ['usuario', 'moderador', 'admin'];
 

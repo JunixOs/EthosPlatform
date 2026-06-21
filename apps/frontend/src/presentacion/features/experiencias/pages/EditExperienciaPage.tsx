@@ -1,7 +1,8 @@
 import { useState, useEffect, type FormEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { experienciasService } from '../services/experiencias.service';
-import type { Experiencia } from '../types/experiencia.types';
+
+import { experienciasService } from '@features/experiencias/services/experiencias.service';
+import type { Experiencia } from '@features/experiencias/types/experiencia.types';
 
 export function EditExperienciaPage() {
   const { id } = useParams<{ id: string }>();

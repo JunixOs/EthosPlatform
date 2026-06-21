@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../../features/auth/store/auth.store';
-import { useTheme } from '../hooks/useTheme';
+import { useAuthStore } from '@features/auth/store/auth.store';
+import { useTheme } from '@shared/hooks/useTheme';
 
 export function Navbar() {
   const { usuario, logout } = useAuthStore();

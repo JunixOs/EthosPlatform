@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { experienciasService } from '../services/experiencias.service';
-import type { Experiencia } from '../types/experiencia.types';
+
+import { experienciasService } from '@features/experiencias/services/experiencias.service';
+import type { Experiencia } from '@features/experiencias/types/experiencia.types';
 
 type Sort = 'date' | 'popularity';
 

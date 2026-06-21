@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { authService } from '../services/auth.service';
-import { useAuthStore } from '../store/auth.store';
-import type { LoginDTO, RegisterDTO } from '../types/auth.types';
+
+import { authService } from '@features/auth/services/auth.service';
+import { useAuthStore } from '@features/auth/store/auth.store';
+import type { LoginDTO, RegisterDTO } from '@features/auth/types/auth.types';
 
 export function useAuth() {
   const { setAuth, logout: storeLogout } = useAuthStore();
