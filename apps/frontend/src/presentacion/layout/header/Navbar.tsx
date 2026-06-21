@@ -1,6 +1,11 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { FaHeart, FaRegSun, FaRegMoon } from 'react-icons/fa';
+import {  } from "react-icons/fa";
+
 import { useAuthStore } from '@features/auth/store/auth.store';
 import { useTheme } from '@shared/hooks/useTheme';
+import { ButtonComponent } from '@/shared/components/Button/Button.component';
+import { LinkComponent } from '@/shared/components/Link/Link.component';
 
 export function Navbar() {
   const { usuario, logout } = useAuthStore();
@@ -12,93 +17,131 @@ export function Navbar() {
     navigate('/login');
   };
 
+  const navbarItems = [
+    {
+      to: '/experiencias',
+      label: 'Experiencias'
+    },
+    {
+      to: '/buscar',
+      label: 'Buscar'
+    },
+    {
+      to: '/equipo',
+      label: 'Equipo'
+    },
+  ];
+
   return (
     <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-4 py-3">
       <div className="max-w-6xl mx-auto flex items-center justify-between">
-        <Link to="/" className="text-xl font-bold text-indigo-600 dark:text-indigo-400">
-          EthosPlatform
-        </Link>
+        <LinkComponent
+          to='/'
+          variant='navbar_main'
+          size='none'
+          className='text-xl font-bold'>
+            EthosPlatform
+        </LinkComponent>
 
         <div className="flex items-center gap-4">
-          <Link to="/experiencias" className="text-sm text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400">
-            Experiencias
-          </Link>
-          <Link to="/buscar" className="text-sm text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400">
-            Buscar
-          </Link>
-          <Link to="/equipo" className="text-sm text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400">
-            Equipo
-          </Link>
+          {navbarItems.map(item => (
+            <LinkComponent
+              to={item.to}
+              variant="navbar"
+              size="none"
+              className='text-sm'
+              >
+              {item.label}
+            </LinkComponent>
+          ))}
 
-          <button
+          <ButtonComponent
+            variant='navbar_button'
+            size='md'
+            className='rounded-md'
             onClick={toggleTheme}
-            className="p-2 rounded-md text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
-            aria-label="Cambiar tema"
-          >
-            {theme === 'dark' ? '☀️' : '🌙'}
-          </button>
+            aria-label="Cambiar tema">
+            {theme === 'dark' ? <FaRegSun /> : <FaRegMoon />}
+          </ButtonComponent>
 
           {usuario ? (
             <div className="flex items-center gap-3">
-              <Link
+              <LinkComponent
                 to="/experiencias/nueva"
-                className="bg-indigo-600 text-white text-sm px-3 py-1.5 rounded-md hover:bg-indigo-700"
-              >
-                + Nueva
-              </Link>
-              <Link
+                variant='primary_button_indigo'
+                size='sm'
+                className='rounded-md'>
+                  + Nueva
+              </LinkComponent>
+              <LinkComponent
                 to="/favoritos"
-                className="text-sm text-gray-600 dark:text-gray-300 hover:text-red-500"
-                title="Mis favoritos"
-              >
-                ♥
-              </Link>
+                variant='custom'
+                size='none'
+                className='text-sm text-gray-600 dark:text-gray-300 hover:text-red-500'>
+                  <FaHeart />
+              </LinkComponent>
+
               {/* Dropdown usuario */}
               <div className="relative group">
-                <button className="text-sm text-gray-700 dark:text-gray-300 font-medium flex items-center gap-1 hover:text-indigo-600 dark:hover:text-indigo-400">
+                <ButtonComponent
+                  variant='dropdown'
+                  size='none'
+                  className='text-sm font-medium flex items-center gap-1'>
                   {usuario.nombre}
                   <svg className="w-3 h-3 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                </button>
+                </ButtonComponent>
                 <div className="absolute right-0 top-full mt-1 w-44 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700 py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-                  <Link to={`/perfil/${usuario.id}`}
-                    className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/30">
+                  <LinkComponent
+                    to={`/perfil/${usuario.id}`}
+                    variant='dropdown'
+                    size='none'
+                    className='block px-4 py-2 text-sm'>
                     Mi perfil
-                  </Link>
-                  <Link to="/perfil/editar"
-                    className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/30">
+                  </LinkComponent>
+                  <LinkComponent
+                    to="/perfil/editar"
+                    variant='dropdown'
+                    size='none'
+                    className='block px-4 py-2 text-sm'>
                     Editar perfil
-                  </Link>
-                  <Link to="/favoritos"
-                    className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/30">
-                    Mis favoritos
-                  </Link>
+                  </LinkComponent>
                   {usuario.rol === 'admin' && (
-                    <Link to="/admin/usuarios"
-                      className="block px-4 py-2 text-sm text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/30 font-medium">
+                    <LinkComponent 
+                      to="/admin/usuarios"
+                      variant='dropdown'
+                      size='none'
+                      className="block px-4 py-2 text-sm font-medium">
                       Panel admin
-                    </Link>
+                    </LinkComponent>
                   )}
                   <hr className="my-1 border-gray-100 dark:border-gray-700" />
-                  <button
+                  <ButtonComponent
                     onClick={handleLogout}
-                    className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
+                    variant='danger'
+                    size='none'
+                    className="w-full text-left px-4 py-2 text-sm"
                   >
                     Cerrar sesión
-                  </button>
+                  </ButtonComponent>
                 </div>
               </div>
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <Link to="/login" className="text-sm text-gray-600 dark:text-gray-300 hover:text-indigo-600">
+              <LinkComponent 
+                to="/login" 
+                variant='navbar'
+                size='sm'>
                 Iniciar sesión
-              </Link>
-              <Link
+              </LinkComponent>
+              <LinkComponent
                 to="/registro"
-                className="bg-indigo-600 text-white text-sm px-3 py-1.5 rounded-md hover:bg-indigo-700"
+                variant='primary_button_indigo'
+                size='sm'
+                className="rounded-md"
               >
                 Registrarse
-              </Link>
+              </LinkComponent>
             </div>
           )}
         </div>

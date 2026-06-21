@@ -1,11 +1,14 @@
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '@features/auth/store/auth.store';
 
+import { LinkComponent } from '@/shared/components/Link/Link.component';
+import { CardComponent } from '@/shared/components/Card/Card.component';
+
 export function HomePage() {
   const { usuario } = useAuthStore();
 
   return (
-    <div className="space-y-20">
+    <div className="space-y-20 max-w-7xl mx-auto px-4">
       {/* Hero */}
       <section className="text-center py-20">
         <h1 className="text-5xl font-extrabold text-gray-900 dark:text-gray-100 leading-tight mb-6">
@@ -17,46 +20,55 @@ export function HomePage() {
           con lo que dicta tu propia ética personal, y aprender de las experiencias de otros.
         </p>
         <div className="flex justify-center gap-4">
-          <Link
-            to="/experiencias"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium text-lg transition-colors"
-          >
-            Ver experiencias
-          </Link>
+          <LinkComponent
+            to='/experiencias'
+            variant='primary_button_indigo'
+            size='lg'
+            className='rounded-lg font-medium transition-colors'>
+              Ver experiencias
+          </LinkComponent>
           {!usuario && (
-            <Link
-              to="/registro"
-              className="border border-indigo-600 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950 px-6 py-3 rounded-lg font-medium text-lg transition-colors"
-            >
-              Unirse gratis
-            </Link>
+            <LinkComponent
+              to='/registro'
+              variant='secondary_button_indigo_edge'
+              size='lg'
+              className='rounded-lg transition-colors'>
+                Unirse gratis
+            </LinkComponent>
           )}
         </div>
       </section>
 
       {/* Qué es */}
       <section className="grid md:grid-cols-3 gap-8">
-        <div className="bg-white dark:bg-gray-900 rounded-xl p-6 border border-gray-200 dark:border-gray-700 text-center">
+        <CardComponent
+          variant='outlined'
+          className='text-center p-6 border'>
           <div className="text-4xl mb-4">🤔</div>
           <h3 className="text-lg font-semibold mb-2">Reflexiona</h3>
           <p className="text-gray-600 dark:text-gray-400 text-sm">
             Analiza dilemas éticos reales a través de la doble perspectiva: la moral colectiva y tu ética personal.
           </p>
-        </div>
-        <div className="bg-white dark:bg-gray-900 rounded-xl p-6 border border-gray-200 dark:border-gray-700 text-center">
+        </CardComponent>
+
+        <CardComponent 
+          variant='outlined'
+          className='text-center p-6 border'>
           <div className="text-4xl mb-4">✍️</div>
           <h3 className="text-lg font-semibold mb-2">Comparte</h3>
           <p className="text-gray-600 dark:text-gray-400 text-sm">
             Cuenta tu experiencia, qué dijeron las normas y qué decidiste tú. Tu perspectiva importa.
           </p>
-        </div>
-        <div className="bg-white dark:bg-gray-900 rounded-xl p-6 border border-gray-200 dark:border-gray-700 text-center">
+        </CardComponent>
+        <CardComponent 
+          variant='outlined'
+          className='text-center p-6 border'>
           <div className="text-4xl mb-4">🌐</div>
           <h3 className="text-lg font-semibold mb-2">Aprende</h3>
           <p className="text-gray-600 dark:text-gray-400 text-sm">
             Descubre cómo otros enfrentaron situaciones similares y amplía tu visión ética del mundo.
           </p>
-        </div>
+        </CardComponent>
       </section>
 
       {/* Diferencia moral vs ética */}

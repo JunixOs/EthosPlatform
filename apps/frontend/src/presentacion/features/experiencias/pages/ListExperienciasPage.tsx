@@ -4,6 +4,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { experienciasService } from '@features/experiencias/services/experiencias.service';
 import type { Experiencia } from '@features/experiencias/types/experiencia.types';
 
+import { CardComponent } from '@/shared/components/Card/Card.component';
+import { LinkComponent } from '@/shared/components/Link/Link.component';
+import { ButtonComponent } from '@/shared/components/Button/Button.component';
+
 type Sort = 'date' | 'popularity';
 
 export function ListExperienciasPage() {
@@ -37,7 +41,7 @@ export function ListExperienciasPage() {
   const totalPages = Math.ceil(total / limit);
 
   return (
-    <div>
+    <div className="max-w-7xl mx-auto px-4">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Experiencias éticas</h1>
         <div className="flex items-center gap-3">
@@ -50,9 +54,13 @@ export function ListExperienciasPage() {
               placeholder="Buscar..."
               className="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-1.5 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none w-36"
             />
-            <button type="submit" className="text-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 px-3 py-1.5 rounded-lg">
+            <ButtonComponent 
+              type="submit"
+              variant='secondary_gray'
+              size='none'
+              className="text-sm px-3 py-1.5 rounded-lg">
               Buscar
-            </button>
+            </ButtonComponent>
           </form>
           {/* Sort */}
           <select
@@ -63,12 +71,14 @@ export function ListExperienciasPage() {
             <option value="date">Más recientes</option>
             <option value="popularity">Más populares</option>
           </select>
-          <Link
+          <LinkComponent
             to="/experiencias/nueva"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap"
+            variant='primary_button_indigo'
+            size='none'
+            className="px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap"
           >
             + Compartir
-          </Link>
+          </LinkComponent>
         </div>
       </div>
 
@@ -89,12 +99,16 @@ export function ListExperienciasPage() {
 
       {!loading && experiencias.length > 0 && (
         <>
-          <div className="grid gap-6 md:grid-cols-2">
+          <CardComponent 
+            variant='default'
+            className="grid gap-6 md:grid-cols-2">
             {experiencias.map((exp) => (
-              <Link
+              <LinkComponent
                 key={exp.id}
                 to={`/experiencias/${exp.id}`}
-                className="block bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md hover:border-indigo-300 dark:hover:border-indigo-600 transition-all"
+                variant='card_type'
+                size='none'
+                className="block p-6 rounded-xl shadow-sm transition-all"
               >
                 <div className="flex items-start justify-between mb-3">
                   <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 line-clamp-2">{exp.titulo}</h2>
@@ -120,21 +134,29 @@ export function ListExperienciasPage() {
                 <p className="text-xs text-gray-400 dark:text-gray-500 mt-4">
                   {new Date(exp.creadaEn).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
                 </p>
-              </Link>
+              </LinkComponent>
             ))}
-          </div>
+          </CardComponent>
 
           {totalPages > 1 && (
             <div className="flex justify-center gap-2 mt-10">
-              <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1}
-                className="px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 disabled:opacity-40 hover:bg-gray-50 dark:hover:bg-gray-800 text-sm">
+              <ButtonComponent 
+                onClick={() => setPage((p) => Math.max(1, p - 1))} 
+                variant='pagination'
+                size='none'
+                disabled={page === 1}
+                className="px-4 py-2 rounded-md text-sm">
                 Anterior
-              </button>
+              </ButtonComponent>
               <span className="px-4 py-2 text-sm text-gray-600 dark:text-gray-400">{page} / {totalPages}</span>
-              <button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page === totalPages}
-                className="px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 disabled:opacity-40 hover:bg-gray-50 dark:hover:bg-gray-800 text-sm">
+              <ButtonComponent 
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))} 
+                variant='pagination'
+                size='none'
+                disabled={page === totalPages}
+                className="px-4 py-2 rounded-md text-sm">
                 Siguiente
-              </button>
+              </ButtonComponent>
             </div>
           )}
         </>

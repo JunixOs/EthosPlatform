@@ -4,6 +4,9 @@ import { useSearchParams, Link } from 'react-router-dom';
 import { experienciasService } from '@features/experiencias/services/experiencias.service';
 import type { Experiencia } from '@features/experiencias/types/experiencia.types';
 
+import { LinkComponent } from '@/shared/components/Link/Link.component';
+import { CardComponent } from '@/shared/components/Card/Card.component';
+
 export function BuscarExperienciasPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState(searchParams.get('q') ?? '');
@@ -80,15 +83,20 @@ export function BuscarExperienciasPage() {
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{total} resultado{total !== 1 ? 's' : ''} para "{searchParams.get('q')}"</p>
           <div className="space-y-4">
             {results.map((exp) => (
-              <Link
-                key={exp.id}
-                to={`/experiencias/${exp.id}`}
-                className="block bg-white dark:bg-gray-800 rounded-xl shadow p-5 hover:shadow-md transition-shadow border border-gray-100 dark:border-gray-700"
-              >
-                <h3 className="font-semibold text-gray-900 dark:text-white mb-1">{exp.titulo}</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-2">{exp.descripcion}</p>
-                <p className="text-xs text-gray-400">{new Date(exp.creadaEn).toLocaleDateString('es-ES')}</p>
-              </Link>
+              <CardComponent>
+                <LinkComponent
+                  key={exp.id}
+                  to={`/experiencias/${exp.id}`}
+                  variant='card_type'
+                  size='none'
+                  className="block rounded-xl shadow p-5 transition-shadow"
+                >
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-1">{exp.titulo}</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-2">{exp.descripcion}</p>
+                  <p className="text-xs text-gray-400">{new Date(exp.creadaEn).toLocaleDateString('es-ES')}</p>
+                </LinkComponent>
+              </CardComponent>
+              
             ))}
           </div>
         </div>
