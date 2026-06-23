@@ -1,0 +1,86 @@
+@startuml CU-04-05-Interaccion-Social-Etiquetado-y-Moderacion
+
+' =====================================================
+' Figura 4 - CU-04/05
+' Interacción Social, Etiquetado y Moderación
+' Requisitos:
+' R03-R05, R11, R17, R29-R30, R33-R36,
+' R41-R42, R50-R59, R60, R63, RNF03
+' =====================================================
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor Usuario
+actor Visitante
+actor Administrador
+
+rectangle "Interacción Social" {
+
+    usecase "R05 Añadir\nRespuesta" as IS01
+    usecase "R11 Eliminar\nRespuesta" as IS02
+    usecase "R29 Reaccionar\nMe Gusta" as IS03
+    usecase "R30 Ver Conteos" as IS04
+
+    usecase "R03 Landing Page" as IS05
+
+    usecase "R34 Bloquear\nUsuario" as IS06
+    usecase "R56 Experiencias\nRecientes" as IS07
+    usecase "R57 Experiencias\nDestacadas" as IS08
+    usecase "R58 Seguir\nUsuarios" as IS09
+    usecase "R59 Feed\nPersonalizado" as IS10
+}
+
+rectangle "Etiquetado" {
+
+    usecase "R41 Añadir\nEtiquetas" as ET01
+    usecase "R42 Buscar por\nEtiqueta" as ET02
+    usecase "R50 Filtrar por\nAutor" as ET03
+    usecase "R52 Paginación" as ET04
+    usecase "R54 Limitar a\n5 Etiquetas" as ET05
+    usecase "R55 Experiencias\nRelacionadas" as ET06
+}
+
+rectangle "Moderación y Seguridad" {
+
+    usecase "R04 Prohibir Editar\nContenido Ajeno" as MO01
+    usecase "R33 Reportar\nContenido" as MO02
+    usecase "R35 Ocultar\nContenido" as MO03
+    usecase "R36 Historial\nReportes" as MO04
+    usecase "R60 Log de\nAuditoría" as MO05
+    usecase "R17 Prohibir Editar\nPágina Dedicada" as MO06
+    usecase "R63 Lista Negra\nTérminos" as MO07
+    usecase "RNF03 Middleware\nRutas Privadas" as MO08
+}
+
+Usuario --> IS01
+Usuario --> IS02
+Usuario --> IS03
+Usuario --> IS06
+Usuario --> IS09
+Usuario --> IS10
+
+Visitante --> IS04
+Visitante --> IS05
+Visitante --> IS07
+Visitante --> IS08
+
+Usuario --> ET01
+Usuario --> ET02
+Usuario --> ET03
+
+Visitante --> ET02
+Visitante --> ET03
+Visitante --> ET04
+
+Administrador --> MO03
+Administrador --> MO04
+Administrador --> MO07
+
+MO03 ..> MO02 : <<extend>>
+MO03 ..> MO05 : <<include>>
+
+ET01 ..> ET05 : <<include>>
+
+@enduml

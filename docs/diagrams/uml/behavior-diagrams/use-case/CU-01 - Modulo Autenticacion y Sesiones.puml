@@ -1,0 +1,49 @@
+@startuml CU-01-Modulo-Autenticacion-y-Sesiones
+
+' =====================================================
+' Figura 1 - CU-01: Módulo Autenticación y Sesiones
+' Requisitos: R01, R02, R15a/b, R19, R61, R62, RNF01-RNF03
+' =====================================================
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor Visitante
+actor Usuario
+actor Administrador
+
+rectangle "Autenticación" {
+
+    usecase "R01 Iniciar Sesión" as UC01
+    usecase "R02 Registrarse" as UC02
+    usecase "R19 Autenticar Admin" as UC03
+    usecase "R15a/b Gestionar Sesión\n(24h / 2h)" as UC04
+    usecase "R61 Registrar Intentos\nFallidos" as UC05
+    usecase "R62 Bloquear Cuenta\n(5 intentos / 15 min)" as UC06
+    usecase "R02 Asignar Rol" as UC07
+
+    usecase "RNF01 Hash\nbcrypt / Argon2" as UC08
+    usecase "RNF02 JWT / Cookie\nHttpOnly" as UC09
+    usecase "RNF03 Proteger\nRutas Privadas" as UC10
+}
+
+Visitante --> UC01
+Visitante --> UC02
+
+Usuario --> UC01
+
+Administrador --> UC03
+
+UC01 ..> UC04 : <<include>>
+UC01 ..> UC05 : <<include>>
+UC05 ..> UC06 : <<extend>>
+
+UC02 ..> UC07 : <<include>>
+
+UC01 ..> UC08 : <<include>>
+UC01 ..> UC09 : <<include>>
+
+UC03 ..> UC10 : <<include>>
+
+@enduml

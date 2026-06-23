@@ -1,0 +1,62 @@
+@startuml CU-06-Administracion-del-Sistema
+
+' =====================================================
+' Figura 5 - CU-06: Administración del Sistema
+' Requisitos:
+' R16-R24, R35-R37, R60, R63,
+' R65-R67, RNF03
+' =====================================================
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor Administrador
+
+rectangle "Administración" {
+
+    usecase "R20 Panel de\nAdministración" as UC01
+
+    usecase "R21 Eliminar\nUsuario" as UC02
+    usecase "R22 Editar\nUsuario" as UC03
+    usecase "R23 Editar\nExperiencia" as UC04
+    usecase "R24 Eliminar\nExperiencia" as UC05
+
+    usecase "R16 Acceder Página\nDedicada" as UC06
+    usecase "R18 Editar Página\nDedicada" as UC07
+
+    usecase "R35 Ocultar\nContenido" as UC08
+    usecase "R37 Suspender\nUsuario" as UC09
+    usecase "R36 Historial\nReportes" as UC10
+
+    usecase "R63 Configurar\nLista Negra" as UC11
+
+    usecase "R60 Registro de\nAuditoría" as UC12
+    usecase "R19 Autenticar\nAdministrador" as UC13
+
+    usecase "R65 Confirmación\nAntes de Eliminar" as UC14
+    usecase "R66 Mensajes de\nError" as UC15
+    usecase "R67 Indicador de\nCarga" as UC16
+}
+
+Administrador --> UC01
+Administrador --> UC02
+Administrador --> UC03
+Administrador --> UC04
+Administrador --> UC05
+Administrador --> UC06
+Administrador --> UC07
+Administrador --> UC08
+Administrador --> UC09
+Administrador --> UC10
+Administrador --> UC11
+
+UC01 ..> UC12 : <<include>>
+UC01 ..> UC13 : <<include>>
+
+UC02 ..> UC14 : <<include>>
+UC02 ..> UC12 : <<include>>
+UC05 ..> UC14 : <<include>>
+UC09 ..> UC14 : <<include>>
+
+@enduml

@@ -1,0 +1,29 @@
+@startuml C1-System-Context-Diagram
+/' Importar Paquetes '/
+!include %getenv("PLANTUML_C4_HOME")/C4_Context.puml
+
+/' Definir Iconos y Fuentes '/
+!define DEVICONS %getenv("PLANTUML_ICON_FONT_SPRITES")/icons/devicons
+!define FONTAWESOME %getenv("PLANTUML_ICON_FONT_SPRITES")/icons/font-awesome-5
+
+!include DEVICONS/postgresql.puml
+!include DEVICONS/nodejs.puml
+
+/' Definir Fuentes '/
+!include FONTAWESOME/users.puml
+
+left to right direction
+
+LAYOUT_WITH_LEGEND()
+
+Person(user_1 , "Usuario" , "Comparte sus experiencias relacionadas con reflexiones éticas y morales, interactua con otros usuarios y con la aplicación.")
+Person(admin_1 , "Administrador" , "Gestiona los usuarios, la aplicación y el contenido.")
+Person(visitor_1 , "Visitante" , "Posible usuario del sistema, observa las experiencias compartidas, reacciones y comentarios.")
+
+System(ethosplatform , "EthosPlatform" , "Sistema web comunitario para compartir experiencias personales estructuradas relacionadas con reflexiones éticas y morales." , $sprite="nodejs")
+
+Rel(user_1 , ethosplatform , "Usa")
+Rel(admin_1 , ethosplatform , "Administra")
+Rel(visitor_1 , ethosplatform , "Visita")
+
+@enduml

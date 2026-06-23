@@ -1,0 +1,34 @@
+@startuml C3-Component-Diagram-Domain
+
+/' Importar Paquetes '/
+!include %getenv("PLANTUML_C4_HOME")/C4_Component.puml
+
+/' Definir Iconos y Fuentes '/
+!define DEVICONS %getenv("PLANTUML_ICON_FONT_SPRITES")/icons/devicons
+!define FONTAWESOME %getenv("PLANTUML_ICON_FONT_SPRITES")/icons/font-awesome-5
+
+left to right direction
+
+LAYOUT_WITH_LEGEND()
+LAYOUT_TOP_DOWN()
+
+Container(web_api_domain , "EthosPlatform API - Domain" , "Node.js" , "Contiene las reglas de negocio\nempresariales criticas,\nobjetos del dominio\ny estructuras de datos centrales.")
+Container_Boundary(web_api_domain_boundary , "EthosPlatform API - Domain"){
+    Component(domain_entity , "DomainEntity" , "Typescript Class" , "Representan entidades del dominio.")
+    Component(value_objects , "ValueObjects" , "Typescript" , "Representan una característica, atributo o magnitud, pero carecen de una identidad propia.")
+    Component(rules , "Rules" , "Typescript Class" , "Reglas de negocio que deben cumplirse.")
+    Component(enums , "Enums" , "Typescript Class" , "Define un conjunto fijo de constantes con nombre.")
+}
+Container_Ext(web_api_application_ext , "EthosPlatform API - Application" , "Node.js" , "Contiene la lógica de negocio\nespecífica de la aplicación.\nCoordina el flujo de datos\nhacia y desde las entidades,\norquestando cómo se cumplen las reglas\nde negocio.")
+Container_Ext(web_api_datos_ext , "EthosPlatform API - Datos" , "Node.js" , "Contiene detalles técnicos como la base de datos, frameworks,\nherramientas y dispositivos.")
+
+web_api_domain .. web_api_domain_boundary
+
+Rel(domain_entity , value_objects , "Usa")
+Rel(domain_entity , enums , "Usa")
+Rel(domain_entity , rules , "Aplica")
+
+Rel_L(web_api_application_ext , domain_entity , "Usa")
+Rel_D(web_api_datos_ext , domain_entity , "Usa")
+
+@enduml

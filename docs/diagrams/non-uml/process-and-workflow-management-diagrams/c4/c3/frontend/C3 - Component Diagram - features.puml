@@ -1,0 +1,45 @@
+@startuml C3-Component-Diagram-features
+
+/' Importar Paquetes '/
+!include %getenv("PLANTUML_C4_HOME")/C4_Component.puml
+
+/' Definir Iconos y Fuentes '/
+!define DEVICONS %getenv("PLANTUML_ICON_FONT_SPRITES")/icons/devicons
+!define FONTAWESOME %getenv("PLANTUML_ICON_FONT_SPRITES")/icons/font-awesome-5
+
+left to right direction
+
+LAYOUT_WITH_LEGEND()
+LAYOUT_TOP_DOWN()
+
+Container(web_app_features , "EthosPlatform Web App - Features" , "React" , "Implementa las funcionalidades clave del negocio.")
+Container_Boundary(web_app_features_boundary , "EthosPlatform Web App - Features"){
+    Component(api , "API" , "React" , "Comunicación con el Backend, habla con la API.")
+    Component(components , "Components" , "React" , "Componentes de UI especificos de una feature.")
+    Component(hooks , "Hooks" , "React" , "Hooks especificos de una feature.")
+    Component(pages , "Pages" , "React" , "Paginas o rutas propias de una feature.")
+    Component(services , "Services" , "Typescript" , "Lógica de negocio Frontend.")
+    Component(store , "Store" , "React" , "Estado compartido pero solo de la feature.")
+    Component(types , "Types" , "Typescript" , "Modelos y contratos usados solo por la feature.")
+}
+Container_Ext(web_app_shared_ext , "EthosPlatform Web App - Shared" , "React / Typescript" , "Elementos, objetos o funciones reutilizables por cualquier feature.")
+
+web_app_features ..> web_app_features_boundary
+
+Rel(services , api , "Usa")
+Rel(services , store , "Usa")
+Rel(services , types , "Usa")
+Rel(services , web_app_shared_ext , "Usa" , "shared/store")
+
+Rel(hooks, services , "Usa")
+
+Rel(api , web_app_shared_ext , "Usa" , "shared/services")
+Rel(api , types , "Usa")
+
+Rel(components , web_app_shared_ext , "Usa" , "shared/components")
+
+Rel(pages , components , "Usa")
+Rel(pages , services , "Usa")
+Rel(pages , hooks , "Usa")
+
+@enduml
