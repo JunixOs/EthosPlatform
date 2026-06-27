@@ -9,6 +9,6 @@ export interface PerfilUsuario {
   estadisticas: {
     totalExperiencias: number;
     totalFavoritos: number;
-    miembroDesde: string;
+    miembroDesde: number;
   };
 }

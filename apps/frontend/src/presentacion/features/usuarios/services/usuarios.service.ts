@@ -1,14 +1,15 @@
 import { api } from '@shared/services/api';
 import type { PerfilUsuario } from '@features/usuarios/types/usuario.types';
+import type { ApiResponse } from '@/shared/types/api.types';
 
 export const usuariosService = {
   async getPerfil(id: string): Promise<PerfilUsuario> {
-    const res = await api.get<PerfilUsuario>(`/usuarios/${id}`);
+    const res = await api.get<ApiResponse<PerfilUsuario>>(`/usuarios/${id}`);
     return res.data;
   },
 
   async getMiPerfil(): Promise<PerfilUsuario> {
-    const res = await api.get<PerfilUsuario>('/usuarios/me');
+    const res = await api.get<ApiResponse<PerfilUsuario>>('/usuarios/me');
     return res.data;
   },
 

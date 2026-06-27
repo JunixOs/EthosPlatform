@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { usuariosService } from '@features/usuarios/services/usuarios.service';
 import type { PerfilUsuario } from '@features/usuarios/types/usuario.types';
 
-import { useAuthStore } from '@features/auth/store/auth.store';
+import { useAuthStore } from '@/app/store/auth.store';
 
 export function EditarPerfilPage() {
   const navigate = useNavigate();

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useAuthStore } from '@features/auth/store/auth.store';
+import { useAuthStore } from '@/app/store/auth.store';
 
 import { LinkComponent } from '@/shared/components/Link/Link.component';
 import { CardComponent } from '@/shared/components/Card/Card.component';

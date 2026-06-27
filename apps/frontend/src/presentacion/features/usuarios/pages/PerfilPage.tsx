@@ -6,7 +6,7 @@ import type { PerfilUsuario } from '@features/usuarios/types/usuario.types';
 
 import { experienciasService } from '@features/experiencias/services/experiencias.service';
 import type { Experiencia } from '@features/experiencias/types/experiencia.types';
-import { useAuthStore } from '@features/auth/store/auth.store';
+import { useAuthStore } from '@/app/store/auth.store';
 
 export function PerfilPage() {
   const { id } = useParams<{ id: string }>();
@@ -77,7 +77,7 @@ export function PerfilPage() {
             <p className="text-xs text-gray-500 dark:text-gray-400">Favoritos</p>
           </div>
           <div className="text-center">
-            <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{new Date(perfil.estadisticas.miembroDesde).getFullYear()}</p>
+            <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{new Date(perfil.creadoEn).getFullYear()}</p>
             <p className="text-xs text-gray-500 dark:text-gray-400">Año de ingreso</p>
           </div>
         </div>

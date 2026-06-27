@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
 import { authService } from '@features/auth/services/auth.service';
-import { useAuthStore } from '@features/auth/store/auth.store';
+import { useAuthStore } from '@/app/store/auth.store';
 import type { LoginDTO, RegisterDTO } from '@features/auth/types/auth.types';
 
 export function useAuth() {
-  const { setAuth, logout: storeLogout } = useAuthStore();
+  const { setAuth } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -14,7 +14,7 @@ export function useAuth() {
     setError(null);
     try {
       const result = await authService.login(data);
-      setAuth({ id: result.usuarioId, nombre: result.nombre, rol: result.rol }, result.token);
+      setAuth({ id: result.usuarioId, nombre: result.nombre, rol: result.rol }, result.token, result.expiresAt);
       return true;
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Error al iniciar sesión');
@@ -38,13 +38,5 @@ export function useAuth() {
     }
   };
 
-  const logout = async () => {
-    try {
-      await authService.logout();
-    } finally {
-      storeLogout();
-    }
-  };
-
-  return { login, register, logout, loading, error };
+  return { login, register, loading, error };
 }

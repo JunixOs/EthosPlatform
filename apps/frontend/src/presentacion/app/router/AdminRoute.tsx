@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import { useAuthStore } from '@features/auth/store/auth.store';
+import { useAuthStore } from '@/app/store/auth.store';
 
 export function AdminRoute() {
   const { usuario } = useAuthStore();

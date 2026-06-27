@@ -18,6 +18,7 @@ export interface LoginResult {
   usuarioId: string;
   nombre: string;
   rol: string;
+  expiraEn: Date
 }
 
 export class LoginUseCase {
@@ -71,6 +72,7 @@ export class LoginUseCase {
       usuarioId: usuario.getId(),
       nombre: usuario.getNombre(),
       rol: usuario.getRol(),
+      expiraEn: sesion.getExpiraEn()
     };
   }
 

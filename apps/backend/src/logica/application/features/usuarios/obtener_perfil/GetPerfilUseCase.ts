@@ -15,6 +15,7 @@ export interface PerfilPublicoResult {
   estadisticas: {
     totalExperiencias: number;
     totalFavoritos: number;
+    miembroDesde: number;
   };
 }
 
@@ -49,6 +50,7 @@ export class GetPerfilUseCase {
       estadisticas: {
         totalExperiencias,
         totalFavoritos: favoritosInfo.total,
+        miembroDesde: usuario.getCreadoEn().getFullYear()
       },
     };
   }

@@ -2,7 +2,9 @@ import { useNavigate } from 'react-router-dom';
 import { FaHeart, FaRegSun, FaRegMoon } from 'react-icons/fa';
 import {  } from "react-icons/fa";
 
-import { useAuthStore } from '@features/auth/store/auth.store';
+import { useAuthStore } from '@/app/store/auth.store';
+
+import { logoutService } from '@/shared/services/logoutApiService';
 import { useTheme } from '@shared/hooks/useTheme';
 import { ButtonComponent } from '@/shared/components/Button/Button.component';
 import { LinkComponent } from '@/shared/components/Link/Link.component';
@@ -14,6 +16,7 @@ export function Navbar() {
 
   const handleLogout = () => {
     logout();
+    logoutService.execute();
     navigate('/login');
   };
 

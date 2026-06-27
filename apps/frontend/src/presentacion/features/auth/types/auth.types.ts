@@ -14,11 +14,6 @@ export interface AuthResponse {
   token: string;
   usuarioId: string;
   nombre: string;
-  rol: string;
-}
-
-export interface UsuarioSession {
-  id: string;
-  nombre: string;
+  expiresAt: string;
   rol: string;
 }

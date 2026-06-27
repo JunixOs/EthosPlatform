@@ -5,7 +5,7 @@ import { useExperiencia } from '@features/experiencias/hooks/useExperiencias';
 import { experienciasService } from '@features/experiencias/services/experiencias.service';
 import type { Experiencia } from '@features/experiencias/types/experiencia.types';
 
-import { useAuthStore } from '@features/auth/store/auth.store';
+import { useAuthStore } from '@/app/store/auth.store';
 import { favoritosService } from '@features/favoritos/services/favoritos.service';
 
 export function ExperienciaDetailPage() {
