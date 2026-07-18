@@ -27,6 +27,7 @@ import { EditarPerfilUseCase } from './logica/application/features/usuarios/edit
 import { EditarFotoPerfilUseCase } from './logica/application/features/usuarios/editar_foto/EditarFotoPerfilUseCase';
 import { EliminarCuentaUseCase } from './logica/application/features/usuarios/eliminar_cuenta/EliminarCuentaUseCase';
 import { GetEstadisticasUseCase } from './logica/application/features/usuarios/estadisticas/GetEstadisticasUseCase';
+import { ListExperienciasPorUsuarioUseCase } from './logica/application/features/usuarios/listar_experiencias/ListExperienciasPorUsuarioUseCase';
 
 // Admin use cases
 import { AsignarRolUseCase } from './logica/application/features/admin/asignar_rol/AsignarRolUseCase';
@@ -98,8 +99,9 @@ export async function createContainer(): Promise<Container> {
   const editarFotoUC = new EditarFotoPerfilUseCase(usuarioRepo);
   const eliminarCuentaUC = new EliminarCuentaUseCase(usuarioRepo, sesionRepo, experienciaRepo, favoritoRepo, reaccionRepo);
   const estadisticasUC = new GetEstadisticasUseCase(usuarioRepo, experienciaRepo, favoritoRepo);
+  const listExpUsuarioUC = new ListExperienciasPorUsuarioUseCase(experienciaRepo);
   const usuariosController = new UsuariosController(
-    getPerfilUC, editarPerfilUC, editarFotoUC, eliminarCuentaUC, estadisticasUC, listExpUC,
+    getPerfilUC, editarPerfilUC, editarFotoUC, eliminarCuentaUC, estadisticasUC, listExpUsuarioUC,
   );
 
   // Admin

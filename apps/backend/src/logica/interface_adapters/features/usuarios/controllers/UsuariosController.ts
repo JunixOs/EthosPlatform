@@ -4,8 +4,8 @@ import type { EditarPerfilUseCase } from '../../../../application/features/usuar
 import type { EditarFotoPerfilUseCase } from '../../../../application/features/usuarios/editar_foto/EditarFotoPerfilUseCase';
 import type { EliminarCuentaUseCase } from '../../../../application/features/usuarios/eliminar_cuenta/EliminarCuentaUseCase';
 import type { GetEstadisticasUseCase } from '../../../../application/features/usuarios/estadisticas/GetEstadisticasUseCase';
-import type { ListExperienciasUseCase } from '../../../../application/features/experiencias/listar/ListExperienciasUseCase';
-import { ExperienciaHttpMapper } from '../../../features/experiencias/mappers/ExperienciaHttpMapper';
+import type { ListExperienciasPorUsuarioUseCase } from '../../../../application/features/usuarios/listar_experiencias/ListExperienciasPorUsuarioUseCase';
+import { UsuarioExperienciaMapper } from '../mappers/UsuarioExperienciaMapper';
 
 export class UsuariosController {
   constructor(
@@ -14,7 +14,7 @@ export class UsuariosController {
     private readonly editarFotoUC: EditarFotoPerfilUseCase,
     private readonly eliminarCuentaUC: EliminarCuentaUseCase,
     private readonly estadisticasUC: GetEstadisticasUseCase,
-    private readonly listExpUC: ListExperienciasUseCase,
+    private readonly listExpUC: ListExperienciasPorUsuarioUseCase,
   ) {}
 
   /** GET /api/usuarios/:id — perfil público (R25) */
@@ -77,7 +77,7 @@ export class UsuariosController {
     const result = await this.listExpUC.execute({ page, limit: 10, usuarioId: id });
     res.json({
       success: true,
-      data: result.data.map(ExperienciaHttpMapper.toResponse),
+      data: result.data.map(UsuarioExperienciaMapper.toResponse),
       total: result.total,
       page: result.page,
       limit: result.limit,

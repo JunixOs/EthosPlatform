@@ -4,6 +4,50 @@ function getToken(): string | null {
   return localStorage.getItem('ethos_token');
 }
 
+export interface ApiErrorResponse {
+  success: false;
+  data: null;
+  errorMessage: string;
+  errorCode: string;
+  httpErrorCode: number;
+  module: string;
+  event: string;
+  extra?: Record<string, unknown>;
+}
+
+export class ApiError extends Error {
+  public readonly code: string;
+  public readonly httpStatus: number;
+  public readonly module: string;
+  public readonly event: string;
+  public readonly extra?: Record<string, unknown>;
+
+  constructor(response: ApiErrorResponse) {
+    super(response.errorMessage);
+    this.name = 'ApiError';
+    this.code = response.errorCode;
+    this.httpStatus = response.httpErrorCode;
+    this.module = response.module;
+    this.event = response.event;
+    this.extra = response.extra;
+  }
+
+  /** Devuelve true si es un error de autenticación (401/403) */
+  isAuthError(): boolean {
+    return this.httpStatus === 401 || this.httpStatus === 403;
+  }
+
+  /** Devuelve true si es un error de validación (400) */
+  isValidationError(): boolean {
+    return this.httpStatus === 400;
+  }
+
+  /** Devuelve true si es un error de conflicto (409) */
+  isConflictError(): boolean {
+    return this.httpStatus === 409;
+  }
+}
+
 async function request<T>(
   path: string,
   options: RequestInit = {},
@@ -21,8 +65,17 @@ async function request<T>(
   const res = await fetch(`${BASE_URL}${path}`, { ...options, headers });
 
   if (!res.ok) {
-    const json = (await res.json().catch(() => ({}))) as { errorMessage?: string };
-    throw new Error(json.errorMessage ?? `Error ${res.status}`);
+    const json = (await res.json().catch(() => ({}))) as Partial<ApiErrorResponse>;
+    throw new ApiError({
+      success: false,
+      data: null,
+      errorMessage: json.errorMessage ?? `Error ${res.status}`,
+      errorCode: json.errorCode ?? `HTTP_${res.status}`,
+      httpErrorCode: json.httpErrorCode ?? res.status,
+      module: json.module ?? 'SYSTEM',
+      event: json.event ?? 'ERROR',
+      extra: json.extra,
+    });
   }
 
   if (res.status === 204 || res.headers.get('content-length') === '0') {

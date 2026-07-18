@@ -31,7 +31,7 @@ export class LoginUseCase {
   async execute(cmd: LoginCommand): Promise<LoginResult> {
     const intentos = await this.intentoRepo.findRecientesByCorreo(cmd.correo);
     if (IntentoFallido.debeBloquearse(intentos)) {
-      throw new TooManyRequestsException();
+      throw new TooManyRequestsException(intentos.length);
     }
 
     const usuario = await this.usuarioRepo.findByEmail(cmd.correo.toLowerCase().trim());

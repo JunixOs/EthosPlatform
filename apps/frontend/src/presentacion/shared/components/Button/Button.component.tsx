@@ -48,6 +48,7 @@ export function ButtonComponent({
 
     return (
         <button
+        type="button"
         className={`
             ${variants[variant]}
             ${sizes[size]}

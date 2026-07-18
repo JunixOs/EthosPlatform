@@ -22,38 +22,58 @@ export function createApp(): express.Application {
   });
 
     // Global error handler (se registra al final, en routes.ts o server.ts)
-    app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
+    app.use((err: unknown, req: Request, res: Response, _next: NextFunction) => {
+      const requestId = req.headers['x-request-id'] ?? crypto.randomUUID?.() ?? Date.now().toString();
+
       if (err instanceof AppException) {
+        const auditLog = {
+          requestId,
+          ...err.toAuditLog(),
+          path: req.path,
+          method: req.method,
+          ip: req.ip ?? req.socket.remoteAddress,
+        };
+
         if (err.httpStatus >= 500) {
-          logger.error(err, 'AppException en request');
+          logger.error(auditLog, `[${err.code}] AppException ${err.httpStatus}`);
+        } else if (err.event === 'SECURITY') {
+          logger.warn(auditLog, `[${err.code}] Security event ${err.httpStatus}`);
+        } else {
+          logger.info(auditLog, `[${err.code}] AppException ${err.httpStatus}`);
         }
-        res.status(err.httpStatus).json({
-          success: false,
-          data: [],
-          errorMessage: err.message,
-          errorCode: err.errorCode,
-          httpErrorCode: String(err.httpStatus),
-        });
+
+        res.status(err.httpStatus).json(err.toJSON());
         return;
       }
+
       if (err instanceof Error) {
-        logger.error(err, 'Error no controlado en request');
+        logger.error(
+          { requestId, message: err.message, stack: err.stack, path: req.path, method: req.method },
+          '[SYS002] Error no controlado',
+        );
         res.status(400).json({
           success: false,
-          data: [],
+          data: null,
           errorMessage: err.message,
-          errorCode: 'BAD_REQUEST',
-          httpErrorCode: '400',
+          errorCode: 'SYS002',
+          httpErrorCode: 400,
+          module: 'SYSTEM',
+          event: 'ERROR',
+          extra: { requestId },
         });
         return;
       }
-      logger.error('Error desconocido en request');
+
+      logger.error({ requestId, path: req.path, method: req.method }, '[SYS001] Error desconocido');
       res.status(500).json({
         success: false,
-        data: [],
+        data: null,
         errorMessage: 'Error interno del servidor.',
-        errorCode: 'INTERNAL_ERROR',
-        httpErrorCode: '500',
+        errorCode: 'SYS001',
+        httpErrorCode: 500,
+        module: 'SYSTEM',
+        event: 'ERROR',
+        extra: { requestId },
       });
     });
 

@@ -1,6 +1,12 @@
 import jwt from 'jsonwebtoken';
 import type { Request, Response, NextFunction } from 'express';
-import { UnauthorizedException, ForbiddenException } from '../../application/exceptions/AppException';
+import {
+  TokenMissingException,
+  TokenInvalidException,
+  TokenExpiredException,
+  TokenRevokedException,
+  ForbiddenException,
+} from '../../application/exceptions/AppException';
 import type { ISesionRepository } from '../../application/gateway/repositories/ISesionRepository';
 
 export interface AuthPayload {
@@ -20,7 +26,7 @@ export function createAuthMiddleware(sesionRepo: ISesionRepository) {
   return async (req: Request, _res: Response, next: NextFunction): Promise<void> => {
     const authHeader = req.headers['authorization'];
     if (!authHeader?.startsWith('Bearer ')) {
-      return next(new UnauthorizedException('Token no proporcionado.'));
+      return next(new TokenMissingException());
     }
 
     const token = authHeader.slice(7);
@@ -35,17 +41,17 @@ export function createAuthMiddleware(sesionRepo: ISesionRepository) {
       // Verificar que la sesión aún existe en la base de datos (invalidación en logout)
       const sesion = await sesionRepo.findByToken(token);
       if (!sesion || !sesion.isValida()) {
-        return next(new UnauthorizedException('Token inválido o expirado.'));
+        return next(new TokenRevokedException());
       }
 
       req.user = payload;
       next();
     } catch (err) {
       if (err instanceof jwt.TokenExpiredError) {
-        return next(new UnauthorizedException('Token expirado.'));
+        return next(new TokenExpiredException());
       }
       if (err instanceof jwt.JsonWebTokenError) {
-        return next(new UnauthorizedException('Token inválido.'));
+        return next(new TokenInvalidException());
       }
       next(err);
     }
@@ -54,7 +60,7 @@ export function createAuthMiddleware(sesionRepo: ISesionRepository) {
 
 export function requireAdmin(req: Request, _res: Response, next: NextFunction): void {
   if (req.user?.rol !== 'admin') {
-    return next(new ForbiddenException('Se requiere rol de administrador.'));
+    return next(new ForbiddenException('Se requiere rol de administrador.', { rolActual: req.user?.rol }));
   }
   next();
 }
