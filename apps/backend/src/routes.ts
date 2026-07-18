@@ -43,5 +43,28 @@ export function createRoutes(container: Container): Router {
   router.post('/favoritos/:experienciaId', authMiddleware, container.favoritosController.toggle);
   router.get('/favoritos/mios', authMiddleware, container.favoritosController.listarMios);
 
+  // Reacciones
+  router.get('/experiencias/:id/reacciones', container.reaccionesController.contar);
+  router.post('/experiencias/:id/reacciones', authMiddleware, container.reaccionesController.toggle);
+
+  // Respuestas
+  router.get('/experiencias/:id/respuestas', container.respuestasController.listar);
+  router.post('/experiencias/:id/respuestas', authMiddleware, container.respuestasController.crear);
+  router.delete('/respuestas/:id', authMiddleware, container.respuestasController.eliminar);
+
+  // Etiquetas
+  router.get('/etiquetas', container.etiquetasController.listar);
+  router.get('/etiquetas/:slug/experiencias', container.etiquetasController.buscarPorEtiqueta);
+  router.put('/experiencias/:id/etiquetas', authMiddleware, container.etiquetasController.asociar);
+
+  // Reportes
+  router.post('/reportes', authMiddleware, container.reportesController.crear);
+  router.get('/admin/reportes', authMiddleware, requireAdmin, container.reportesController.listarPendientes);
+  router.patch('/admin/reportes/:id/ocultar', authMiddleware, requireAdmin, container.reportesController.ocultar);
+
+  // Pagina Equipo
+  router.get('/pagina-equipo', container.paginaEquipoController.obtener);
+  router.put('/admin/pagina-equipo', authMiddleware, requireAdmin, container.paginaEquipoController.editar);
+
   return router;
 }

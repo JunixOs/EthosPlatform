@@ -5,6 +5,11 @@ import { SesionRepository } from './datos/presistence/repositories/SesionReposit
 import { IntentoFallidoRepository } from './datos/presistence/repositories/IntentoFallidoRepository';
 import { FavoritoRepository } from './datos/presistence/repositories/FavoritoRepository';
 import { ReaccionRepository } from './datos/presistence/repositories/ReaccionRepository';
+import { RespuestaRepository } from './datos/presistence/repositories/RespuestaRepository';
+import { EtiquetaRepository } from './datos/presistence/repositories/EtiquetaRepository';
+import { ReporteRepository } from './datos/presistence/repositories/ReporteRepository';
+import { AuditoriaRepository } from './datos/presistence/repositories/AuditoriaRepository';
+import { PaginaEquipoRepository } from './datos/presistence/repositories/PaginaEquipoRepository';
 
 // Auth use cases
 import { RegisterUseCase } from './logica/application/features/auth/register/RegisterUseCase';
@@ -41,12 +46,43 @@ import { ReactivarUsuarioUseCase } from './logica/application/features/admin/rea
 import { ToggleFavoritoUseCase } from './logica/application/features/favoritos/ToggleFavoritoUseCase';
 import { ListarFavoritosUseCase } from './logica/application/features/favoritos/ListarFavoritosUseCase';
 
+// Reaccion use cases
+import { ToggleReaccionUseCase } from './logica/application/features/reacciones/ToggleReaccionUseCase';
+import { ContarReaccionesUseCase } from './logica/application/features/reacciones/ContarReaccionesUseCase';
+
+// Respuesta use cases
+import { CrearRespuestaUseCase } from './logica/application/features/respuestas/CrearRespuestaUseCase';
+import { ListarRespuestasUseCase } from './logica/application/features/respuestas/ListarRespuestasUseCase';
+import { EliminarRespuestaUseCase } from './logica/application/features/respuestas/EliminarRespuestaUseCase';
+
+// Etiqueta use cases
+import { AsociarEtiquetasUseCase } from './logica/application/features/etiquetas/AsociarEtiquetasUseCase';
+import { BuscarPorEtiquetaUseCase } from './logica/application/features/etiquetas/BuscarPorEtiquetaUseCase';
+import { ListarEtiquetasUseCase } from './logica/application/features/etiquetas/ListarEtiquetasUseCase';
+
+// Reporte use cases
+import { CrearReporteUseCase } from './logica/application/features/reportes/CrearReporteUseCase';
+import { ListarReportesUseCase } from './logica/application/features/reportes/ListarReportesUseCase';
+import { OcultarContenidoUseCase } from './logica/application/features/reportes/OcultarContenidoUseCase';
+
+// Pagina equipo use cases
+import { ObtenerPaginaEquipoUseCase } from './logica/application/features/pagina_equipo/ObtenerPaginaEquipoUseCase';
+import { EditarPaginaEquipoUseCase } from './logica/application/features/pagina_equipo/EditarPaginaEquipoUseCase';
+
+// Services
+import { AuditoriaService } from './logica/application/services/AuditoriaService';
+
 // Controllers
 import { AuthController } from './logica/interface_adapters/features/auth/controllers/AuthController';
 import { ExperienciasController } from './logica/interface_adapters/features/experiencias/controllers/ExperienciasController';
 import { UsuariosController } from './logica/interface_adapters/features/usuarios/controllers/UsuariosController';
 import { AdminController } from './logica/interface_adapters/features/admin/controllers/AdminController';
 import { FavoritosController } from './logica/interface_adapters/features/favoritos/controllers/FavoritosController';
+import { ReaccionesController } from './logica/interface_adapters/features/reacciones/controllers/ReaccionesController';
+import { RespuestasController } from './logica/interface_adapters/features/respuestas/controllers/RespuestasController';
+import { EtiquetasController } from './logica/interface_adapters/features/etiquetas/controllers/EtiquetasController';
+import { ReportesController } from './logica/interface_adapters/features/reportes/controllers/ReportesController';
+import { PaginaEquipoController } from './logica/interface_adapters/features/pagina_equipo/controllers/PaginaEquipoController';
 
 // Middleware
 import { createAuthMiddleware, requireAdmin } from './logica/interface_adapters/middleware/authMiddleware';
@@ -58,6 +94,11 @@ export interface Container {
   usuariosController: UsuariosController;
   adminController: AdminController;
   favoritosController: FavoritosController;
+  reaccionesController: ReaccionesController;
+  respuestasController: RespuestasController;
+  etiquetasController: EtiquetasController;
+  reportesController: ReportesController;
+  paginaEquipoController: PaginaEquipoController;
   authMiddleware: (req: Request, res: Response, next: NextFunction) => void | Promise<void>;
   requireAdmin: (req: Request, res: Response, next: NextFunction) => void;
 }
@@ -72,6 +113,11 @@ export async function createContainer(): Promise<Container> {
   const intentoRepo = new IntentoFallidoRepository(dataSource);
   const favoritoRepo = new FavoritoRepository(dataSource);
   const reaccionRepo = new ReaccionRepository(dataSource);
+  const respuestaRepo = new RespuestaRepository(dataSource);
+  const etiquetaRepo = new EtiquetaRepository(dataSource);
+  const reporteRepo = new ReporteRepository(dataSource);
+  const auditoriaRepo = new AuditoriaRepository(dataSource);
+  const paginaEquipoRepo = new PaginaEquipoRepository(dataSource);
 
   // Auth
   const registerUC = new RegisterUseCase(usuarioRepo);
@@ -120,6 +166,34 @@ export async function createContainer(): Promise<Container> {
   const listarFavUC = new ListarFavoritosUseCase(favoritoRepo, experienciaRepo);
   const favoritosController = new FavoritosController(toggleFavUC, listarFavUC);
 
+  // Reacciones
+  const toggleReaccionUC = new ToggleReaccionUseCase(reaccionRepo, experienciaRepo);
+  const contarReaccionesUC = new ContarReaccionesUseCase(reaccionRepo);
+  const reaccionesController = new ReaccionesController(toggleReaccionUC, contarReaccionesUC);
+
+  // Respuestas
+  const crearRespuestaUC = new CrearRespuestaUseCase(respuestaRepo, experienciaRepo);
+  const listarRespuestasUC = new ListarRespuestasUseCase(respuestaRepo);
+  const eliminarRespuestaUC = new EliminarRespuestaUseCase(respuestaRepo);
+  const respuestasController = new RespuestasController(crearRespuestaUC, listarRespuestasUC, eliminarRespuestaUC);
+
+  // Etiquetas
+  const asociarEtiquetasUC = new AsociarEtiquetasUseCase(etiquetaRepo, experienciaRepo);
+  const buscarPorEtiquetaUC = new BuscarPorEtiquetaUseCase(etiquetaRepo, experienciaRepo);
+  const listarEtiquetasUC = new ListarEtiquetasUseCase(etiquetaRepo);
+  const etiquetasController = new EtiquetasController(asociarEtiquetasUC, buscarPorEtiquetaUC, listarEtiquetasUC);
+
+  // Reportes
+  const crearReporteUC = new CrearReporteUseCase(reporteRepo, experienciaRepo);
+  const listarReportesUC = new ListarReportesUseCase(reporteRepo);
+  const ocultarContenidoUC = new OcultarContenidoUseCase(reporteRepo, experienciaRepo);
+  const reportesController = new ReportesController(crearReporteUC, listarReportesUC, ocultarContenidoUC);
+
+  // Pagina Equipo
+  const obtenerPaginaEquipoUC = new ObtenerPaginaEquipoUseCase(paginaEquipoRepo);
+  const editarPaginaEquipoUC = new EditarPaginaEquipoUseCase(paginaEquipoRepo);
+  const paginaEquipoController = new PaginaEquipoController(obtenerPaginaEquipoUC, editarPaginaEquipoUC);
+
   const authMiddleware = createAuthMiddleware(sesionRepo);
 
   return {
@@ -128,6 +202,11 @@ export async function createContainer(): Promise<Container> {
     usuariosController,
     adminController,
     favoritosController,
+    reaccionesController,
+    respuestasController,
+    etiquetasController,
+    reportesController,
+    paginaEquipoController,
     authMiddleware,
     requireAdmin,
   };
