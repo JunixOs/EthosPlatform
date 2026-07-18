@@ -1,13 +1,11 @@
-import type { LinkHTMLAttributes, ReactNode } from "react";
-import { Link } from "react-router-dom";
+import type { ReactNode } from "react";
+import { Link, type LinkProps } from "react-router-dom";
 
 import type { Variant, Size } from "@/shared/components/Link/Link.types";
 
-interface LinkComponentProps 
-    extends LinkHTMLAttributes<HTMLLinkElement> {
-    to: string;
-    variant?: Variant,
-    size?: Size
+interface LinkComponentProps extends LinkProps {
+    variant?: Variant;
+    size?: Size;
     children: ReactNode;
 }
 
@@ -16,11 +14,12 @@ export function LinkComponent({
     variant = 'navbar',
     size = 'sm',
     children,
-    className = ''
+    className = '',
+    ...props
 }: LinkComponentProps) {
 
     const variants: Record<Variant , string> = {
-        navbar: 
+        navbar:
         'text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400',
 
         navbar_main:
@@ -38,7 +37,7 @@ export function LinkComponent({
         card_type:
         'bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 hover:shadow-md hover:border-indigo-300 dark:hover:border-indigo-600',
 
-        custom: 
+        custom:
         ''
     };
 
@@ -57,7 +56,8 @@ export function LinkComponent({
                 ${sizes[size]}
                 ${className}
             `}
-            >
+            {...props}
+        >
             {children}
         </Link>
     )

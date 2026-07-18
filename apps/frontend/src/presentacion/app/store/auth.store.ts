@@ -32,7 +32,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   setAuth: (usuario, token, expiresAt) => {
     localStorage.setItem('ethos_token', token);
     localStorage.setItem('ethos_usuario', JSON.stringify(usuario));
-    localStorage.setItem('ethos_token_expiresAt', JSON.stringify(expiresAt));
+    localStorage.setItem('ethos_token_expiresAt', expiresAt);
     set({ usuario, token, expiresAt });
   },
 

@@ -12,23 +12,23 @@ export interface UsuarioAdmin {
 
 export const adminService = {
   async listarUsuarios(page = 1, limit = 20): Promise<{ data: UsuarioAdmin[]; total: number }> {
-    const res = await api.get<{ data: UsuarioAdmin[]; total: number }>(`/api/admin/usuarios?page=${page}&limit=${limit}`);
-    return res.data;
+    const res = await api.get<{ data: UsuarioAdmin[]; total: number }>(`/admin/usuarios?page=${page}&limit=${limit}`);
+    return res;
   },
 
   async asignarRol(id: string, rol: string): Promise<void> {
-    await api.patch(`/api/admin/usuarios/${id}/rol`, { rol });
+    await api.patch(`/admin/usuarios/${id}/rol`, { rol });
   },
 
   async suspender(id: string, diasSuspension: number): Promise<void> {
-    await api.patch(`/api/admin/usuarios/${id}/suspender`, { diasSuspension });
+    await api.patch(`/admin/usuarios/${id}/suspender`, { diasSuspension });
   },
 
   async reactivar(id: string): Promise<void> {
-    await api.patch(`/api/admin/usuarios/${id}/reactivar`, {});
+    await api.patch(`/admin/usuarios/${id}/reactivar`, {});
   },
 
   async eliminar(id: string): Promise<void> {
-    await api.delete(`/api/admin/usuarios/${id}`);
+    await api.delete(`/admin/usuarios/${id}`);
   },
 };

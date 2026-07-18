@@ -3,7 +3,8 @@ import type { AsignarRolUseCase } from '../../../../application/features/admin/a
 import type { SuspenderUsuarioUseCase } from '../../../../application/features/admin/suspender_usuario/SuspenderUsuarioUseCase';
 import type { EditarUsuarioAdminUseCase } from '../../../../application/features/admin/editar_usuario/EditarUsuarioAdminUseCase';
 import type { EliminarUsuarioAdminUseCase } from '../../../../application/features/admin/eliminar_usuario/EliminarUsuarioAdminUseCase';
-import type { IUsuarioRepository } from '../../../../application/gateway/repositories/IUsuarioRepository';
+import type { ListarUsuariosAdminUseCase } from '../../../../application/features/admin/listar_usuarios/ListarUsuariosAdminUseCase';
+import type { ReactivarUsuarioUseCase } from '../../../../application/features/admin/reactivar_usuario/ReactivarUsuarioUseCase';
 
 export class AdminController {
   constructor(
@@ -11,24 +12,16 @@ export class AdminController {
     private readonly suspenderUC: SuspenderUsuarioUseCase,
     private readonly editarUC: EditarUsuarioAdminUseCase,
     private readonly eliminarUC: EliminarUsuarioAdminUseCase,
-    private readonly usuarioRepo: IUsuarioRepository,
+    private readonly listarUsuariosUC: ListarUsuariosAdminUseCase,
+    private readonly reactivarUC: ReactivarUsuarioUseCase,
   ) {}
 
   /** GET /api/admin/usuarios — listar todos los usuarios */
   listarUsuarios = async (req: Request, res: Response): Promise<void> => {
     const page = Number(req.query['page'] ?? 1);
     const limit = Number(req.query['limit'] ?? 20);
-    const { data, total } = await this.usuarioRepo.findAll(page, limit);
-    const usuarios = data.map((u) => ({
-      id: u.getId(),
-      nombre: u.getNombre(),
-      correo: u.getEmail().getValue(),
-      rol: u.getRol(),
-      suspendido: u.isSuspendido(),
-      perfilPublico: u.isPerfilPublico(),
-      creadoEn: u.getCreadoEn(),
-    }));
-    res.json({ success: true, data: usuarios, total, page, limit, errorMessage: '', errorCode: '', httpErrorCode: '' });
+    const { data, total } = await this.listarUsuariosUC.execute(page, limit);
+    res.json({ success: true, data, total, page, limit, errorMessage: '', errorCode: '', httpErrorCode: '' });
   };
 
   /** PATCH /api/admin/usuarios/:id/rol — asignar rol (R02) */
@@ -50,13 +43,8 @@ export class AdminController {
   /** PATCH /api/admin/usuarios/:id/reactivar — reactivar usuario */
   reactivar = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params as { id: string };
-    const { data } = await this.usuarioRepo.findAll(1, 1);
-    const usuario = await this.usuarioRepo.findById(id);
-    if (!usuario) { res.status(404).json({ success: false, data: [], errorMessage: 'Usuario no encontrado.', errorCode: 'NOT_FOUND', httpErrorCode: '404' }); return; }
-    usuario.reactivar();
-    await this.usuarioRepo.update(usuario);
+    await this.reactivarUC.execute(id);
     res.json({ success: true, data: null, errorMessage: '', errorCode: '', httpErrorCode: '' });
-    void data;
   };
 
   /** PUT /api/admin/usuarios/:id — editar usuario (R06, R22) */

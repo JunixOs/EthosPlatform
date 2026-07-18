@@ -26,6 +26,17 @@ export function ExperienciaDetailPage() {
     experienciasService.getRelacionadas(id).then(setRelacionadas).catch(() => null);
   }, [id]);
 
+  // Verificar estado inicial de favorito
+  useEffect(() => {
+    if (!id || !usuario) return;
+    favoritosService.getMios(1)
+      .then((res) => {
+        const esFav = res.data.some((f) => f.id === id);
+        setIsFav(esFav);
+      })
+      .catch(() => null);
+  }, [id, usuario]);
+
   const handleDelete = async () => {
     if (!confirm('¿Eliminar esta experiencia?')) return;
     setDeleting(true);
