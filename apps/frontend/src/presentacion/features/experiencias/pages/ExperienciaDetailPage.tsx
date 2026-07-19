@@ -7,6 +7,13 @@ import type { Experiencia } from '@features/experiencias/types/experiencia.types
 
 import { useAuthStore } from '@/app/store/auth.store';
 import { favoritosService } from '@features/favoritos/services/favoritos.service';
+import { reaccionesService } from '@features/reacciones/services/reacciones.service';
+import { ReaccionButton } from '@features/reacciones/components/ReaccionButton';
+import { RespuestasSection } from '@features/respuestas/components/RespuestasSection';
+import { EtiquetasList } from '@features/etiquetas/components/EtiquetasList';
+import { EditarEtiquetasSection } from '@features/etiquetas/components/EditarEtiquetasSection';
+import { ReportarModal } from '@features/reportes/components/ReportarModal';
+import type { Etiqueta } from '@features/etiquetas/services/etiquetas.service';
 
 export function ExperienciaDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -18,6 +25,10 @@ export function ExperienciaDetailPage() {
   const [isFav, setIsFav] = useState(false);
   const [favLoading, setFavLoading] = useState(false);
   const [relacionadas, setRelacionadas] = useState<Experiencia[]>([]);
+  const [reaccionesCount, setReaccionesCount] = useState(0);
+  const [hasReacted, setHasReacted] = useState(false);
+  const [etiquetas, setEtiquetas] = useState<Etiqueta[]>([]);
+  const [showReportar, setShowReportar] = useState(false);
 
   const isOwner = usuario && experiencia && usuario.id === experiencia.usuarioId;
 
@@ -36,6 +47,26 @@ export function ExperienciaDetailPage() {
       })
       .catch(() => null);
   }, [id, usuario]);
+
+  // Cargar reacciones
+  useEffect(() => {
+    if (!id) return;
+    reaccionesService.contar(id)
+      .then((res) => {
+        setReaccionesCount(res.total);
+        setHasReacted(res.usuarioHaReaccionado);
+      })
+      .catch(() => null);
+  }, [id]);
+
+  // Cargar etiquetas (placeholder hasta que backend devuelva etiquetas en getById)
+  // Por ahora dejamos etiquetas vacías — se llenarán cuando backend integre etiquetas en Experiencia
+  useEffect(() => {
+    if (!id) return;
+    // etiquetasService no tiene método directo por experiencia aún;
+    // se integrará cuando el backend exponga etiquetas en ExperienciaResponseDTO
+    setEtiquetas([]);
+  }, [id]);
 
   const handleDelete = async () => {
     if (!confirm('¿Eliminar esta experiencia?')) return;
@@ -107,6 +138,25 @@ export function ExperienciaDetailPage() {
           </button>
         )}
 
+        {/* Reacciones */}
+        {experiencia.estado === 'publicada' && (
+          <ReaccionButton
+            experienciaId={experiencia.id}
+            initialCount={reaccionesCount}
+            initialHasReacted={hasReacted}
+          />
+        )}
+
+        {/* Reportar */}
+        {experiencia.estado === 'publicada' && !isOwner && usuario && (
+          <button
+            onClick={() => setShowReportar(true)}
+            className="ml-auto text-xs text-gray-400 hover:text-red-500 dark:hover:text-red-400 underline"
+          >
+            Reportar
+          </button>
+        )}
+
         {isOwner && (
           <div className="ml-auto flex gap-2">
             {experiencia.estado === 'borrador' && (
@@ -136,6 +186,12 @@ export function ExperienciaDetailPage() {
       </div>
 
       <h1 className="text-3xl font-bold mb-2">{experiencia.titulo}</h1>
+
+      {/* Etiquetas */}
+      <div className="mb-3">
+        <EtiquetasList etiquetas={etiquetas} />
+      </div>
+
       <p className="text-gray-400 dark:text-gray-500 text-sm mb-8">
         {new Date(experiencia.creadaEn).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
         {experiencia.actualizadaEn !== experiencia.creadaEn && (
@@ -159,9 +215,25 @@ export function ExperienciaDetailPage() {
         </section>
       </div>
 
+      {/* Editar etiquetas (solo owner) */}
+      {isOwner && (
+        <div className="mt-6">
+          <EditarEtiquetasSection
+            experienciaId={experiencia.id}
+            etiquetasIniciales={etiquetas.map((e) => e.nombre)}
+            onUpdate={(nombres) => setEtiquetas(nombres.map((n) => ({ id: n, nombre: n, slug: n })))}
+          />
+        </div>
+      )}
+
+      {/* Respuestas */}
+      {experiencia.estado === 'publicada' && (
+        <RespuestasSection experienciaId={experiencia.id} />
+      )}
+
       {/* Experiencias relacionadas */}
       {relacionadas.length > 0 && (
-        <section className="border-t border-gray-200 dark:border-gray-700 pt-8">
+        <section className="border-t border-gray-200 dark:border-gray-700 pt-8 mt-8">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Experiencias relacionadas</h2>
           <div className="grid sm:grid-cols-2 gap-4">
             {relacionadas.map((rel) => (
@@ -177,6 +249,13 @@ export function ExperienciaDetailPage() {
           </div>
         </section>
       )}
+
+      {/* Modal reportar */}
+      <ReportarModal
+        experienciaId={experiencia.id}
+        isOpen={showReportar}
+        onClose={() => setShowReportar(false)}
+      />
     </article>
   );
 }
