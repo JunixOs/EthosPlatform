@@ -1,12 +1,5 @@
 import { Entity, PrimaryColumn, Column, CreateDateColumn } from 'typeorm';
-
-export enum TipoReporteEnum {
-  SPAM = 'spam',
-  CONTENIDO_INAPROPIADO = 'contenido_inapropiado',
-  ACOSO = 'acoso',
-  INFORMACION_FALSA = 'informacion_falsa',
-  OTRO = 'otro',
-}
+import { TipoReporteEnum } from '../../../logica/domain/enum/index';
 
 @Entity('reportes')
 export class ReporteORM {

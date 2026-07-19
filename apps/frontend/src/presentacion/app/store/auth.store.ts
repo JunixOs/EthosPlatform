@@ -12,6 +12,7 @@ interface AuthState {
   expiresAt: string | null;
   setAuth: (usuario: UsuarioSession, token: string, expiresAt: string) => void;
   logout: () => void;
+  isTokenExpired: () => boolean;
 }
 
 function loadFromStorage(): { usuario: UsuarioSession | null; token: string | null ; expiresAt: string | null} {
@@ -26,7 +27,18 @@ function loadFromStorage(): { usuario: UsuarioSession | null; token: string | nu
   }
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+function checkExpired(expiresAt: string | null): boolean {
+  if (!expiresAt || expiresAt === 'undefined' || expiresAt === 'null') return true;
+  try {
+    const exp = new Date(expiresAt).getTime();
+    if (Number.isNaN(exp)) return true;
+    return Date.now() >= exp;
+  } catch {
+    return true;
+  }
+}
+
+export const useAuthStore = create<AuthState>((set, get) => ({
   ...loadFromStorage(),
 
   setAuth: (usuario, token, expiresAt) => {
@@ -42,4 +54,21 @@ export const useAuthStore = create<AuthState>((set) => ({
     localStorage.removeItem('ethos_token_expiresAt');
     set({ usuario: null, token: null, expiresAt: null });
   },
+
+  isTokenExpired: () => {
+    return checkExpired(get().expiresAt);
+  },
 }));
+
+// Sincronizar logout entre pestañas / cuando api.ts limpia localStorage
+if (typeof window !== 'undefined') {
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'ethos_token' && e.newValue === null) {
+      useAuthStore.setState({ usuario: null, token: null, expiresAt: null });
+    }
+  });
+
+  window.addEventListener('ethos:auth:expired', () => {
+    useAuthStore.setState({ usuario: null, token: null, expiresAt: null });
+  });
+}

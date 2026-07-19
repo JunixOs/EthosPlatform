@@ -1,11 +1,13 @@
 import { useState, type FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { useAuth } from '@features/auth/hooks/useAuth';
 
 export function LoginPage() {
   const { login, loading, error } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const sesionExpirada = searchParams.get('sesionExpirada') === '1';
   const [correo, setCorreo] = useState('');
   const [password, setPassword] = useState('');
   const [recordarme, setRecordarme] = useState(false);
@@ -24,6 +26,11 @@ export function LoginPage() {
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {sesionExpirada && (
+            <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 text-yellow-800 dark:text-yellow-300 text-sm rounded-md px-4 py-3">
+              Tu sesión ha expirado. Por favor, inicia sesión de nuevo.
+            </div>
+          )}
           {error && (
             <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 text-red-700 dark:text-red-300 text-sm rounded-md px-4 py-3">
               {error}

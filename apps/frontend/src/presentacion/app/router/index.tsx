@@ -8,6 +8,9 @@ import { Layout } from '@layout/shell/Layout';
 import { HomePage } from '@pages/HomePage';
 import { TeamPage } from '@pages/TeamPage';
 import { NotFoundPage } from '@pages/NotFoundPage';
+import { UnauthorizedPage } from '@pages/UnauthorizedPage';
+import { ForbiddenPage } from '@pages/ForbiddenPage';
+import { ServerErrorPage } from '@pages/ServerErrorPage';
 // Auth
 import { LoginPage } from '@features/auth/pages/LoginPage';
 import { RegisterPage } from '@features/auth/pages/RegisterPage';
@@ -57,6 +60,9 @@ export const router = createBrowserRouter([
         ],
       },
 
+      { path: '/401', element: <UnauthorizedPage /> },
+      { path: '/403', element: <ForbiddenPage /> },
+      { path: '/500', element: <ServerErrorPage /> },
       { path: '*', element: <NotFoundPage /> },
     ],
   },

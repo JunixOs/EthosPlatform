@@ -1,4 +1,4 @@
-import { createApp } from './app';
+import { createApp, globalErrorHandler } from './app';
 import { createContainer } from './container';
 import { createRoutes } from './routes';
 import { AppDataSource } from './datos/presistence/connections/AppDataSource';
@@ -13,6 +13,9 @@ async function startServer(): Promise<void> {
     const apiRouter = createRoutes(container);
 
     app.use('/api', apiRouter);
+
+    // Global error handler — DEBE ir DESPUÉS de todas las rutas
+    app.use(globalErrorHandler);
 
     const server = app.listen(PORT, () => {
       logger.info(`EthosPlatform API corriendo en http://localhost:${PORT}`);

@@ -1,4 +1,4 @@
-import type { TipoReporteEnum } from '../../../datos/presistence/entities/ReporteORM';
+import { TipoReporteEnum } from '../enum/index';
 
 export class Reporte {
   constructor(

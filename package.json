@@ -16,7 +16,11 @@
     "test:coverage": "pnpm --filter @app/backend test:coverage && pnpm --filter @app/frontend test:coverage",
     "test:backend:coverage": "pnpm --filter @app/backend test:coverage",
     "test:frontend:coverage": "pnpm --filter @app/frontend test:coverage",
-    "lint": "pnpm --filter @app/frontend lint"
+    "lint": "pnpm --filter @app/frontend lint",
+    "db:seed": "pnpm --filter @app/backend db:seed",
+    "e2e": "pnpm --filter @tests/e2e test",
+    "e2e:ui": "pnpm --filter @tests/e2e test --ui",
+    "e2e:report": "pnpm --filter @tests/e2e test --reporter=html"
   },
   "keywords": [],
   "author": "",

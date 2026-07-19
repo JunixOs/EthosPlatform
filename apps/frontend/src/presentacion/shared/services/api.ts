@@ -4,6 +4,17 @@ function getToken(): string | null {
   return localStorage.getItem('ethos_token');
 }
 
+function clearAuthAndRedirect(): void {
+  localStorage.removeItem('ethos_token');
+  localStorage.removeItem('ethos_usuario');
+  localStorage.removeItem('ethos_token_expiresAt');
+  window.dispatchEvent(new CustomEvent('ethos:auth:expired'));
+  // Redirigir a login con flag de sesión expirada (evita loop si ya estamos en login)
+  if (!window.location.pathname.startsWith('/login')) {
+    window.location.href = '/login?sesionExpirada=1';
+  }
+}
+
 export interface ApiErrorResponse {
   success: false;
   data: null;
@@ -46,6 +57,11 @@ export class ApiError extends Error {
   isConflictError(): boolean {
     return this.httpStatus === 409;
   }
+
+  /** Devuelve true si es un error de servidor (500) */
+  isServerError(): boolean {
+    return this.httpStatus >= 500;
+  }
 }
 
 async function request<T>(
@@ -66,6 +82,12 @@ async function request<T>(
 
   if (!res.ok) {
     const json = (await res.json().catch(() => ({}))) as Partial<ApiErrorResponse>;
+
+    // Interceptor global: 401 = sesión expirada o inválida
+    if (res.status === 401) {
+      clearAuthAndRedirect();
+    }
+
     throw new ApiError({
       success: false,
       data: null,

@@ -3,7 +3,7 @@ import type { IExperienciaRepository } from '../../gateway/repositories/IExperie
 import { Reporte } from '../../../domain/entities/Reporte';
 import { NotFoundException, ConflictException, ValidationException } from '../../exceptions/AppException';
 import { v4 as uuidv4 } from 'uuid';
-import type { TipoReporteEnum } from '../../../../datos/presistence/entities/ReporteORM';
+import { TipoReporteEnum } from '../../../domain/enum/index';
 
 export interface CrearReporteCommand {
   reporterId: string;

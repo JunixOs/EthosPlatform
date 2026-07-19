@@ -1,5 +1,6 @@
 import { Reporte } from '../../../logica/domain/entities/Reporte';
-import type { ReporteORM, TipoReporteEnum } from '../entities/ReporteORM';
+import type { ReporteORM } from '../entities/ReporteORM';
+import type { TipoReporteEnum } from '../../../logica/domain/enum/index';
 
 export class ReporteMapper {
   static toDomain(orm: ReporteORM): Reporte {

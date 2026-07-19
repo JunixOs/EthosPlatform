@@ -1,5 +1,4 @@
-import type { Request, Response } from 'express';
-import type { IUsuarioRepository } from '../../../../application/gateway/repositories/IUsuarioRepository';
+import type { IUsuarioRepository } from '../../../gateway/repositories/IUsuarioRepository';
 
 export class ListarUsuariosAdminUseCase {
   constructor(private readonly usuarioRepo: IUsuarioRepository) {}

@@ -1,5 +1,5 @@
-import type { IUsuarioRepository } from '../../../../application/gateway/repositories/IUsuarioRepository';
-import { NotFoundException } from '../../../../application/exceptions/AppException';
+import type { IUsuarioRepository } from '../../../gateway/repositories/IUsuarioRepository';
+import { NotFoundException } from '../../../exceptions/AppException';
 
 export class ReactivarUsuarioUseCase {
   constructor(private readonly usuarioRepo: IUsuarioRepository) {}

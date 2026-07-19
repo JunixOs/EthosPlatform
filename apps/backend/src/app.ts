@@ -21,61 +21,61 @@ export function createApp(): express.Application {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
   });
 
-    // Global error handler (se registra al final, en routes.ts o server.ts)
-    app.use((err: unknown, req: Request, res: Response, _next: NextFunction) => {
-      const requestId = req.headers['x-request-id'] ?? crypto.randomUUID?.() ?? Date.now().toString();
-
-      if (err instanceof AppException) {
-        const auditLog = {
-          requestId,
-          ...err.toAuditLog(),
-          path: req.path,
-          method: req.method,
-          ip: req.ip ?? req.socket.remoteAddress,
-        };
-
-        if (err.httpStatus >= 500) {
-          logger.error(auditLog, `[${err.code}] AppException ${err.httpStatus}`);
-        } else if (err.event === 'SECURITY') {
-          logger.warn(auditLog, `[${err.code}] Security event ${err.httpStatus}`);
-        } else {
-          logger.info(auditLog, `[${err.code}] AppException ${err.httpStatus}`);
-        }
-
-        res.status(err.httpStatus).json(err.toJSON());
-        return;
-      }
-
-      if (err instanceof Error) {
-        logger.error(
-          { requestId, message: err.message, stack: err.stack, path: req.path, method: req.method },
-          '[SYS002] Error no controlado',
-        );
-        res.status(400).json({
-          success: false,
-          data: null,
-          errorMessage: err.message,
-          errorCode: 'SYS002',
-          httpErrorCode: 400,
-          module: 'SYSTEM',
-          event: 'ERROR',
-          extra: { requestId },
-        });
-        return;
-      }
-
-      logger.error({ requestId, path: req.path, method: req.method }, '[SYS001] Error desconocido');
-      res.status(500).json({
-        success: false,
-        data: null,
-        errorMessage: 'Error interno del servidor.',
-        errorCode: 'SYS001',
-        httpErrorCode: 500,
-        module: 'SYSTEM',
-        event: 'ERROR',
-        extra: { requestId },
-      });
-    });
-
   return app;
+}
+
+/** Global error handler — debe registrarse DESPUÉS de todas las rutas */
+export function globalErrorHandler(err: unknown, req: Request, res: Response, _next: NextFunction): void {
+  const requestId = req.headers['x-request-id'] ?? crypto.randomUUID?.() ?? Date.now().toString();
+
+  if (err instanceof AppException) {
+    const auditLog = {
+      requestId,
+      ...err.toAuditLog(),
+      path: req.path,
+      method: req.method,
+      ip: req.ip ?? req.socket.remoteAddress,
+    };
+
+    if (err.httpStatus >= 500) {
+      logger.error(auditLog, `[${err.code}] AppException ${err.httpStatus}`);
+    } else if (err.event === 'SECURITY') {
+      logger.warn(auditLog, `[${err.code}] Security event ${err.httpStatus}`);
+    } else {
+      logger.info(auditLog, `[${err.code}] AppException ${err.httpStatus}`);
+    }
+
+    res.status(err.httpStatus).json(err.toJSON());
+    return;
+  }
+
+  if (err instanceof Error) {
+    logger.error(
+      { requestId, message: err.message, stack: err.stack, path: req.path, method: req.method },
+      '[SYS002] Error no controlado',
+    );
+    res.status(400).json({
+      success: false,
+      data: null,
+      errorMessage: err.message,
+      errorCode: 'SYS002',
+      httpErrorCode: 400,
+      module: 'SYSTEM',
+      event: 'ERROR',
+      extra: { requestId },
+    });
+    return;
+  }
+
+  logger.error({ requestId, path: req.path, method: req.method }, '[SYS001] Error desconocido');
+  res.status(500).json({
+    success: false,
+    data: null,
+    errorMessage: 'Error interno del servidor.',
+    errorCode: 'SYS001',
+    httpErrorCode: 500,
+    module: 'SYSTEM',
+    event: 'ERROR',
+    extra: { requestId },
+  });
 }
