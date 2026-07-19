@@ -24,4 +24,9 @@ export const etiquetasService = {
     const res = await api.put<{ data: { etiquetas: Etiqueta[] } }>(`/experiencias/${experienciaId}/etiquetas`, { nombres });
     return res.data;
   },
+
+  async obtenerPorExperiencia(experienciaId: string): Promise<Etiqueta[]> {
+    const res = await api.get<{ data: Etiqueta[] }>(`/experiencias/${experienciaId}/etiquetas`);
+    return res.data;
+  },
 };

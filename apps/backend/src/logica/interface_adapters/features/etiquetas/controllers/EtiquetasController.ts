@@ -2,6 +2,7 @@ import type { Request, Response } from 'express';
 import type { AsociarEtiquetasUseCase } from '../../../../application/features/etiquetas/AsociarEtiquetasUseCase';
 import type { BuscarPorEtiquetaUseCase } from '../../../../application/features/etiquetas/BuscarPorEtiquetaUseCase';
 import type { ListarEtiquetasUseCase } from '../../../../application/features/etiquetas/ListarEtiquetasUseCase';
+import type { ObtenerEtiquetasDeExperienciaUseCase } from '../../../../application/features/etiquetas/ObtenerEtiquetasDeExperienciaUseCase';
 import { ExperienciaHttpMapper } from '../../experiencias/mappers/ExperienciaHttpMapper';
 
 export class EtiquetasController {
@@ -9,6 +10,7 @@ export class EtiquetasController {
     private readonly asociarUC: AsociarEtiquetasUseCase,
     private readonly buscarUC: BuscarPorEtiquetaUseCase,
     private readonly listarUC: ListarEtiquetasUseCase,
+    private readonly obtenerPorExperienciaUC: ObtenerEtiquetasDeExperienciaUseCase,
   ) {}
 
   /** PUT /api/experiencias/:id/etiquetas */
@@ -36,6 +38,13 @@ export class EtiquetasController {
       errorCode: '',
       httpErrorCode: '',
     });
+  };
+
+  /** GET /api/experiencias/:id/etiquetas */
+  obtenerPorExperiencia = async (req: Request, res: Response): Promise<void> => {
+    const { id: experienciaId } = req.params as { id: string };
+    const result = await this.obtenerPorExperienciaUC.execute(experienciaId);
+    res.json({ success: true, data: result, errorMessage: '', errorCode: '', httpErrorCode: '' });
   };
 
   /** GET /api/etiquetas */

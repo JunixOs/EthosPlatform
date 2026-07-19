@@ -59,6 +59,7 @@ import { EliminarRespuestaUseCase } from './logica/application/features/respuest
 import { AsociarEtiquetasUseCase } from './logica/application/features/etiquetas/AsociarEtiquetasUseCase';
 import { BuscarPorEtiquetaUseCase } from './logica/application/features/etiquetas/BuscarPorEtiquetaUseCase';
 import { ListarEtiquetasUseCase } from './logica/application/features/etiquetas/ListarEtiquetasUseCase';
+import { ObtenerEtiquetasDeExperienciaUseCase } from './logica/application/features/etiquetas/ObtenerEtiquetasDeExperienciaUseCase';
 
 // Reporte use cases
 import { CrearReporteUseCase } from './logica/application/features/reportes/CrearReporteUseCase';
@@ -181,7 +182,8 @@ export async function createContainer(): Promise<Container> {
   const asociarEtiquetasUC = new AsociarEtiquetasUseCase(etiquetaRepo, experienciaRepo);
   const buscarPorEtiquetaUC = new BuscarPorEtiquetaUseCase(etiquetaRepo, experienciaRepo);
   const listarEtiquetasUC = new ListarEtiquetasUseCase(etiquetaRepo);
-  const etiquetasController = new EtiquetasController(asociarEtiquetasUC, buscarPorEtiquetaUC, listarEtiquetasUC);
+  const obtenerEtiquetasExpUC = new ObtenerEtiquetasDeExperienciaUseCase(etiquetaRepo);
+  const etiquetasController = new EtiquetasController(asociarEtiquetasUC, buscarPorEtiquetaUC, listarEtiquetasUC, obtenerEtiquetasExpUC);
 
   // Reportes
   const crearReporteUC = new CrearReporteUseCase(reporteRepo, experienciaRepo);

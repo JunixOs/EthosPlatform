@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { experienciasService } from '@features/experiencias/services/experiencias.service';
+import { etiquetasService } from '@features/etiquetas/services/etiquetas.service';
 import type { Experiencia } from '@features/experiencias/types/experiencia.types';
 
 import { LinkComponent } from '@/shared/components/Link/Link.component';
@@ -15,7 +16,7 @@ export function BuscarExperienciasPage() {
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
 
-  const search = useCallback(async (q: string) => {
+  const searchText = useCallback(async (q: string) => {
     if (!q.trim()) return;
     setLoading(true);
     setSearched(true);
@@ -32,17 +33,36 @@ export function BuscarExperienciasPage() {
     }
   }, [setSearchParams]);
 
+  const searchEtiqueta = useCallback(async (slug: string) => {
+    setLoading(true);
+    setSearched(true);
+    try {
+      const res = await etiquetasService.buscarPorEtiqueta(slug, 1, 20);
+      setResults(res.data);
+      setTotal(res.total);
+    } catch {
+      setResults([]);
+      setTotal(0);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     const q = searchParams.get('q');
-    if (q) {
+    const etiqueta = searchParams.get('etiqueta');
+    if (etiqueta) {
+      setQuery(`#${etiqueta}`);
+      void searchEtiqueta(etiqueta);
+    } else if (q) {
       setQuery(q);
-      void search(q);
+      void searchText(q);
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    void search(query);
+    void searchText(query);
   };
 
   return (
@@ -74,13 +94,22 @@ export function BuscarExperienciasPage() {
 
       {!loading && searched && results.length === 0 && (
         <div className="text-center py-12">
-          <p className="text-gray-500 dark:text-gray-400">No se encontraron experiencias para "{query}".</p>
+          <p className="text-gray-500 dark:text-gray-400">
+            {searchParams.get('etiqueta')
+              ? `No se encontraron experiencias para la etiqueta "${searchParams.get('etiqueta')}".`
+              : `No se encontraron experiencias para "{query}".`}
+          </p>
         </div>
       )}
 
       {!loading && results.length > 0 && (
         <div>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{total} resultado{total !== 1 ? 's' : ''} para "{searchParams.get('q')}"</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+            {total} resultado{total !== 1 ? 's' : ''}{' '}
+            {searchParams.get('etiqueta')
+              ? `para la etiqueta "#${searchParams.get('etiqueta')}"`
+              : `para "{searchParams.get('q')}"`}
+          </p>
           <div className="space-y-4">
             {results.map((exp) => (
               <CardComponent>

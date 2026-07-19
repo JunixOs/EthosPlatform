@@ -16,6 +16,7 @@ export function createRoutes(container: Container): Router {
   router.get('/experiencias/:id/preview', authMiddleware, container.experienciasController.preview);
   router.get('/experiencias/:id/relacionadas', container.experienciasController.relacionadas);
   router.get('/experiencias/:id/relacionadas-autor', container.experienciasController.relacionadasAutor);
+  router.get('/experiencias/:id/etiquetas', container.etiquetasController.obtenerPorExperiencia);
   router.get('/experiencias/:id', container.experienciasController.getById);
   router.post('/experiencias', authMiddleware, container.experienciasController.create);
   router.put('/experiencias/:id', authMiddleware, container.experienciasController.update);

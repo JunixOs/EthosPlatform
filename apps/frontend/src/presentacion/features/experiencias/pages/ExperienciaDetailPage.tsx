@@ -13,6 +13,7 @@ import { RespuestasSection } from '@features/respuestas/components/RespuestasSec
 import { EtiquetasList } from '@features/etiquetas/components/EtiquetasList';
 import { EditarEtiquetasSection } from '@features/etiquetas/components/EditarEtiquetasSection';
 import { ReportarModal } from '@features/reportes/components/ReportarModal';
+import { etiquetasService } from '@features/etiquetas/services/etiquetas.service';
 import type { Etiqueta } from '@features/etiquetas/services/etiquetas.service';
 
 export function ExperienciaDetailPage() {
@@ -59,13 +60,12 @@ export function ExperienciaDetailPage() {
       .catch(() => null);
   }, [id]);
 
-  // Cargar etiquetas (placeholder hasta que backend devuelva etiquetas en getById)
-  // Por ahora dejamos etiquetas vacías — se llenarán cuando backend integre etiquetas en Experiencia
+  // Cargar etiquetas de la experiencia
   useEffect(() => {
     if (!id) return;
-    // etiquetasService no tiene método directo por experiencia aún;
-    // se integrará cuando el backend exponga etiquetas en ExperienciaResponseDTO
-    setEtiquetas([]);
+    etiquetasService.obtenerPorExperiencia(id)
+      .then((res) => setEtiquetas(res))
+      .catch(() => null);
   }, [id]);
 
   const handleDelete = async () => {
