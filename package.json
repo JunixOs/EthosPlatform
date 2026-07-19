@@ -7,7 +7,16 @@
   "scripts": {
     "dev": "pnpm -r dev",
     "build": "pnpm -r build",
-    "test": "pnpm -r test"
+    "test": "pnpm -r test",
+    "test:backend": "pnpm --filter @app/backend test",
+    "test:frontend": "pnpm --filter @app/frontend test",
+    "test:watch": "pnpm --filter @app/backend test:watch & pnpm --filter @app/frontend test:watch",
+    "test:backend:watch": "pnpm --filter @app/backend test:watch",
+    "test:frontend:watch": "pnpm --filter @app/frontend test:watch",
+    "test:coverage": "pnpm --filter @app/backend test:coverage && pnpm --filter @app/frontend test:coverage",
+    "test:backend:coverage": "pnpm --filter @app/backend test:coverage",
+    "test:frontend:coverage": "pnpm --filter @app/frontend test:coverage",
+    "lint": "pnpm --filter @app/frontend lint"
   },
   "keywords": [],
   "author": "",
