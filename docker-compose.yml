@@ -1,0 +1,45 @@
+services:
+
+  frontend:
+    build:
+      context: ./apps/frontend
+    container_name: etica_frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+
+  backend:
+    build:
+      context: ./apps/backend
+    container_name: etica_backend
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: ${PORT}
+      FRONTEND_URL: ${FRONTEND_URL}
+      NODE_ENV: production
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_PORT: ${DATABASE_PORT}
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+
+
+  postgres:
+    image: postgres:17
+    container_name: etica_postgres
+    environment:
+      POSTGRES_DB: sistema_etica
+      POSTGRES_USER: etica_app
+      POSTGRES_PASSWORD: password
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+
+volumes:
+
+  postgres_data:
