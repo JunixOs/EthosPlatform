@@ -28,7 +28,7 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/apps/backend/dist ./dist
 COPY --from=builder /app/apps/backend/package.json ./package.json
 
-WORKDIR /app/apps/backend
+WORKDIR /app
 
 EXPOSE 3001
 
