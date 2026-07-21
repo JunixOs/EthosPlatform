@@ -18,16 +18,17 @@ WORKDIR /app/apps/backend
 RUN pnpm build
 
 
-FROM node:24-alpine AS runner
+FROM node:22-alpine AS runner
 
 WORKDIR /app
 
 RUN corepack enable
 
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/apps/backend/node_modules ./apps/backend/node_modules
 COPY --from=builder /app/apps/backend/dist ./dist
 COPY --from=builder /app/apps/backend/package.json ./package.json
+
+WORKDIR /app/apps/backend
 
 EXPOSE 3001
 
