@@ -9,7 +9,8 @@
     "test:coverage": "vitest run --coverage",
     "dev": "tsx src/server.ts",
     "build": "tsc",
-    "db:seed": "tsx scripts/seed.ts"
+    "db:seed": "tsx scripts/seed.ts",
+    "start": "node dist/server.js"
   },
   "keywords": [],
   "author": "",
