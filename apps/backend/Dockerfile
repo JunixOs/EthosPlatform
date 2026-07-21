@@ -33,4 +33,4 @@ WORKDIR /app/apps/backend
 
 EXPOSE 3001
 
-CMD ["sh", "-c", "cd apps/backend && pnpm typeorm -d ./dist/datos/presistence/connections/AppDataSource.js migration:run && node dist/server.js"]
+CMD ["sh", "-c", "pnpm typeorm -d ./dist/datos/presistence/connections/AppDataSource.js migration:run && node dist/server.js"]
