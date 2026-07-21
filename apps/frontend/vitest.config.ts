@@ -9,7 +9,8 @@ export default defineConfig({
     setupFiles: './tests/setup.ts',
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'html', 'lcov'],
+      reporter: ['text', 'html', 'lcov', 'json-summary'],
+      include: ['src/**/*.{ts,tsx}'],
       exclude: [
         'node_modules/',
         'tests/',
@@ -17,6 +18,7 @@ export default defineConfig({
         '**/*.spec.tsx',
         'src/**/*.types.ts',
         'src/infrastructure/**',
+        'src/main.tsx',
       ],
     },
   },

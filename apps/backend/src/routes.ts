@@ -1,13 +1,21 @@
 import { Router } from 'express';
 import type { Container } from './container';
+import { validateBody } from './logica/interface_adapters/middleware/validationMiddleware';
+import {
+  registerSchema,
+  loginSchema,
+  createExperienciaSchema,
+  updateExperienciaSchema,
+  editarPerfilSchema,
+} from './logica/shared/validation/schemas';
 
 export function createRoutes(container: Container): Router {
   const router = Router();
   const { authMiddleware, requireAdmin } = container;
 
   // Auth
-  router.post('/auth/register', container.authController.register);
-  router.post('/auth/login', container.authController.login);
+  router.post('/auth/register', validateBody(registerSchema), container.authController.register);
+  router.post('/auth/login', validateBody(loginSchema), container.authController.login);
   router.post('/auth/logout', authMiddleware, container.authController.logout);
 
   // Experiencias — orden importante: rutas específicas antes que /:id
@@ -18,14 +26,14 @@ export function createRoutes(container: Container): Router {
   router.get('/experiencias/:id/relacionadas-autor', container.experienciasController.relacionadasAutor);
   router.get('/experiencias/:id/etiquetas', container.etiquetasController.obtenerPorExperiencia);
   router.get('/experiencias/:id', container.experienciasController.getById);
-  router.post('/experiencias', authMiddleware, container.experienciasController.create);
-  router.put('/experiencias/:id', authMiddleware, container.experienciasController.update);
+  router.post('/experiencias', authMiddleware, validateBody(createExperienciaSchema), container.experienciasController.create);
+  router.put('/experiencias/:id', authMiddleware, validateBody(updateExperienciaSchema), container.experienciasController.update);
   router.delete('/experiencias/:id', authMiddleware, container.experienciasController.delete);
   router.patch('/experiencias/:id/publicar', authMiddleware, container.experienciasController.publish);
 
   // Usuarios — /me antes que /:id para evitar conflictos
   router.get('/usuarios/me', authMiddleware, container.usuariosController.getMiPerfil);
-  router.put('/usuarios/me/perfil', authMiddleware, container.usuariosController.editarPerfil);
+  router.put('/usuarios/me/perfil', authMiddleware, validateBody(editarPerfilSchema), container.usuariosController.editarPerfil);
   router.put('/usuarios/me/foto', authMiddleware, container.usuariosController.editarFoto);
   router.delete('/usuarios/me', authMiddleware, container.usuariosController.eliminarCuenta);
   router.get('/usuarios/:id', container.usuariosController.getPerfil);
