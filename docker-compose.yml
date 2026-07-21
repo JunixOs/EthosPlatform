@@ -18,7 +18,7 @@ services:
       dockerfile: apps/backend/Dockerfile
     container_name: etica_backend
     ports:
-      - "3000:3000"
+      - "3001:3001"
     environment:
       PORT: ${PORT}
       FRONTEND_URL: ${FRONTEND_URL}

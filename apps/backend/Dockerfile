@@ -15,6 +15,6 @@ COPY apps/backend/ apps/backend/
 
 RUN pnpm --filter @app/backend build
 
-EXPOSE 3000
+EXPOSE 3001
 
 CMD ["pnpm" , "--filter", "@app/backend" , "start"]
