@@ -18,22 +18,17 @@ WORKDIR /app/apps/backend
 RUN pnpm build
 
 
-
 FROM node:24-alpine AS runner
 
 WORKDIR /app
 
 RUN corepack enable
 
-
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/apps/backend/node_modules ./apps/backend/node_modules
-
 COPY --from=builder /app/apps/backend/dist ./dist
 COPY --from=builder /app/apps/backend/package.json ./package.json
 
-
 EXPOSE 3001
 
-
-CMD ["sh", "-c", "npx typeorm -d ./dist/datos/presistence/connections/AppDataSource.js migration:run && node dist/server.js"]
+CMD ["sh", "-c", "./node_modules/.bin/typeorm -d ./dist/datos/presistence/connections/AppDataSource.js migration:run && node dist/server.js"]
