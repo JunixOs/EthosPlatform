@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import 'dotenv/config';
 import { DataSource } from 'typeorm';
 import { UsuarioORM } from '../entities/UsuarioORM';
 import { ExperienciaORM } from '../entities/ExperienciaORM';
@@ -12,6 +13,7 @@ import { ExperienciaEtiquetaORM } from '../entities/ExperienciaEtiquetaORM';
 import { ReporteORM } from '../entities/ReporteORM';
 import { AuditoriaORM } from '../entities/AuditoriaORM';
 import { PaginaEquipoORM } from '../entities/PaginaEquipoORM';
+import path from 'node:path';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -24,6 +26,9 @@ export const AppDataSource = new DataSource({
     UsuarioORM, ExperienciaORM, SesionORM, IntentoFallidoORM,
     FavoritoORM, ReaccionORM, RespuestaORM, EtiquetaORM,
     ExperienciaEtiquetaORM, ReporteORM, AuditoriaORM, PaginaEquipoORM,
+  ],
+  migrations: [
+    path.join(__dirname, "../migrations/*.{js,ts}")
   ],
   synchronize: process.env['NODE_ENV'] === 'development',
   logging: process.env['NODE_ENV'] === 'development',
