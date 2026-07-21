@@ -1,5 +1,17 @@
 import { defineConfig, devices } from '@playwright/test';
 
+// Specs que requieren una sesión pre-autenticada (storageState) — solo corren
+// bajo chromium-auth / chromium-admin, nunca en los proyectos públicos.
+const PRIVATE_SPECS = [
+  /flujo-admin\.spec\.ts/,
+  /flujo-etiquetas\.spec\.ts/,
+  /flujo-experiencias\.spec\.ts/,
+  /flujo-favoritos\.spec\.ts/,
+  /flujo-reacciones\.spec\.ts/,
+  /flujo-reportes\.spec\.ts/,
+  /flujo-respuestas\.spec\.ts/,
+];
+
 export default defineConfig({
   testDir: './specs',
   fullyParallel: false,
@@ -22,14 +34,17 @@ export default defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+      testIgnore: PRIVATE_SPECS,
     },
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
+      testIgnore: PRIVATE_SPECS,
     },
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
+      testIgnore: PRIVATE_SPECS,
     },
 
     // Tests autenticados (reutilizan storageState)
@@ -40,7 +55,8 @@ export default defineConfig({
         storageState: 'playwright/.auth/user.json',
       },
       dependencies: ['setup'],
-      grep: /auth|favoritos|respuestas|reacciones|etiquetas|reportes|experiencias-crud/,
+      testMatch: PRIVATE_SPECS,
+      testIgnore: /flujo-admin\.spec\.ts/,
     },
 
     // Tests de administración
@@ -51,7 +67,7 @@ export default defineConfig({
         storageState: 'playwright/.auth/admin.json',
       },
       dependencies: ['setup'],
-      grep: /admin/,
+      testMatch: /flujo-admin\.spec\.ts/,
     },
   ],
 });

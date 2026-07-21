@@ -38,8 +38,9 @@ export function CreateExperienciaPage() {
         )}
 
         <div>
-          <label className="block text-sm font-medium mb-1">Título</label>
+          <label htmlFor="titulo" className="block text-sm font-medium mb-1">Título</label>
           <input
+            id="titulo"
             type="text"
             value={titulo}
             onChange={(e) => setTitulo(e.target.value)}
@@ -51,8 +52,9 @@ export function CreateExperienciaPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Descripción</label>
+          <label htmlFor="descripcion" className="block text-sm font-medium mb-1">Descripción</label>
           <textarea
+            id="descripcion"
             value={descripcion}
             onChange={(e) => setDescripcion(e.target.value)}
             required
@@ -63,13 +65,14 @@ export function CreateExperienciaPage() {
         </div>
 
         <div className="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-5">
-          <label className="block text-sm font-semibold text-purple-700 dark:text-purple-400 mb-2">
+          <label htmlFor="reflexionMoral" className="block text-sm font-semibold text-purple-700 dark:text-purple-400 mb-2">
             ¿Qué dice la moral?
           </label>
           <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
             La moral son las normas y valores que la sociedad considera correctos.
           </p>
           <textarea
+            id="reflexionMoral"
             value={reflexionMoral}
             onChange={(e) => setReflexionMoral(e.target.value)}
             required
@@ -80,13 +83,14 @@ export function CreateExperienciaPage() {
         </div>
 
         <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-5">
-          <label className="block text-sm font-semibold text-blue-700 dark:text-blue-400 mb-2">
+          <label htmlFor="reflexionEtica" className="block text-sm font-semibold text-blue-700 dark:text-blue-400 mb-2">
             ¿Qué dice tu ética?
           </label>
           <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
             Tu ética es tu criterio personal y racional sobre lo que es correcto.
           </p>
           <textarea
+            id="reflexionEtica"
             value={reflexionEtica}
             onChange={(e) => setReflexionEtica(e.target.value)}
             required

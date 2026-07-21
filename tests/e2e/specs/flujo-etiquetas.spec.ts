@@ -10,17 +10,18 @@ test.describe('Flujo de etiquetas', () => {
     await page.locator('textarea').nth(1).fill('Moral test');
     await page.locator('textarea').nth(2).fill('Ética test');
 
-    // Agregar etiquetas (el componente usa input + Enter)
-    const tagInput = page.locator('input[placeholder*="Escribe y presiona Enter"]').first();
-    if (await tagInput.count() > 0) {
-      await tagInput.fill('etica');
-      await tagInput.press('Enter');
-      await tagInput.fill('moral');
-      await tagInput.press('Enter');
-    }
-
-    await page.getByRole('button', { name: /publicar/i }).click();
+    // Las etiquetas se asocian desde el detalle (sección "Editar etiquetas"),
+    // no en el formulario de creación.
+    await page.getByRole('button', { name: /guardar borrador/i }).click();
     await expect(page).toHaveURL(/\/experiencias\/[0-9a-f-]+$/, { timeout: 8000 });
+
+    const tagInput = page.locator('input[placeholder*="Escribe y presiona Enter"]').first();
+    await tagInput.fill('etica');
+    await tagInput.press('Enter');
+    await tagInput.fill('moral');
+    await tagInput.press('Enter');
+
+    await page.getByRole('button', { name: /guardar etiquetas/i }).click();
 
     // Verificar que las etiquetas aparecen
     await expect(page.getByText('#etica')).toBeVisible({ timeout: 5000 });

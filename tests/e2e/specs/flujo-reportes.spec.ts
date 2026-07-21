@@ -26,7 +26,7 @@ test.describe('Flujo de reportes', () => {
     // Modal debe aparecer
     await expect(page.getByRole('heading', { name: /reportar contenido/i })).toBeVisible({ timeout: 3000 });
 
-    await page.getByRole('button', { name: /reportar/i }).click();
+    await page.getByRole('button', { name: /reportar/i }).last().click();
 
     // Debe mostrar mensaje de éxito
     await expect(page.getByText(/reporte enviado/i)).toBeVisible({ timeout: 5000 });

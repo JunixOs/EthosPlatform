@@ -66,8 +66,9 @@ export function EditExperienciaPage() {
         )}
 
         <div>
-          <label className="block text-sm font-medium mb-1">Título</label>
+          <label htmlFor="titulo" className="block text-sm font-medium mb-1">Título</label>
           <input
+            id="titulo"
             type="text"
             value={titulo}
             onChange={(e) => setTitulo(e.target.value)}
@@ -78,8 +79,9 @@ export function EditExperienciaPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Descripción</label>
+          <label htmlFor="descripcion" className="block text-sm font-medium mb-1">Descripción</label>
           <textarea
+            id="descripcion"
             value={descripcion}
             onChange={(e) => setDescripcion(e.target.value)}
             required
@@ -89,10 +91,11 @@ export function EditExperienciaPage() {
         </div>
 
         <div className="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-5">
-          <label className="block text-sm font-semibold text-purple-700 dark:text-purple-400 mb-2">
+          <label htmlFor="reflexionMoral" className="block text-sm font-semibold text-purple-700 dark:text-purple-400 mb-2">
             ¿Qué dice la moral?
           </label>
           <textarea
+            id="reflexionMoral"
             value={reflexionMoral}
             onChange={(e) => setReflexionMoral(e.target.value)}
             required
@@ -102,10 +105,11 @@ export function EditExperienciaPage() {
         </div>
 
         <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-5">
-          <label className="block text-sm font-semibold text-blue-700 dark:text-blue-400 mb-2">
+          <label htmlFor="reflexionEtica" className="block text-sm font-semibold text-blue-700 dark:text-blue-400 mb-2">
             ¿Qué dice tu ética?
           </label>
           <textarea
+            id="reflexionEtica"
             value={reflexionEtica}
             onChange={(e) => setReflexionEtica(e.target.value)}
             required

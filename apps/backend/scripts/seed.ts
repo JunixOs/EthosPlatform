@@ -30,9 +30,12 @@ async function seed() {
   for (const u of testUsers) {
     await usuarioRepo.delete(u.id);
   }
-  const testExps = await experienciaRepo.find({ where: { usuarioId: testUsers[0]?.id ?? 'none' } });
-  for (const e of testExps) {
-    await experienciaRepo.delete(e.id);
+  if (testUsers.length > 0) {
+    const userIds = testUsers.map((u) => u.id);
+    const testExps = await experienciaRepo.find({ where: userIds.map((id) => ({ usuarioId: id })) });
+    for (const e of testExps) {
+      await experienciaRepo.delete(e.id);
+    }
   }
 
   // Crear usuario normal de test
