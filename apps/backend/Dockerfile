@@ -7,7 +7,11 @@ RUN corepack enable
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 COPY apps/backend/package.json apps/backend/
-COPY packages/*/package.json packages/*/
+COPY apps/frontend/package.json apps/frontend/
+COPY tests/e2e/package.json tests/e2e/
+COPY packages/shared/package.json packages/shared/
+COPY packages/types/package.json packages/types/
+COPY packages/ui/package.json packages/ui/
 
 RUN pnpm install --frozen-lockfile
 
@@ -15,8 +19,7 @@ COPY apps/backend ./apps/backend
 COPY packages ./packages
 
 WORKDIR /app/apps/backend
-
-RUN pnpm build
+RUN pnpm run build
 
 
 FROM node:22-alpine AS runner
@@ -34,4 +37,4 @@ WORKDIR /app/apps/backend
 
 EXPOSE 3001
 
-CMD ["sh", "-c", "pnpm typeorm -d ./dist/datos/presistence/connections/AppDataSource.js migration:run && node dist/server.js"]
+CMD ["sh", "-c", "node node_modules/typeorm/cli.js -d ./dist/datos/presistence/connections/AppDataSource.js migration:run && node dist/server.js"]
