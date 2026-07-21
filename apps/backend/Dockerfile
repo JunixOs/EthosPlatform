@@ -9,10 +9,9 @@ COPY apps/backend/package.json apps/backend/
 COPY packages packages
 
 RUN corepack enable
-
 RUN pnpm install --frozen-lockfile
 
-COPY . .
+COPY apps/backend/ apps/backend/
 
 RUN pnpm --filter @app/backend build
 

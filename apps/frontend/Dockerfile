@@ -11,7 +11,7 @@ COPY packages packages
 RUN corepack enable
 RUN pnpm install --frozen-lockfile
 
-COPY . .
+COPY apps/frontend/ apps/frontend/
 
 ARG VITE_API_URL
 ENV VITE_API_URL=$VITE_API_URL
