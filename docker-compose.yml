@@ -8,7 +8,8 @@ services:
       - "8080:80"
     depends_on:
       - backend
-
+    environment:
+      VITE_API_URL: ${VITE_API_URL}
 
   backend:
     build:
@@ -32,9 +33,9 @@ services:
     image: postgres:17
     container_name: etica_postgres
     environment:
-      POSTGRES_DB: sistema_etica
-      POSTGRES_USER: etica_app
-      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
