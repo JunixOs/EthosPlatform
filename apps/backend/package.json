@@ -9,7 +9,12 @@
     "test:coverage": "vitest run --coverage",
     "dev": "tsx src/server.ts",
     "build": "tsc",
-    "db:seed": "tsx scripts/seed.ts"
+    "db:seed": "tsx scripts/seed.ts",
+    "start": "node dist/server.js",
+    "typeorm": "ts-node --project tsconfig.json -r tsconfig-paths/register ./node_modules/typeorm/cli -d ./src/datos/presistence/connections/AppDataSource.ts",
+    "migration:run": "typeorm migration:run",
+    "migration:revert": "typeorm migration:revert",
+    "migration:prod": "typeorm-ts-node-commonjs -d dist/datos/presistence/connections/AppDataSource.js migration:run"
   },
   "keywords": [],
   "author": "",
@@ -35,13 +40,16 @@
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.12.4",
-    "@types/uuid": "^10.0.0",
-    "esbuild": "^0.28.1",
-    "tsx": "^4.22.3",
-    "typescript": "~6.0.3",
-    "vitest": "^4.1.10",
-    "supertest": "^7.2.2",
     "@types/supertest": "^7.2.1",
-    "@vitest/coverage-v8": "^4.1.10"
+    "@types/uuid": "^10.0.0",
+    "@vitest/coverage-v8": "^4.1.10",
+    "esbuild": "^0.28.1",
+    "supertest": "^7.2.2",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.22.3",
+    "typeorm-ts-node-commonjs": "^0.3.20",
+    "typescript": "~6.0.3",
+    "vitest": "^4.1.10"
   }
 }

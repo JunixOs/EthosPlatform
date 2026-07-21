@@ -20,7 +20,11 @@
     "esModuleInterop": true,
     "isolatedModules": true,
     "moduleDetection": "force",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+
+    "types": [
+      "node"
+    ]
   },
   "include": ["src"]
 }
