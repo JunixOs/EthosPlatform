@@ -19,7 +19,19 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "ignoreDeprecations": "6.0",
+
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/presentacion/*"],
+      "@app/*": ["src/presentacion/app/*"],
+      "@features/*": ["src/presentacion/features/*"],
+      "@layout/*": ["src/presentacion/layout/*"],
+      "@pages/*": ["src/presentacion/pages/*"],
+      "@shared/*": ["src/presentacion/shared/*"],
+      "@widgets/*": ["src/presentacion/widgets/*"]
+    }
   },
   "include": ["src"]
 }

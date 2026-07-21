@@ -15,3 +15,11 @@ export enum EstadoReporteEnum {
   RESUELTO = 'resuelto',
   RECHAZADO = 'rechazado',
 }
+
+export enum TipoReporteEnum {
+  SPAM = 'spam',
+  CONTENIDO_INAPROPIADO = 'contenido_inapropiado',
+  ACOSO = 'acoso',
+  INFORMACION_FALSA = 'informacion_falsa',
+  OTRO = 'otro',
+}

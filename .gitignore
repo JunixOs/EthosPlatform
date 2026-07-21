@@ -147,3 +147,5 @@ vite.config.ts.timestamp-*
 # VSCode Files
 .vscode/
 
+# PlayWright test output folder
+/tests/e2e/test-results

@@ -18,6 +18,7 @@ export interface LoginResult {
   usuarioId: string;
   nombre: string;
   rol: string;
+  expiresAt: string;
 }
 
 export class LoginUseCase {
@@ -30,7 +31,7 @@ export class LoginUseCase {
   async execute(cmd: LoginCommand): Promise<LoginResult> {
     const intentos = await this.intentoRepo.findRecientesByCorreo(cmd.correo);
     if (IntentoFallido.debeBloquearse(intentos)) {
-      throw new TooManyRequestsException();
+      throw new TooManyRequestsException(intentos.length);
     }
 
     const usuario = await this.usuarioRepo.findByEmail(cmd.correo.toLowerCase().trim());
@@ -55,7 +56,10 @@ export class LoginUseCase {
     const tipo = cmd.recordarme ? TipoSesionEnum.LARGA : TipoSesionEnum.CORTA;
     const duracionMs = tipo === TipoSesionEnum.LARGA ? 24 * 60 * 60 * 1000 : 2 * 60 * 60 * 1000;
     const expiraEn = new Date(Date.now() + duracionMs);
-    const jwtSecret = process.env['JWT_SECRET'] ?? 'secret';
+    const jwtSecret = process.env['JWT_SECRET'];
+    if (!jwtSecret) {
+      throw new Error('JWT_SECRET no está definido en las variables de entorno.');
+    }
 
     const token = jwt.sign(
       { sub: usuario.getId(), rol: usuario.getRol() },
@@ -71,6 +75,7 @@ export class LoginUseCase {
       usuarioId: usuario.getId(),
       nombre: usuario.getNombre(),
       rol: usuario.getRol(),
+      expiresAt: sesion.getExpiraEn().toISOString(),
     };
   }
 

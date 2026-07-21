@@ -1,6 +1,8 @@
-import { api } from '../../../shared/services/api';
-import type { ApiResponse } from '../../../shared/types/api.types';
-import type { LoginDTO, RegisterDTO, AuthResponse } from '../types/auth.types';
+import { api } from '@shared/services/api';
+
+import type { LoginDTO, RegisterDTO, AuthResponse } from '@features/auth/types/auth.types';
+
+import type { ApiResponse } from '@shared/types/api.types';
 
 export const authService = {
   async login(data: LoginDTO): Promise<AuthResponse> {
@@ -11,9 +13,5 @@ export const authService = {
   async register(data: RegisterDTO): Promise<{ id: string }> {
     const res = await api.post<ApiResponse<{ id: string }>>('/auth/register', data);
     return res.data;
-  },
-
-  async logout(): Promise<void> {
-    await api.post('/auth/logout', {});
   },
 };

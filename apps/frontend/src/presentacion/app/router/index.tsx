@@ -1,15 +1,32 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { Layout } from '../../shared/components/Layout';
-import { ProtectedRoute } from '../../shared/components/ProtectedRoute';
-import { HomePage } from '../../pages/HomePage';
-import { TeamPage } from '../../pages/TeamPage';
-import { NotFoundPage } from '../../pages/NotFoundPage';
-import { LoginPage } from '../../features/auth/pages/LoginPage';
-import { RegisterPage } from '../../features/auth/pages/RegisterPage';
-import { ListExperienciasPage } from '../../features/experiencias/pages/ListExperienciasPage';
-import { ExperienciaDetailPage } from '../../features/experiencias/pages/ExperienciaDetailPage';
-import { CreateExperienciaPage } from '../../features/experiencias/pages/CreateExperienciaPage';
-import { EditExperienciaPage } from '../../features/experiencias/pages/EditExperienciaPage';
+
+import { ProtectedRoute } from '@app/router/ProtectedRoute';
+import { AdminRoute } from '@app/router/AdminRoute';
+
+import { Layout } from '@layout/shell/Layout';
+// Pages
+import { HomePage } from '@pages/HomePage';
+import { TeamPage } from '@pages/TeamPage';
+import { NotFoundPage } from '@pages/NotFoundPage';
+import { UnauthorizedPage } from '@pages/UnauthorizedPage';
+import { ForbiddenPage } from '@pages/ForbiddenPage';
+import { ServerErrorPage } from '@pages/ServerErrorPage';
+// Auth
+import { LoginPage } from '@features/auth/pages/LoginPage';
+import { RegisterPage } from '@features/auth/pages/RegisterPage';
+// Experiencias
+import { ListExperienciasPage } from '@features/experiencias/pages/ListExperienciasPage';
+import { ExperienciaDetailPage } from '@features/experiencias/pages/ExperienciaDetailPage';
+import { CreateExperienciaPage } from '@features/experiencias/pages/CreateExperienciaPage';
+import { EditExperienciaPage } from '@features/experiencias/pages/EditExperienciaPage';
+import { BuscarExperienciasPage } from '@features/experiencias/pages/BuscarExperienciasPage';
+// Usuarios
+import { PerfilPage } from '@features/usuarios/pages/PerfilPage';
+import { EditarPerfilPage } from '@features/usuarios/pages/EditarPerfilPage';
+// Favoritos
+import { MisFavoritosPage } from '@features/favoritos/pages/MisFavoritosPage';
+// Admin
+import { AdminUsuariosPage } from '@features/admin/pages/AdminUsuariosPage';
 
 export const router = createBrowserRouter([
   {
@@ -19,15 +36,33 @@ export const router = createBrowserRouter([
       { path: '/equipo', element: <TeamPage /> },
       { path: '/login', element: <LoginPage /> },
       { path: '/registro', element: <RegisterPage /> },
+      { path: '/buscar', element: <BuscarExperienciasPage /> },
       { path: '/experiencias', element: <ListExperienciasPage /> },
       { path: '/experiencias/:id', element: <ExperienciaDetailPage /> },
+      { path: '/perfil/:id', element: <PerfilPage /> },
+
+      // Rutas protegidas (requieren login)
       {
         element: <ProtectedRoute />,
         children: [
           { path: '/experiencias/nueva', element: <CreateExperienciaPage /> },
           { path: '/experiencias/:id/editar', element: <EditExperienciaPage /> },
+          { path: '/perfil/editar', element: <EditarPerfilPage /> },
+          { path: '/favoritos', element: <MisFavoritosPage /> },
         ],
       },
+
+      // Rutas solo admin
+      {
+        element: <AdminRoute />,
+        children: [
+          { path: '/admin/usuarios', element: <AdminUsuariosPage /> },
+        ],
+      },
+
+      { path: '/401', element: <UnauthorizedPage /> },
+      { path: '/403', element: <ForbiddenPage /> },
+      { path: '/500', element: <ServerErrorPage /> },
       { path: '*', element: <NotFoundPage /> },
     ],
   },

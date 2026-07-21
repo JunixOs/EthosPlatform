@@ -2,8 +2,9 @@ export class Email {
   private readonly value: string;
 
   constructor(value: string) {
-    this.validate(value);
-    this.value = value.toLowerCase().trim();
+    const trimmed = value.trim();
+    this.validate(trimmed);
+    this.value = trimmed.toLowerCase();
   }
 
   private validate(email: string): void {

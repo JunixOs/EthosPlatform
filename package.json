@@ -7,7 +7,20 @@
   "scripts": {
     "dev": "pnpm -r dev",
     "build": "pnpm -r build",
-    "test": "pnpm -r test"
+    "test": "pnpm -r test",
+    "test:backend": "pnpm --filter @app/backend test",
+    "test:frontend": "pnpm --filter @app/frontend test",
+    "test:watch": "pnpm --filter @app/backend test:watch & pnpm --filter @app/frontend test:watch",
+    "test:backend:watch": "pnpm --filter @app/backend test:watch",
+    "test:frontend:watch": "pnpm --filter @app/frontend test:watch",
+    "test:coverage": "pnpm --filter @app/backend test:coverage && pnpm --filter @app/frontend test:coverage",
+    "test:backend:coverage": "pnpm --filter @app/backend test:coverage",
+    "test:frontend:coverage": "pnpm --filter @app/frontend test:coverage",
+    "lint": "pnpm --filter @app/frontend lint",
+    "db:seed": "pnpm --filter @app/backend db:seed",
+    "e2e": "pnpm --filter @tests/e2e test",
+    "e2e:ui": "pnpm --filter @tests/e2e test --ui",
+    "e2e:report": "pnpm --filter @tests/e2e test --reporter=html"
   },
   "keywords": [],
   "author": "",
@@ -15,7 +28,7 @@
   "devEngines": {
     "packageManager": {
       "name": "pnpm",
-      "version": "^11.0.8",
+      "version": "11.8.0",
       "onFail": "download"
     }
   },
