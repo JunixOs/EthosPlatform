@@ -8,7 +8,7 @@ interface EditarEtiquetasSectionProps {
   onUpdate?: (etiquetas: string[]) => void;
 }
 
-export function EditarEtiquetasSection({ experienciaId, etiquetasIniciales, onUpdate }: EditarEtiquetasSectionProps) {
+export function EditarEtiquetasSection({ experienciaId, etiquetasIniciales, onUpdate }: Readonly<EditarEtiquetasSectionProps>) {
   const [etiquetas, setEtiquetas] = useState(etiquetasIniciales);
   const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState<string | null>(null);

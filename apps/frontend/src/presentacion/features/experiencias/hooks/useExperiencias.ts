@@ -12,7 +12,7 @@ export function useExperiencias(page = 1) {
     setLoading(true);
     setError(null);
     try {
-      const res = await experienciasService.list(page);
+      const res = await experienciasService.listar({ page });
       setExperiencias(res.data);
       setTotal(res.total);
     } catch (e) {
@@ -22,6 +22,7 @@ export function useExperiencias(page = 1) {
     }
   }, [page]);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch-on-mount/page-change, intentional
   useEffect(() => { void fetch(); }, [fetch]);
 
   return { experiencias, total, loading, error, refetch: fetch };
@@ -33,6 +34,7 @@ export function useExperiencia(id: string) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch-on-mount, intentional
     setLoading(true);
     experienciasService.getById(id)
       .then(setExperiencia)

@@ -1,0 +1,39 @@
+LOAD_TEST_RESULTS.txt
+Generado: 2026-07-21
+Comando: pnpm dlx autocannon http://localhost:3000/api/health -c 10 -d 30 -R 100
+
+============================================================
+RESULTADO
+============================================================
+Duración: 30.27s | Conexiones: 10 | Rate objetivo: 100 req/s
+Total: 3000 requests, 1.19 MB leídos, 0 errores / 0 timeouts / 0 non-2xx
+
+Latencia:
+  p50  : 1 ms
+  p97.5: 7 ms
+  p99  : 13 ms
+  Max  : 18 ms
+  Avg  : 1.47 ms
+
+Throughput:
+  Avg  : 100 req/s (sostenido al rate objetivo, sin backlog)
+  Min  : 90 req/s
+  p97.5: 114 req/s
+
+============================================================
+CRITERIOS DE ACEPTACIÓN
+============================================================
+✅ Latency p99 < 100ms   → 13ms
+✅ Error rate < 5%       → 0%
+✅ Throughput > 100 req/s → ~100 req/s sostenido (limitado por -R 100, no por el servidor)
+
+============================================================
+NOTA
+============================================================
+Se probó únicamente /api/health (sin DB ni auth) porque es el único endpoint
+"de infraestructura" pensado para este tipo de smoke de latencia. No se hizo
+carga sobre endpoints con lógica de negocio real (login, crear experiencia,
+etc.) porque requieren datos de prueba y tokens válidos por request, y una
+prueba de carga real sobre esos endpoints necesitaría su propio diseño
+(pool de usuarios, rate limiting de intentos fallidos que bloquearía la
+prueba, etc.) — fuera del alcance de este smoke de infraestructura.

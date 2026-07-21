@@ -1,8 +1,8 @@
 export class IntentoFallido {
-  private id: string;
-  private correo: string;
-  private ip: string;
-  private fechaIntento: Date;
+  private readonly id: string;
+  private readonly correo: string;
+  private readonly ip: string;
+  private readonly fechaIntento: Date;
 
   constructor(id: string, correo: string, ip: string, fechaIntento: Date = new Date()) {
     this.id = id;

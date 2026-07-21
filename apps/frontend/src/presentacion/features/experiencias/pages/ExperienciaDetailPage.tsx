@@ -31,7 +31,7 @@ export function ExperienciaDetailPage() {
   const [etiquetas, setEtiquetas] = useState<Etiqueta[]>([]);
   const [showReportar, setShowReportar] = useState(false);
 
-  const isOwner = usuario && experiencia && usuario.id === experiencia.usuarioId;
+  const isOwner = usuario?.id === experiencia?.usuarioId;
 
   useEffect(() => {
     if (!id) return;

@@ -4,6 +4,8 @@ import { ListarRespuestasUseCase } from '@/logica/application/features/respuesta
 import { EliminarRespuestaUseCase } from '@/logica/application/features/respuestas/EliminarRespuestaUseCase';
 import { Respuesta } from '@/logica/domain/entities/Respuesta';
 import { NotFoundException, ForbiddenException } from '@/logica/application/exceptions/AppException';
+import type { IRespuestaRepository } from '@/logica/application/gateway/repositories/IRespuestaRepository';
+import type { IExperienciaRepository } from '@/logica/application/gateway/repositories/IExperienciaRepository';
 
 const mockExperienciaRepo = {
   findById: vi.fn(),
@@ -17,7 +19,7 @@ const mockRespuestaRepo = {
 };
 
 describe('CrearRespuestaUseCase', () => {
-  const useCase = new CrearRespuestaUseCase(mockRespuestaRepo as any, mockExperienciaRepo as any);
+  const useCase = new CrearRespuestaUseCase(mockRespuestaRepo as unknown as IRespuestaRepository, mockExperienciaRepo as unknown as IExperienciaRepository);
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -48,7 +50,7 @@ describe('CrearRespuestaUseCase', () => {
 });
 
 describe('ListarRespuestasUseCase', () => {
-  const useCase = new ListarRespuestasUseCase(mockRespuestaRepo as any);
+  const useCase = new ListarRespuestasUseCase(mockRespuestaRepo as unknown as IRespuestaRepository);
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -65,7 +67,7 @@ describe('ListarRespuestasUseCase', () => {
 });
 
 describe('EliminarRespuestaUseCase', () => {
-  const useCase = new EliminarRespuestaUseCase(mockRespuestaRepo as any);
+  const useCase = new EliminarRespuestaUseCase(mockRespuestaRepo as unknown as IRespuestaRepository);
 
   beforeEach(() => {
     vi.clearAllMocks();

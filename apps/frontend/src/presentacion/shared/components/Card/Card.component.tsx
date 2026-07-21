@@ -12,7 +12,7 @@ export function CardComponent ({
     variant = 'default',
     className = '',
     ...props
-}: CardComponentProps) {
+}: Readonly<CardComponentProps>) {
     const variants: Record<Variant, string> = {
         default: '',
 

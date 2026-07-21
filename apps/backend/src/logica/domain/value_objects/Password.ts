@@ -16,7 +16,7 @@ export class Password {
     if (!/[a-z]/.test(password)) {
       throw new Error('La contraseña debe contener al menos una minúscula');
     }
-    if (!/[0-9]/.test(password)) {
+    if (!/\d/.test(password)) {
       throw new Error('La contraseña debe contener al menos un dígito');
     }
   }

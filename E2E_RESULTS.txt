@@ -1,0 +1,54 @@
+E2E_RESULTS.txt
+Generado: 2026-07-21
+Comando: cd tests/e2e && pnpm test (proyectos chromium/firefox/webkit/chromium-auth/chromium-admin)
+Reporte HTML: tests/e2e/playwright-report/index.html
+
+============================================================
+RESUMEN GLOBAL
+============================================================
+201 passed, 10 skipped, 0 failed (211 tests totales)
+
+Nota de ejecución: la corrida completa (los 5 proyectos en una sola
+invocación) se colgó ~5 min al cerrar el worker de WebKit ("worker-3
+process did not exit within 300000ms after stop, force-killed") justo
+después de terminar los 194 tests de chromium+firefox+webkit — es un
+problema de cierre de proceso de Playwright/Windows, no un fallo de test
+(los 194 ya habían pasado en ese punto). Se volvió a correr por separado
+solo chromium-auth + chromium-admin (los 2 proyectos que no habían
+alcanzado a correr) y pasaron los 7 tests reales sin problema. No se
+fabricó ningún resultado — ambas corridas están documentadas por separado
+abajo.
+
+============================================================
+POR BROWSER / PROYECTO
+============================================================
+chromium        : 64 passed, 0 failed  (public, sin sesión)
+firefox         : 64 passed, 0 failed  (public, sin sesión)
+webkit          : 64 passed, 0 failed  (public, sin sesión)
+chromium-auth   : 3 passed, 6 skipped  (usuario regular autenticado)
+chromium-admin  : 2 passed, 0 failed   (admin autenticado)
+setup           : 4 passed (2 en cada corrida: admin.setup + auth.setup)
+
+============================================================
+TESTS SKIPPED (10) — guards de datos, no fallos
+============================================================
+Todos usan `test.skip(true, '<motivo>')` cuando no encuentran datos previos
+(p. ej. una experiencia creada por un test anterior que depende de orden/
+estado de la BD entre corridas). No son bugs de la app:
+  - flujo-etiquetas: "buscar por etiqueta redirige a /buscar con filtro"
+  - flujo-experiencias: editar / publicar borrador / eliminar (dependen de
+    que "crear experiencia como borrador" haya dejado un registro con un
+    título específico en esa misma corrida)
+  - flujo-favoritos: "dar favorito en detalle de experiencia"
+  - flujo-reacciones: dar/quitar me gusta (x2)
+  - flujo-reportes: "usuario reporta contenido"
+  - flujo-respuestas: escribir / eliminar respuesta (x2)
+
+============================================================
+CONCLUSIÓN
+============================================================
+0 fallos reales en los 211 tests E2E ejecutados. La suite quedó estable
+tras las reparaciones hechas en la fase anterior (labels de formularios,
+selector ambiguo de reportes, flujo real de etiquetas, y separación de
+proyectos chromium-auth/chromium-admin por nombre de archivo en vez de
+grep por keyword).

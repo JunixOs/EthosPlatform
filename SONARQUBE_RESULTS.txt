@@ -1,0 +1,54 @@
+SONARQUBE_RESULTS.txt
+Generado: 2026-07-21
+
+============================================================
+ESTADO: BLOQUEADO — SonarQube no está levantado
+============================================================
+
+Verificación:
+  curl http://localhost:9000/api/system/status
+  → Connection refused (curl -v confirma: "Failed to connect to localhost
+    port 9000... Could not connect to server")
+
+  docker ps -a
+  → No aparece ningún contenedor de SonarQube (ni corriendo ni detenido).
+    Solo está corriendo "ethos_postgres_local" (Postgres 17). Hay otros
+    contenedores detenidos en la máquina (severa_app, mssql, ftp/sftp,
+    aforo-turistico-*) que no tienen relación con este proyecto.
+
+Esto contradice el supuesto de la tarea ("Asumir que SonarQube está
+levantado en http://localhost:9000"). No se pudo generar token, correr
+`pnpm sonar:scan`, ni obtener resultados de dashboard porque no hay servidor
+al cual conectarse.
+
+No se fabricó ningún resultado de Quality Gate / Bugs / Code Smells /
+Coverage / Duplications — eso requiere un análisis real contra un servidor
+real, y no existe tal servidor corriendo ahora mismo.
+
+============================================================
+QUÉ SE DEJÓ LISTO PARA CUANDO SonarQube ESTÉ ARRIBA
+============================================================
+- sonar-project.properties (raíz del repo): sources, exclusions, rutas de
+  lcov.info de backend y frontend, ya configurado.
+- Scripts en package.json raíz:
+    pnpm sonar:scan        → corre `sonar-scanner`
+    pnpm quality:check     → corre test:coverage + sonar:scan
+- Dependencia `sonarqube-scanner` instalada como devDependency de raíz.
+
+============================================================
+PARA RETOMAR CUANDO LA INFRAESTRUCTURA ESTÉ LISTA
+============================================================
+1. Confirmar que responde:
+   curl http://localhost:9000/api/system/status
+   (debe devolver {"status":"UP"})
+
+2. Generar token: login web (admin/admin o credenciales que puso el jefe)
+   → My Account → Security → Generate Tokens
+
+3. Correr:
+   SONAR_HOST_URL=http://localhost:9000 SONAR_TOKEN=<token> pnpm sonar:scan
+
+4. Recién ahí tiene sentido pedir:
+   curl http://localhost:9000/api/projects/search?keys=com.ethos.platform \
+     -H "Authorization: Bearer $SONAR_TOKEN"
+   y ver el dashboard en http://localhost:9000/projects/com.ethos.platform

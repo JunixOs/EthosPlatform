@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { RespuestasSection } from '@features/respuestas/components/RespuestasSection';
 import * as respuestasModule from '@features/respuestas/services/respuestas.service';
 import * as authStore from '@/app/store/auth.store';
+import type { AuthState } from '@/app/store/auth.store';
 
 vi.mock('@features/respuestas/services/respuestas.service', () => ({
   respuestasService: {
@@ -19,7 +20,7 @@ vi.mock('@/app/store/auth.store', () => ({
 
 describe('RespuestasSection', () => {
   it('should show login prompt when no user', async () => {
-    vi.mocked(authStore.useAuthStore).mockReturnValue({ usuario: null } as any);
+    vi.mocked(authStore.useAuthStore).mockReturnValue({ usuario: null } as unknown as AuthState);
     vi.mocked(respuestasModule.respuestasService.listar).mockResolvedValue({ data: [], total: 0, page: 1, limit: 10 });
 
     render(<MemoryRouter><RespuestasSection experienciaId="e1" /></MemoryRouter>);
@@ -29,7 +30,7 @@ describe('RespuestasSection', () => {
   });
 
   it('should list respuestas', async () => {
-    vi.mocked(authStore.useAuthStore).mockReturnValue({ usuario: { id: 'u1' } } as any);
+    vi.mocked(authStore.useAuthStore).mockReturnValue({ usuario: { id: 'u1' } } as unknown as AuthState);
     vi.mocked(respuestasModule.respuestasService.listar).mockResolvedValue({
       data: [
         { id: 'r1', experienciaId: 'e1', usuarioId: 'u2', contenido: 'Buen post', creadaEn: '2024-01-01T00:00:00Z' },
@@ -47,7 +48,7 @@ describe('RespuestasSection', () => {
   });
 
   it('should create respuesta', async () => {
-    vi.mocked(authStore.useAuthStore).mockReturnValue({ usuario: { id: 'u1' } } as any);
+    vi.mocked(authStore.useAuthStore).mockReturnValue({ usuario: { id: 'u1' } } as unknown as AuthState);
     vi.mocked(respuestasModule.respuestasService.listar).mockResolvedValue({ data: [], total: 0, page: 1, limit: 10 });
     vi.mocked(respuestasModule.respuestasService.crear).mockResolvedValue({
       id: 'r2', experienciaId: 'e1', usuarioId: 'u1', contenido: 'Mi respuesta', creadaEn: '2024-01-01T00:00:00Z',

@@ -6,7 +6,7 @@ export interface UsuarioSession {
   rol: string;
 }
 
-interface AuthState {
+export interface AuthState {
   usuario: UsuarioSession | null;
   token: string | null;
   expiresAt: string | null;

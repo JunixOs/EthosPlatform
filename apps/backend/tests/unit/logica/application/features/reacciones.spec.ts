@@ -3,6 +3,8 @@ import { ToggleReaccionUseCase } from '@/logica/application/features/reacciones/
 import { ContarReaccionesUseCase } from '@/logica/application/features/reacciones/ContarReaccionesUseCase';
 import { Reaccion } from '@/logica/domain/entities/Reaccion';
 import { NotFoundException } from '@/logica/application/exceptions/AppException';
+import type { IReaccionRepository } from '@/logica/application/gateway/repositories/IReaccionRepository';
+import type { IExperienciaRepository } from '@/logica/application/gateway/repositories/IExperienciaRepository';
 
 const mockExperienciaRepo = {
   findById: vi.fn(),
@@ -16,7 +18,7 @@ const mockReaccionRepo = {
 };
 
 describe('ToggleReaccionUseCase', () => {
-  const toggleUC = new ToggleReaccionUseCase(mockReaccionRepo as any, mockExperienciaRepo as any);
+  const toggleUC = new ToggleReaccionUseCase(mockReaccionRepo as unknown as IReaccionRepository, mockExperienciaRepo as unknown as IExperienciaRepository);
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -55,7 +57,7 @@ describe('ToggleReaccionUseCase', () => {
 });
 
 describe('ContarReaccionesUseCase', () => {
-  const contarUC = new ContarReaccionesUseCase(mockReaccionRepo as any);
+  const contarUC = new ContarReaccionesUseCase(mockReaccionRepo as unknown as IReaccionRepository);
 
   beforeEach(() => {
     vi.clearAllMocks();

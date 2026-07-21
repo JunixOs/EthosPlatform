@@ -49,6 +49,7 @@ export function BuscarExperienciasPage() {
   }, []);
 
   useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect -- sync query state from URL params on mount, intentional */
     const q = searchParams.get('q');
     const etiqueta = searchParams.get('etiqueta');
     if (etiqueta) {
@@ -58,9 +59,10 @@ export function BuscarExperienciasPage() {
       setQuery(q);
       void searchText(q);
     }
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.SubmitEvent) => {
     e.preventDefault();
     void searchText(query);
   };
@@ -108,13 +110,12 @@ export function BuscarExperienciasPage() {
             {total} resultado{total !== 1 ? 's' : ''}{' '}
             {searchParams.get('etiqueta')
               ? `para la etiqueta "#${searchParams.get('etiqueta')}"`
-              : `para "{searchParams.get('q')}"`}
+              : `para "${searchParams.get('q')}"`}
           </p>
           <div className="space-y-4">
             {results.map((exp) => (
-              <CardComponent>
+              <CardComponent key={exp.id}>
                 <LinkComponent
-                  key={exp.id}
                   to={`/experiencias/${exp.id}`}
                   variant='card_type'
                   size='none'
@@ -125,7 +126,6 @@ export function BuscarExperienciasPage() {
                   <p className="text-xs text-gray-400">{new Date(exp.creadaEn).toLocaleDateString('es-ES')}</p>
                 </LinkComponent>
               </CardComponent>
-              
             ))}
           </div>
         </div>

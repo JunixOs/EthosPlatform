@@ -1,0 +1,79 @@
+SECURITY_REVIEW.txt
+Generado: 2026-07-21
+
+============================================================
+1. VALIDACIÓN DE INPUTS
+============================================================
+✅ SAFE — Zod schemas en apps/backend/src/logica/shared/validation/schemas.ts,
+aplicados vía middleware a auth/register, auth/login, POST/PUT /experiencias,
+PUT /usuarios/me/perfil. Devuelven 400 antes de llegar a los use cases.
+(Detalle y pruebas manuales en VALIDATION_TESTS.txt de la sesión anterior.)
+
+============================================================
+2. SQL INJECTION
+============================================================
+✅ SAFE — Revisados todos los usos de `.query()` y `createQueryBuilder()`:
+  - Los `.query()` crudos están solo en la migración inicial
+    (datos/presistence/migrations/1784605944519-InitialSchema.ts), con DDL
+    estático generado por TypeORM, sin ningún input de usuario.
+  - Todos los `createQueryBuilder()` en ExperienciaRepository,
+    IntentoFallidoRepository y SesionRepository usan bind parameters
+    (`:param`) con el objeto de parámetros separado — nunca concatenación
+    ni template strings con datos de usuario embebidos directamente en SQL.
+Grep usado: `\.query\(|createQueryBuilder` sobre apps/backend/src — 0
+ocurrencias de concatenación/template con datos de request.
+
+============================================================
+3. XSS (Cross-Site Scripting)
+============================================================
+✅ SAFE — 0 ocurrencias de `innerHTML` o `dangerouslySetInnerHTML` en todo
+apps/frontend/src. Todo el contenido dinámico se renderiza vía JSX estándar
+de React, que escapa por defecto.
+
+============================================================
+4. JWT
+============================================================
+✅ SAFE — `JWT_SECRET` se lee exclusivamente de `process.env['JWT_SECRET']`
+en LoginUseCase.ts (firma) y authMiddleware.ts (verificación). Ambos casos
+lanzan un error explícito si la variable no está definida — no hay ningún
+valor por defecto hardcodeado que pudiera usarse como secreto débil.
+Además, el middleware valida la sesión contra la base de datos en cada
+request (no solo el JWT), permitiendo invalidar tokens en logout — ver
+BUGS_ENCONTRADOS.txt de una sesión anterior.
+
+============================================================
+5. CORS
+============================================================
+✅ SAFE — apps/backend/src/app.ts configura
+`cors({ origin: process.env['FRONTEND_URL'] ?? 'http://localhost:16000', credentials: true })`.
+El origin es restrictivo (no `*`), toma el valor real de `.env`
+(`FRONTEND_URL=http://localhost:16000` en este entorno). Se corrigió en esta
+sesión el valor de fallback hardcodeado (antes `5173`, el puerto por
+defecto de Vite, que no coincidía con el puerto real configurado en este
+proyecto — 16000, ver apps/frontend/vite.config.ts). No era explotable
+(`.env` siempre lo sobreescribe) pero podía confundir a quien leyera el
+código o corriera sin `.env`.
+
+============================================================
+6. SECRETOS EN EL REPOSITORIO
+============================================================
+✅ SAFE — `git ls-files | grep -i "\.env$"` no devuelve ningún archivo .env
+trackeado. `.gitignore` excluye `.env` explícitamente (línea 71). No se
+encontraron contraseñas ni tokens hardcodeados en apps/backend/src.
+
+============================================================
+7. HALLAZGOS ADICIONALES DE SonarQube (no en el checklist original)
+============================================================
+- Email.ts tenía una regex con riesgo de backtracking exponencial
+  (ReDoS) en la validación de email de dominio — reparado en esta sesión
+  (regla typescript:S8786). Ver detalle en el reporte de auditoría.
+- 0 "Security Hotspots" reportados por SonarQube tras el escaneo.
+
+============================================================
+CONCLUSIÓN
+============================================================
+No se encontraron vulnerabilidades de SQL injection, XSS, secretos
+hardcodeados ni configuración CORS permisiva. El único hallazgo de
+seguridad real (ReDoS en Email.ts) ya fue reparado. 0 vulnerabilities y
+0 security_hotspots en SonarQube confirman este resultado de forma
+independiente.

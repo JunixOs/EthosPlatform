@@ -1,5 +1,4 @@
 import type { IPaginaEquipoRepository } from '../../gateway/repositories/IPaginaEquipoRepository';
-import { NotFoundException } from '../../exceptions/AppException';
 
 export interface PaginaEquipoResult {
   id: string;

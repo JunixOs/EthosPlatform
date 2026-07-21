@@ -2,7 +2,6 @@ import type { IUsuarioRepository } from '../../../gateway/repositories/IUsuarioR
 import type { IExperienciaRepository } from '../../../gateway/repositories/IExperienciaRepository';
 import type { IFavoritoRepository } from '../../../gateway/repositories/IFavoritoRepository';
 import { NotFoundException, ForbiddenException } from '../../../exceptions/AppException';
-import type { Usuario } from '../../../../domain/entities/Usuario';
 
 export interface PerfilPublicoResult {
   id: string;

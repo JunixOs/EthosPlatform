@@ -15,6 +15,7 @@ import {
   DomainException,
   SystemException,
 } from '@/logica/application/exceptions/AppException';
+import type { ErrorCode } from '@/logica/application/exceptions/ErrorCatalog';
 
 describe('AppException', () => {
   it('should create an exception with catalog defaults', () => {
@@ -62,8 +63,7 @@ describe('AppException', () => {
   });
 
   it('should fallback to SYS001 for unknown codes', () => {
-    // @ts-expect-code - Testing unknown code behavior
-    const ex = new AppException('UNKNOWN99' as any);
+    const ex = new AppException('UNKNOWN99' as unknown as ErrorCode);
     expect(ex.httpStatus).toBe(500);
     expect(ex.module).toBe('SYSTEM');
   });

@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useState, type SubmitEvent } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { useAuth } from '@features/auth/hooks/useAuth';
@@ -12,7 +12,7 @@ export function LoginPage() {
   const [password, setPassword] = useState('');
   const [recordarme, setRecordarme] = useState(false);
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
     const ok = await login({ correo, password, recordarme });
     if (ok) navigate('/experiencias');
@@ -38,8 +38,9 @@ export function LoginPage() {
           )}
 
           <div>
-            <label className="block text-sm font-medium mb-1">Correo electrónico</label>
+            <label htmlFor="correo" className="block text-sm font-medium mb-1">Correo electrónico</label>
             <input
+              id="correo"
               type="email"
               value={correo}
               onChange={(e) => setCorreo(e.target.value)}
@@ -50,8 +51,9 @@ export function LoginPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Contraseña</label>
+            <label htmlFor="password" className="block text-sm font-medium mb-1">Contraseña</label>
             <input
+              id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

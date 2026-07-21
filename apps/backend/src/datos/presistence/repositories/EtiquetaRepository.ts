@@ -1,4 +1,4 @@
-import type { DataSource, Repository } from 'typeorm';
+import { In, type DataSource, type Repository } from 'typeorm';
 import type { IEtiquetaRepository } from '../../../logica/application/gateway/repositories/IEtiquetaRepository';
 import type { Etiqueta } from '../../../logica/domain/entities/Etiqueta';
 import { EtiquetaORM } from '../entities/EtiquetaORM';
@@ -37,7 +37,7 @@ export class EtiquetaRepository implements IEtiquetaRepository {
   async findByExperienciaId(experienciaId: string): Promise<Etiqueta[]> {
     const joins = await this.joinRepo.find({ where: { experienciaId } });
     if (joins.length === 0) return [];
-    const orms = await this.repo.findByIds(joins.map((j) => j.etiquetaId));
+    const orms = await this.repo.findBy({ id: In(joins.map((j) => j.etiquetaId)) });
     return orms.map(EtiquetaMapper.toDomain);
   }
 

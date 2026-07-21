@@ -14,7 +14,7 @@ export function ButtonComponent({
     size = 'md',
     className = '',
     ...props
-}: ButtonComponentProps) {
+}: Readonly<ButtonComponentProps>) {
 
     const variants: Record<Variant , string> = {
         primary:

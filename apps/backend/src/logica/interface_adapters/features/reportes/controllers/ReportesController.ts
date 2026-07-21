@@ -2,6 +2,7 @@ import type { Request, Response } from 'express';
 import type { CrearReporteUseCase } from '../../../../application/features/reportes/CrearReporteUseCase';
 import type { ListarReportesUseCase } from '../../../../application/features/reportes/ListarReportesUseCase';
 import type { OcultarContenidoUseCase } from '../../../../application/features/reportes/OcultarContenidoUseCase';
+import type { TipoReporteEnum } from '../../../../domain/enum/index';
 
 export class ReportesController {
   constructor(
@@ -13,8 +14,8 @@ export class ReportesController {
   /** POST /api/reportes */
   crear = async (req: Request, res: Response): Promise<void> => {
     const reporterId = req.user!.sub;
-    const { experienciaId, tipo, descripcion } = req.body as { experienciaId: string; tipo: string; descripcion?: string };
-    const result = await this.crearUC.execute({ reporterId, experienciaId, tipo: tipo as any, descripcion });
+    const { experienciaId, tipo, descripcion } = req.body as { experienciaId: string; tipo: TipoReporteEnum; descripcion?: string };
+    const result = await this.crearUC.execute({ reporterId, experienciaId, tipo, descripcion });
     res.status(201).json({ success: true, data: result, errorMessage: '', errorCode: '', httpErrorCode: '' });
   };
 

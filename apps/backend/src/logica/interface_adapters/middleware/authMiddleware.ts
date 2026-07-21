@@ -40,7 +40,7 @@ export function createAuthMiddleware(sesionRepo: ISesionRepository) {
 
       // Verificar que la sesión aún existe en la base de datos (invalidación en logout)
       const sesion = await sesionRepo.findByToken(token);
-      if (!sesion || !sesion.isValida()) {
+      if (!sesion?.isValida()) {
         return next(new TokenRevokedException());
       }
 

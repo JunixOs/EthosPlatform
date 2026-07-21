@@ -1,10 +1,22 @@
 import { RolEnum } from '../enum/RolEnum';
 import { Email } from '../value_objects/Email';
 
+export interface UsuarioProps {
+  id: string;
+  nombre: string;
+  email: Email;
+  passwordHash: string;
+  rol?: RolEnum;
+  perfilPublico?: boolean;
+  creadoEn?: Date;
+  biografia?: string | null;
+  fotoPerfil?: string | null;
+}
+
 export class Usuario {
-  private id: string;
+  private readonly id: string;
   private nombre: string;
-  private email: Email;
+  private readonly email: Email;
   private passwordHash: string;
   private rol: RolEnum;
   private perfilPublico: boolean;
@@ -12,30 +24,20 @@ export class Usuario {
   private suspendidoHasta: Date | null;
   private biografia: string | null;
   private fotoPerfil: string | null;
-  private creadoEn: Date;
+  private readonly creadoEn: Date;
 
-  constructor(
-    id: string,
-    nombre: string,
-    email: Email,
-    passwordHash: string,
-    rol: RolEnum = RolEnum.USER,
-    perfilPublico: boolean = true,
-    creadoEn: Date = new Date(),
-    biografia: string | null = null,
-    fotoPerfil: string | null = null,
-  ) {
-    this.id = id;
-    this.nombre = nombre;
-    this.email = email;
-    this.passwordHash = passwordHash;
-    this.rol = rol;
-    this.perfilPublico = perfilPublico;
+  constructor(props: UsuarioProps) {
+    this.id = props.id;
+    this.nombre = props.nombre;
+    this.email = props.email;
+    this.passwordHash = props.passwordHash;
+    this.rol = props.rol ?? RolEnum.USER;
+    this.perfilPublico = props.perfilPublico ?? true;
     this.suspendido = false;
     this.suspendidoHasta = null;
-    this.biografia = biografia;
-    this.fotoPerfil = fotoPerfil;
-    this.creadoEn = creadoEn;
+    this.biografia = props.biografia ?? null;
+    this.fotoPerfil = props.fotoPerfil ?? null;
+    this.creadoEn = props.creadoEn ?? new Date();
   }
 
   getId(): string { return this.id; }

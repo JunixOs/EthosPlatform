@@ -1,36 +1,38 @@
 import { EstadoExperienciaEnum } from '../enum/index';
 
+export interface ExperienciaProps {
+  id: string;
+  usuarioId: string;
+  titulo: string;
+  descripcion: string;
+  reflexionMoral: string;
+  reflexionEtica: string;
+  estado?: EstadoExperienciaEnum;
+  creadaEn?: Date;
+  actualizadaEn?: Date;
+}
+
 export class Experiencia {
-  private id: string;
-  private usuarioId: string;
+  private readonly id: string;
+  private readonly usuarioId: string;
   private titulo: string;
   private descripcion: string;
   private reflexionMoral: string;
   private reflexionEtica: string;
   private estado: EstadoExperienciaEnum;
-  private creadaEn: Date;
+  private readonly creadaEn: Date;
   private actualizadaEn: Date;
 
-  constructor(
-    id: string,
-    usuarioId: string,
-    titulo: string,
-    descripcion: string,
-    reflexionMoral: string,
-    reflexionEtica: string,
-    estado: EstadoExperienciaEnum = EstadoExperienciaEnum.BORRADOR,
-    creadaEn: Date = new Date(),
-    actualizadaEn: Date = new Date(),
-  ) {
-    this.id = id;
-    this.usuarioId = usuarioId;
-    this.titulo = titulo;
-    this.descripcion = descripcion;
-    this.reflexionMoral = reflexionMoral;
-    this.reflexionEtica = reflexionEtica;
-    this.estado = estado;
-    this.creadaEn = creadaEn;
-    this.actualizadaEn = actualizadaEn;
+  constructor(props: ExperienciaProps) {
+    this.id = props.id;
+    this.usuarioId = props.usuarioId;
+    this.titulo = props.titulo;
+    this.descripcion = props.descripcion;
+    this.reflexionMoral = props.reflexionMoral;
+    this.reflexionEtica = props.reflexionEtica;
+    this.estado = props.estado ?? EstadoExperienciaEnum.BORRADOR;
+    this.creadaEn = props.creadaEn ?? new Date();
+    this.actualizadaEn = props.actualizadaEn ?? new Date();
   }
 
   getId(): string {

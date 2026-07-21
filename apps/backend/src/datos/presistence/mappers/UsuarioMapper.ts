@@ -5,17 +5,17 @@ import type { UsuarioORM } from '../entities/UsuarioORM';
 
 export class UsuarioMapper {
   static toDomain(orm: UsuarioORM): Usuario {
-    const usuario = new Usuario(
-      orm.id,
-      orm.nombre,
-      new Email(orm.correo),
-      orm.passwordHash,
-      orm.rol as RolEnum,
-      orm.perfilPublico,
-      orm.creadoEn,
-      orm.biografia ?? null,
-      orm.fotoPerfil ?? null,
-    );
+    const usuario = new Usuario({
+      id: orm.id,
+      nombre: orm.nombre,
+      email: new Email(orm.correo),
+      passwordHash: orm.passwordHash,
+      rol: orm.rol as RolEnum,
+      perfilPublico: orm.perfilPublico,
+      creadoEn: orm.creadoEn,
+      biografia: orm.biografia ?? null,
+      fotoPerfil: orm.fotoPerfil ?? null,
+    });
     if (orm.suspendido && orm.suspendidoHasta) {
       usuario.suspender(orm.suspendidoHasta);
     }

@@ -7,7 +7,7 @@ export class Reporte {
     private readonly experienciaId: string,
     private readonly tipo: TipoReporteEnum,
     private readonly descripcion: string | null,
-    private readonly estado: string = 'pendiente',
+    private estado: string = 'pendiente',
     private readonly creadoEn: Date = new Date(),
   ) {}
 
@@ -23,6 +23,6 @@ export class Reporte {
     if (this.estado !== 'pendiente') {
       throw new Error('El reporte ya fue resuelto');
     }
-    (this as any).estado = 'resuelto';
+    this.estado = 'resuelto';
   }
 }

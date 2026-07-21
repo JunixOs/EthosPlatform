@@ -10,6 +10,7 @@ export function MisFavoritosPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch-on-page-change, intentional
     setLoading(true);
     favoritosService
       .getMios(page)

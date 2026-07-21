@@ -28,7 +28,7 @@ export function EditarPerfilPage() {
     }).catch(() => setError('No se pudo cargar el perfil.'));
   }, []);
 
-  const handleSave = async (e: React.FormEvent) => {
+  const handleSave = async (e: React.SubmitEvent) => {
     e.preventDefault();
     setSaving(true);
     setError('');
@@ -61,8 +61,9 @@ export function EditarPerfilPage() {
         {success && <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 text-green-700 dark:text-green-400 rounded-lg px-4 py-3 text-sm">{success}</div>}
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nombre</label>
+          <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nombre</label>
           <input
+            id="nombre"
             value={nombre}
             onChange={(e) => setNombre(e.target.value)}
             required
@@ -71,8 +72,9 @@ export function EditarPerfilPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Biografía</label>
+          <label htmlFor="biografia" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Biografía</label>
           <textarea
+            id="biografia"
             value={biografia}
             onChange={(e) => setBiografia(e.target.value)}
             rows={3}
@@ -82,8 +84,9 @@ export function EditarPerfilPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">URL de foto de perfil</label>
+          <label htmlFor="fotoUrl" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">URL de foto de perfil</label>
           <input
+            id="fotoUrl"
             type="url"
             value={fotoUrl}
             onChange={(e) => setFotoUrl(e.target.value)}

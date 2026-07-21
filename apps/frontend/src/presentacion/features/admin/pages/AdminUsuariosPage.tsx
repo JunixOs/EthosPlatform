@@ -24,7 +24,8 @@ export function AdminUsuariosPage() {
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => { cargar(); }, [page]); // eslint-disable-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/set-state-in-effect -- fetch-on-page-change, no stale-closure risk
+  useEffect(() => { cargar(); }, [page]);
 
   const toast = (msg: string) => { setFeedback(msg); setTimeout(() => setFeedback(''), 3000); };
 
@@ -159,8 +160,9 @@ export function AdminUsuariosPage() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 w-full max-w-sm">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Suspender usuario</h2>
-            <label className="block text-sm text-gray-700 dark:text-gray-300 mb-2">Días de suspensión (1-365)</label>
+            <label htmlFor="diasSuspension" className="block text-sm text-gray-700 dark:text-gray-300 mb-2">Días de suspensión (1-365)</label>
             <input
+              id="diasSuspension"
               type="number" min={1} max={365} value={dias}
               onChange={(e) => setDias(Number(e.target.value))}
               className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 mb-4 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"

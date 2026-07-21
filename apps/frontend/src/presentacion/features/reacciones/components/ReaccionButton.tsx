@@ -7,7 +7,7 @@ interface ReaccionButtonProps {
   initialHasReacted?: boolean;
 }
 
-export function ReaccionButton({ experienciaId, initialCount = 0, initialHasReacted = false }: ReaccionButtonProps) {
+export function ReaccionButton({ experienciaId, initialCount = 0, initialHasReacted = false }: Readonly<ReaccionButtonProps>) {
   const [count, setCount] = useState(initialCount);
   const [hasReacted, setHasReacted] = useState(initialHasReacted);
   const [loading, setLoading] = useState(false);

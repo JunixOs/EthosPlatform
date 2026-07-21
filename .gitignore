@@ -151,3 +151,6 @@ vite.config.ts.timestamp-*
 /tests/e2e/test-results
 /tests/e2e/playwright-report
 /tests/e2e/playwright/.auth
+
+# SonarQube scanner cache/work dir
+.scannerwork/

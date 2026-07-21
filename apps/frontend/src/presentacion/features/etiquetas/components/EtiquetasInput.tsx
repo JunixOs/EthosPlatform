@@ -6,7 +6,7 @@ interface EtiquetasInputProps {
   disabled?: boolean;
 }
 
-export function EtiquetasInput({ etiquetas, onChange, disabled }: EtiquetasInputProps) {
+export function EtiquetasInput({ etiquetas, onChange, disabled }: Readonly<EtiquetasInputProps>) {
   const [input, setInput] = useState('');
   const [error, setError] = useState<string | null>(null);
 

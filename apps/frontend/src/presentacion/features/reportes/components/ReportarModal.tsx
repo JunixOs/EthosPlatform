@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useState, type SubmitEvent } from 'react';
 import { reportesService } from '@features/reportes/services/reportes.service';
 
 interface ReportarModalProps {
@@ -15,7 +15,7 @@ const TIPOS = [
   { value: 'otro', label: 'Otro' },
 ] as const;
 
-export function ReportarModal({ experienciaId, isOpen, onClose }: ReportarModalProps) {
+export function ReportarModal({ experienciaId, isOpen, onClose }: Readonly<ReportarModalProps>) {
   const [tipo, setTipo] = useState<(typeof TIPOS)[number]['value']>('spam');
   const [descripcion, setDescripcion] = useState('');
   const [loading, setLoading] = useState(false);
@@ -24,7 +24,7 @@ export function ReportarModal({ experienciaId, isOpen, onClose }: ReportarModalP
 
   if (!isOpen) return null;
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -78,10 +78,11 @@ export function ReportarModal({ experienciaId, isOpen, onClose }: ReportarModalP
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1">Motivo</label>
+                <label htmlFor="tipo" className="block text-sm font-medium mb-1">Motivo</label>
                 <select
+                  id="tipo"
                   value={tipo}
-                  onChange={(e) => setTipo(e.target.value as any)}
+                  onChange={(e) => setTipo(e.target.value as (typeof TIPOS)[number]['value'])}
                   className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                 >
                   {TIPOS.map((t) => (
@@ -91,8 +92,9 @@ export function ReportarModal({ experienciaId, isOpen, onClose }: ReportarModalP
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">Descripción (opcional)</label>
+                <label htmlFor="descripcionReporte" className="block text-sm font-medium mb-1">Descripción (opcional)</label>
                 <textarea
+                  id="descripcionReporte"
                   value={descripcion}
                   onChange={(e) => setDescripcion(e.target.value)}
                   rows={3}

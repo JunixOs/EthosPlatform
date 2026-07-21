@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useState, type SubmitEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { experienciasService } from '@features/experiencias/services/experiencias.service';
@@ -13,7 +13,7 @@ export function CreateExperienciaPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -25,6 +25,9 @@ export function CreateExperienciaPage() {
       setLoading(false);
     }
   };
+
+  let submitLabel = publicar ? 'Publicar' : 'Guardar borrador';
+  if (loading) submitLabel = 'Guardando...';
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -126,7 +129,7 @@ export function CreateExperienciaPage() {
             disabled={loading}
             className="flex-1 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white py-2 rounded-md transition-colors"
           >
-            {loading ? 'Guardando...' : (publicar ? 'Publicar' : 'Guardar borrador')}
+            {submitLabel}
           </button>
         </div>
       </form>

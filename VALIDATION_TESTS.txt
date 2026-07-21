@@ -1,0 +1,90 @@
+VALIDATION_TESTS.txt
+Generado: 2026-07-21
+Backend: http://localhost:3000 (levantado y respondiendo /api/health OK)
+
+============================================================
+TEST 1 — Login con email inválido
+============================================================
+curl -X POST http://localhost:3000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"correo":"invalid-email","password":"Test1234"}'
+
+Resultado: ✅ 400 Bad Request (esperado)
+Response:
+{
+  "success": false,
+  "data": null,
+  "errorMessage": "correo: El correo electrónico no es válido.",
+  "errorCode": "EXP006",
+  "httpErrorCode": 400,
+  "module": "EXPERIENCE",
+  "event": "ERROR",
+  "extra": {}
+}
+
+Nota sobre errorCode: "EXP006" es el código genérico de ValidationException
+que ya usaba el proyecto (lo reutilizan CreateExperienciaUseCase y
+EditExperienciaUseCase para sus propias validaciones de campo) — no es un
+bug, es la excepción de "campo inválido" del catálogo de errores, agnóstica
+al módulo real. No se creó un código nuevo para no romper el catálogo
+existente.
+
+============================================================
+TEST 2 — Register con password débil
+============================================================
+curl -X POST http://localhost:3000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"correo":"new@test.com","nombre":"Test","apellidos":"User","password":"weak"}'
+
+Resultado: ✅ 400 Bad Request (esperado)
+Response:
+{
+  "success": false,
+  "data": null,
+  "errorMessage": "password: La contraseña debe tener al menos 8 caracteres., password: La contraseña debe contener al menos una mayúscula., password: La contraseña debe contener al menos un dígito.",
+  "errorCode": "EXP006",
+  "httpErrorCode": 400,
+  ...
+}
+
+Nota: el campo "apellidos" enviado en el body NO existe en el DTO real de
+registro (RegisterRequestDTO solo tiene nombre/correo/password) — Zod lo
+ignora silenciosamente por no estar declarado en el schema (comportamiento
+por defecto de z.object, no hace "strict"). No afecta el resultado del test.
+
+============================================================
+TEST 3 — Crear experiencia sin título (con token válido)
+============================================================
+Login previo con e2e-user@test.com / TestPass123 (usuario de pruebas ya
+sembrado por seed.ts) para obtener un JWT válido.
+
+curl -X POST http://localhost:3000/api/experiencias \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <token>" \
+  -d '{"descripcion":"Solo descripción"}'
+
+Resultado: ✅ 400 Bad Request (esperado)
+Response:
+{
+  "success": false,
+  "data": null,
+  "errorMessage": "titulo: Invalid input: expected string, received undefined, reflexionMoral: Invalid input: expected string, received undefined, reflexionEtica: Invalid input: expected string, received undefined",
+  "errorCode": "EXP006",
+  "httpErrorCode": 400,
+  ...
+}
+
+Nota: el mensaje reporta también reflexionMoral y reflexionEtica como
+faltantes porque createExperienciaSchema los requiere igual que titulo
+(son campos obligatorios reales del dominio, ver CreateExperienciaRequestDTO)
+— el body de prueba solo mandaba "descripcion", así que los 3 campos
+faltantes se reportan juntos. Esto es el comportamiento correcto de Zod
+(reporta TODOS los errores de una vez, no solo el primero).
+
+============================================================
+RESUMEN
+============================================================
+3/3 tests de validación pasaron según lo esperado. La validación Zod
+bloquea inputs inválidos con 400 antes de llegar a los use cases, en los
+4 endpoints donde está aplicada (auth/register, auth/login, POST/PUT
+/experiencias, PUT /usuarios/me/perfil).

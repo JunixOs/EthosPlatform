@@ -4,17 +4,17 @@ import type { ExperienciaORM } from '../entities/ExperienciaORM';
 
 export class ExperienciaMapper {
   static toDomain(orm: ExperienciaORM): Experiencia {
-    return new Experiencia(
-      orm.id,
-      orm.usuarioId,
-      orm.titulo,
-      orm.descripcion,
-      orm.reflexionMoral,
-      orm.reflexionEtica,
-      orm.estado as EstadoExperienciaEnum,
-      orm.creadaEn,
-      orm.actualizadaEn,
-    );
+    return new Experiencia({
+      id: orm.id,
+      usuarioId: orm.usuarioId,
+      titulo: orm.titulo,
+      descripcion: orm.descripcion,
+      reflexionMoral: orm.reflexionMoral,
+      reflexionEtica: orm.reflexionEtica,
+      estado: orm.estado as EstadoExperienciaEnum,
+      creadaEn: orm.creadaEn,
+      actualizadaEn: orm.actualizadaEn,
+    });
   }
 
   static toORM(domain: Experiencia): Partial<ExperienciaORM> {

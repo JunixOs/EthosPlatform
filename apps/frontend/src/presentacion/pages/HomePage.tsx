@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 import { useAuthStore } from '@/app/store/auth.store';
 
 import { LinkComponent } from '@/shared/components/Link/Link.component';
@@ -18,6 +18,35 @@ export function HomePage() {
       .catch(() => null)
       .finally(() => setLoadingRecientes(false));
   }, []);
+
+  let recientesContent: ReactNode;
+  if (loadingRecientes) {
+    recientesContent = (
+      <div className="flex justify-center py-12">
+        <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  } else if (recientes.length === 0) {
+    recientesContent = <p className="text-gray-500 dark:text-gray-400 text-center py-8">Aún no hay experiencias publicadas.</p>;
+  } else {
+    recientesContent = (
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {recientes.map((exp) => (
+          <Link
+            key={exp.id}
+            to={`/experiencias/${exp.id}`}
+            className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-5 hover:shadow-md hover:border-indigo-300 dark:hover:border-indigo-600 transition-all"
+          >
+            <h3 className="font-semibold text-gray-900 dark:text-white line-clamp-1 mb-2">{exp.titulo}</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3 leading-relaxed">{exp.descripcion}</p>
+            <p className="text-xs text-gray-400 mt-3">
+              {new Date(exp.creadaEn).toLocaleDateString('es-ES', { year: 'numeric', month: 'short', day: 'numeric' })}
+            </p>
+          </Link>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-20 max-w-7xl mx-auto px-4">
@@ -60,29 +89,7 @@ export function HomePage() {
           </Link>
         </div>
 
-        {loadingRecientes ? (
-          <div className="flex justify-center py-12">
-            <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-          </div>
-        ) : recientes.length === 0 ? (
-          <p className="text-gray-500 dark:text-gray-400 text-center py-8">Aún no hay experiencias publicadas.</p>
-        ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {recientes.map((exp) => (
-              <Link
-                key={exp.id}
-                to={`/experiencias/${exp.id}`}
-                className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-5 hover:shadow-md hover:border-indigo-300 dark:hover:border-indigo-600 transition-all"
-              >
-                <h3 className="font-semibold text-gray-900 dark:text-white line-clamp-1 mb-2">{exp.titulo}</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3 leading-relaxed">{exp.descripcion}</p>
-                <p className="text-xs text-gray-400 mt-3">
-                  {new Date(exp.creadaEn).toLocaleDateString('es-ES', { year: 'numeric', month: 'short', day: 'numeric' })}
-                </p>
-              </Link>
-            ))}
-          </div>
-        )}
+        {recientesContent}
       </section>
 
       {/* Qué es */}

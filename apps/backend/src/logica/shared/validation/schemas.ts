@@ -5,18 +5,18 @@ import { z } from 'zod';
 // devolver 400 antes de llegar al use case.
 
 export const registerSchema = z.object({
-  correo: z.string().trim().email('El correo electrónico no es válido.'),
+  correo: z.string().trim().pipe(z.email({ message: 'El correo electrónico no es válido.' })),
   nombre: z.string().trim().min(2, 'El nombre es muy corto.').max(100, 'El nombre es muy largo.'),
   password: z
     .string()
     .min(8, 'La contraseña debe tener al menos 8 caracteres.')
     .regex(/[A-Z]/, 'La contraseña debe contener al menos una mayúscula.')
     .regex(/[a-z]/, 'La contraseña debe contener al menos una minúscula.')
-    .regex(/[0-9]/, 'La contraseña debe contener al menos un dígito.'),
+    .regex(/\d/, 'La contraseña debe contener al menos un dígito.'),
 });
 
 export const loginSchema = z.object({
-  correo: z.string().trim().email('El correo electrónico no es válido.'),
+  correo: z.string().trim().pipe(z.email({ message: 'El correo electrónico no es válido.' })),
   password: z.string().min(1, 'La contraseña es requerida.'),
   recordarme: z.boolean().optional(),
 });

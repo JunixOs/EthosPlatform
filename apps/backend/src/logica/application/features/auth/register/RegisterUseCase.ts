@@ -12,7 +12,7 @@ export class RegisterUseCase {
   constructor(private readonly usuarioRepo: IUsuarioRepository) {}
 
   async execute(cmd: RegisterCommand): Promise<{ id: string }> {
-    new Password(cmd.password);
+    const password = new Password(cmd.password);
 
     let email: Email;
     try {
@@ -26,9 +26,9 @@ export class RegisterUseCase {
       throw new ConflictException('Ya existe una cuenta con ese correo.');
     }
 
-    const passwordHash = await bcrypt.hash(cmd.password, 10);
+    const passwordHash = await bcrypt.hash(password.getValue(), 10);
     const id = uuidv4();
-    const usuario = new Usuario(id, cmd.nombre.trim(), email, passwordHash, RolEnum.USER);
+    const usuario = new Usuario({ id, nombre: cmd.nombre.trim(), email, passwordHash, rol: RolEnum.USER });
 
     await this.usuarioRepo.save(usuario);
     return { id };

@@ -1,4 +1,4 @@
-import { useState, useEffect, type FormEvent } from 'react';
+import { useState, useEffect, type SubmitEvent, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { respuestasService, type Respuesta } from '@features/respuestas/services/respuestas.service';
 import { useAuthStore } from '@/app/store/auth.store';
@@ -7,7 +7,7 @@ interface RespuestasSectionProps {
   experienciaId: string;
 }
 
-export function RespuestasSection({ experienciaId }: RespuestasSectionProps) {
+export function RespuestasSection({ experienciaId }: Readonly<RespuestasSectionProps>) {
   const { usuario } = useAuthStore();
   const [respuestas, setRespuestas] = useState<Respuesta[]>([]);
   const [total, setTotal] = useState(0);
@@ -30,10 +30,11 @@ export function RespuestasSection({ experienciaId }: RespuestasSectionProps) {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch-on-experienciaId-change, intentional
     void cargar();
-  }, [experienciaId]);
+  }, [experienciaId]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
     if (!nuevaRespuesta.trim()) return;
     setEnviando(true);
@@ -60,6 +61,55 @@ export function RespuestasSection({ experienciaId }: RespuestasSectionProps) {
       alert('Error al eliminar');
     }
   };
+
+  let listado: ReactNode;
+  if (loading) {
+    listado = (
+      <div className="flex justify-center py-8">
+        <div className="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  } else if (respuestas.length === 0) {
+    listado = <p className="text-sm text-gray-500 dark:text-gray-400 py-4">No hay respuestas aún. Sé el primero en responder.</p>;
+  } else {
+    listado = (
+      <div className="space-y-4">
+        {respuestas.map((r) => {
+          const isAuthor = usuario?.id === r.usuarioId;
+          return (
+            <div
+              key={r.id}
+              className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 border border-gray-100 dark:border-gray-700"
+            >
+              <div className="flex items-start justify-between">
+                <p className="text-sm text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-wrap flex-1">
+                  {r.contenido}
+                </p>
+                {isAuthor && (
+                  <button
+                    onClick={() => handleEliminar(r.id)}
+                    className="ml-3 text-xs text-red-500 hover:text-red-600 shrink-0"
+                    title="Eliminar"
+                  >
+                    Eliminar
+                  </button>
+                )}
+              </div>
+              <p className="text-xs text-gray-400 mt-2">
+                {new Date(r.creadaEn).toLocaleDateString('es-ES', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </p>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
 
   return (
     <section className="border-t border-gray-200 dark:border-gray-700 pt-8 mt-8">
@@ -101,49 +151,7 @@ export function RespuestasSection({ experienciaId }: RespuestasSectionProps) {
       )}
 
       {/* Listado */}
-      {loading ? (
-        <div className="flex justify-center py-8">
-          <div className="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-        </div>
-      ) : respuestas.length === 0 ? (
-        <p className="text-sm text-gray-500 dark:text-gray-400 py-4">No hay respuestas aún. Sé el primero en responder.</p>
-      ) : (
-        <div className="space-y-4">
-          {respuestas.map((r) => {
-            const isAuthor = usuario?.id === r.usuarioId;
-            return (
-              <div
-                key={r.id}
-                className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 border border-gray-100 dark:border-gray-700"
-              >
-                <div className="flex items-start justify-between">
-                  <p className="text-sm text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-wrap flex-1">
-                    {r.contenido}
-                  </p>
-                  {isAuthor && (
-                    <button
-                      onClick={() => handleEliminar(r.id)}
-                      className="ml-3 text-xs text-red-500 hover:text-red-600 shrink-0"
-                      title="Eliminar"
-                    >
-                      Eliminar
-                    </button>
-                  )}
-                </div>
-                <p className="text-xs text-gray-400 mt-2">
-                  {new Date(r.creadaEn).toLocaleDateString('es-ES', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
-                </p>
-              </div>
-            );
-          })}
-        </div>
-      )}
+      {listado}
     </section>
   );
 }

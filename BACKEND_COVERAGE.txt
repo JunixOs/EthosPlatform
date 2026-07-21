@@ -1,0 +1,64 @@
+BACKEND_COVERAGE.txt
+Generado: 2026-07-21
+Comando: cd apps/backend && pnpm test:coverage
+Reporte HTML completo: apps/backend/coverage/index.html
+Reporte crudo: apps/backend/coverage/lcov.info, apps/backend/coverage/coverage-summary.json
+
+============================================================
+RESULTADO DE TESTS
+============================================================
+Test Files: 11 passed (11)
+Tests:      92 passed (92)
+Duration:   ~1.4s
+
+============================================================
+COBERTURA GLOBAL (sobre TODO src/, no solo archivos con test)
+============================================================
+Statements : 20.61% ( 236/1145 )
+Branches   : 22.84% (  82/359  )
+Functions  : 20.93% (  81/387  )
+Lines      : 20.34% ( 224/1101 )
+
+============================================================
+ARCHIVOS/MÓDULOS CON BUENA COBERTURA (ya tienen test unitario)
+============================================================
+- logica/application/exceptions/*           (~95%)
+- logica/application/features/etiquetas/*   (~86-92%)
+- logica/application/features/reportes/*    (~96%)
+- logica/domain/entities/Etiqueta.ts        (92.3%)
+- logica/domain/entities/Reporte.ts         (94.1%)
+- logica/domain/value_objects/Email.ts, Password.ts (cubiertos, no aparecen
+  desglosados arriba por ser 100% y quedar agrupados)
+
+============================================================
+MÓDULOS SIN COBERTURA (0%) — deuda de testing pendiente
+============================================================
+Use cases sin ningún test unitario:
+  - auth: LoginUseCase, RegisterUseCase, LogoutUseCase
+  - experiencias: Create, Edit, Delete, Publish, List, Get, Buscar, Relacionadas
+  - favoritos: ToggleFavorito, ListarMios
+  - usuarios: EditarPerfil, EditarFoto, EliminarCuenta, Estadisticas,
+    ObtenerPerfil, ListarExperienciasPorUsuario
+  - pagina_equipo: Obtener, Editar
+
+Entidades de dominio sin test:
+  - Auditoria.ts, Experiencia.ts, Favorito.ts, IntentoFallido.ts, Sesion.ts,
+    Usuario.ts
+
+Capa HTTP sin ningún test (0% en todos):
+  - Todos los *Controller.ts (Admin, Auth, Etiquetas, Experiencias, Favoritos,
+    PaginaEquipo, Reacciones, Reportes, Respuestas, Usuarios)
+  - validationMiddleware.ts, authMiddleware.ts
+  - schemas.ts (Zod) — 0% de líneas/statements ejecutadas directamente en
+    tests unitarios (sí se ejercitan indirectamente vía E2E y las pruebas
+    manuales de curl, pero eso no cuenta para este reporte de vitest)
+  - Mappers HTTP (ExperienciaHttpMapper, UsuarioExperienciaMapper)
+
+============================================================
+NOTA
+============================================================
+No hay coverage.threshold configurado en vitest.config.ts a propósito:
+forzar 70% hoy haría fallar `pnpm test:coverage` en cada corrida. El 70%
+es la meta documentada en TESTING.md; alcanzarla requiere escribir tests
+para los use cases, controllers y middleware listados arriba — trabajo
+pendiente, no cubierto en esta sesión de verificación.

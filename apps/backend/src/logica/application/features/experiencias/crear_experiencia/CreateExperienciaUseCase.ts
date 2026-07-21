@@ -21,14 +21,14 @@ export class CreateExperienciaUseCase {
     validarCampo(cmd.reflexionEtica, 'reflexión ética');
 
     const id = uuidv4();
-    const experiencia = new Experiencia(
+    const experiencia = new Experiencia({
       id,
-      cmd.usuarioId,
-      cmd.titulo,
-      cmd.descripcion,
-      cmd.reflexionMoral,
-      cmd.reflexionEtica,
-    );
+      usuarioId: cmd.usuarioId,
+      titulo: cmd.titulo,
+      descripcion: cmd.descripcion,
+      reflexionMoral: cmd.reflexionMoral,
+      reflexionEtica: cmd.reflexionEtica,
+    });
 
     if (cmd.publicar) {
       experiencia.publicar();

@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useState, type SubmitEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@features/auth/hooks/useAuth';
@@ -12,7 +12,7 @@ export function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [localError, setLocalError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
     setLocalError(null);
 
@@ -42,8 +42,9 @@ export function RegisterPage() {
           )}
 
           <div>
-            <label className="block text-sm font-medium mb-1">Nombre completo</label>
+            <label htmlFor="nombre" className="block text-sm font-medium mb-1">Nombre completo</label>
             <input
+              id="nombre"
               type="text"
               value={nombre}
               onChange={(e) => setNombre(e.target.value)}
@@ -54,8 +55,9 @@ export function RegisterPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Correo electrónico</label>
+            <label htmlFor="correo" className="block text-sm font-medium mb-1">Correo electrónico</label>
             <input
+              id="correo"
               type="email"
               value={correo}
               onChange={(e) => setCorreo(e.target.value)}
@@ -66,8 +68,9 @@ export function RegisterPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Contraseña</label>
+            <label htmlFor="password" className="block text-sm font-medium mb-1">Contraseña</label>
             <input
+              id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -78,8 +81,9 @@ export function RegisterPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Confirmar contraseña</label>
+            <label htmlFor="confirmPassword" className="block text-sm font-medium mb-1">Confirmar contraseña</label>
             <input
+              id="confirmPassword"
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}

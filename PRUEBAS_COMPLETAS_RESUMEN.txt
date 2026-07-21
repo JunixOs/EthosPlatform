@@ -1,0 +1,125 @@
+PRUEBAS_COMPLETAS_RESUMEN.txt
+Verificación completa de EthosPlatform — feature/javier
+Fecha: 2026-07-21
+
+============================================================
+RESUMEN EJECUTIVO
+============================================================
+✅ Compilación y tipos: sin errores
+✅ Dependencias (zod, vitest, @vitest/coverage-v8): instaladas
+✅ PostgreSQL: accesible
+✅ Backend Express: levantado, /api/health OK
+✅ Frontend Vite: levantado (puerto 16000, ver nota abajo)
+❌ SonarQube: NO está levantado — no se pudo correr el análisis
+✅ Tests unitarios backend: 92/92 pasando
+✅ Tests unitarios frontend: 38/38 pasando
+✅ Validación de inputs (Zod): 3/3 casos de prueba correctos
+✅ Tests E2E (Playwright, 5 proyectos): 201 passed, 10 skipped, 0 failed
+⚠️ Coverage real: 20.6% backend / 13.1% frontend (meta: 70%, ver nota)
+
+============================================================
+FASE 1 — COMPILACIÓN Y TIPOS
+============================================================
+pnpm build            → ✅ OK (backend tsc + frontend tsc -b && vite build)
+pnpm tsc --noEmit      → ✅ Sin errores (backend y frontend)
+pnpm list zod vitest @vitest/coverage-v8 -r → ✅ todas presentes:
+  - @app/backend: zod@4.4.3, vitest@4.1.10, @vitest/coverage-v8@4.1.10
+  - @app/frontend: vitest@4.1.10, @vitest/coverage-v8@4.1.10
+
+============================================================
+FASE 2 — INFRAESTRUCTURA
+============================================================
+PostgreSQL   : ✅ contenedor "ethos_postgres_local" up, `SELECT 1` OK
+               (verificado vía `docker exec ... psql`, el cliente psql no
+               está instalado en este host, así que no se pudo correr el
+               comando literal `psql -h localhost ...` del plan)
+Backend      : ✅ curl http://localhost:3000/api/health →
+               {"status":"ok","timestamp":"2026-07-21T06:54:27.578Z"}
+Frontend     : ❌ puerto 5173 no responde (Connection refused) —
+               ✅ puerto 16000 sí responde (200). Este proyecto tiene
+               vite.config.ts con `server.port: 16000, strictPort: true`
+               a propósito, así que 5173 nunca va a responder aquí. No es
+               un error, es un dato desactualizado en el plan de pruebas.
+SonarQube    : ❌ BLOQUEADO. curl http://localhost:9000/api/system/status
+               → Connection refused. `docker ps -a` no muestra ningún
+               contenedor de SonarQube (ni corriendo ni detenido). Ver
+               SONARQUBE_RESULTS.txt para el detalle y los pasos para
+               retomar cuando esté levantado.
+
+============================================================
+FASE 3 — TESTS BACKEND
+============================================================
+pnpm test:run       → 92/92 tests pasando, 11 test files, ~1.4s
+pnpm test:coverage  → ver BACKEND_COVERAGE.txt para el detalle completo
+  Statements: 20.61% | Branches: 22.84% | Functions: 20.93% | Lines: 20.34%
+Reporte HTML: apps/backend/coverage/index.html
+
+============================================================
+FASE 4 — TESTS FRONTEND
+============================================================
+pnpm test:run       → 38/38 tests pasando, 8 test files, ~9s
+pnpm test:coverage  → ver FRONTEND_COVERAGE.txt para el detalle completo
+  Statements: 13.07% | Branches: 12.35% | Functions: 10.25% | Lines: 13.42%
+Reporte HTML: apps/frontend/coverage/index.html
+
+============================================================
+FASE 5 — VALIDACIÓN DE INPUTS (Zod)
+============================================================
+Ver VALIDATION_TESTS.txt para el detalle completo. Resumen: 3/3 correctos.
+  1. Login email inválido           → 400 ✅
+  2. Register password débil        → 400 ✅
+  3. Crear experiencia sin título    → 400 ✅ (con token válido real)
+
+============================================================
+FASE 6 — SONARQUBE
+============================================================
+❌ BLOQUEADO — el servidor no está levantado en esta máquina. Ver
+SONARQUBE_RESULTS.txt. Se dejó toda la config lista (sonar-project.properties,
+scripts sonar:scan/quality:check, sonarqube-scanner instalado) para correr
+apenas la infraestructura esté disponible. No se inventó ningún resultado
+de Quality Gate / Bugs / Code Smells / Duplications.
+
+============================================================
+FASE 7 — E2E (PLAYWRIGHT)
+============================================================
+Ver E2E_RESULTS.txt para el detalle completo.
+Total: 201 passed, 10 skipped (guards de datos, no fallos), 0 failed.
+Por browser: chromium 64/64, firefox 64/64, webkit 64/64,
+chromium-auth 3 passed + 6 skipped, chromium-admin 2/2.
+(Firefox y WebKit no estaban instalados al empezar esta verificación — se
+instalaron con `pnpm exec playwright install firefox webkit` para poder
+correr la suite completa como pedía el plan.)
+
+============================================================
+COBERTURA — NOTA IMPORTANTE (ya discutida y acordada en la sesión anterior)
+============================================================
+La cobertura real medida sobre TODO src/ (no solo archivos con test) es
+20.6% backend / 13.1% frontend, muy por debajo del 70% de meta. Esto es
+consistente con lo que ya se había detectado y acordado: no hay
+coverage.threshold en vitest que rompa el build, porque forzar 70% hoy
+haría fallar `pnpm test:coverage` en cada corrida. El 70% queda como meta
+documentada en TESTING.md; alcanzarla requiere escribir tests nuevos para
+los use cases, controllers, middleware y páginas/hooks/servicios listados
+en BACKEND_COVERAGE.txt y FRONTEND_COVERAGE.txt — trabajo no incluido en
+esta verificación (que era de "compilar, probar y reportar", no de
+"escribir tests nuevos").
+
+============================================================
+PENDIENTES PARA EL EQUIPO
+============================================================
+1. Levantar SonarQube (docker run sonarqube:latest, generar token) y correr
+   `pnpm quality:check` — todo lo demás ya está configurado.
+2. Escribir tests para subir la cobertura real hacia el 70% (ver listas de
+   archivos sin cobertura en BACKEND_COVERAGE.txt / FRONTEND_COVERAGE.txt).
+3. Nada bloqueante encontrado en build, tipos, tests unitarios, validación
+   ni E2E — la rama feature/javier está estable para seguir trabajando.
+
+============================================================
+ARCHIVOS GENERADOS EN ESTA VERIFICACIÓN
+============================================================
+- BACKEND_COVERAGE.txt
+- FRONTEND_COVERAGE.txt
+- VALIDATION_TESTS.txt
+- SONARQUBE_RESULTS.txt
+- E2E_RESULTS.txt
+- PRUEBAS_COMPLETAS_RESUMEN.txt (este archivo)

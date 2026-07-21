@@ -4,6 +4,9 @@ import { BuscarPorEtiquetaUseCase } from '@/logica/application/features/etiqueta
 import { ListarEtiquetasUseCase } from '@/logica/application/features/etiquetas/ListarEtiquetasUseCase';
 import { Etiqueta } from '@/logica/domain/entities/Etiqueta';
 import { NotFoundException, ValidationException } from '@/logica/application/exceptions/AppException';
+import type { IEtiquetaRepository } from '@/logica/application/gateway/repositories/IEtiquetaRepository';
+import type { IExperienciaRepository } from '@/logica/application/gateway/repositories/IExperienciaRepository';
+import type { Experiencia } from '@/logica/domain/entities/Experiencia';
 
 const mockEtiquetaRepo = {
   findById: vi.fn(),
@@ -22,7 +25,7 @@ const mockExperienciaRepo = {
 };
 
 describe('AsociarEtiquetasUseCase', () => {
-  const useCase = new AsociarEtiquetasUseCase(mockEtiquetaRepo as any, mockExperienciaRepo as any);
+  const useCase = new AsociarEtiquetasUseCase(mockEtiquetaRepo as unknown as IEtiquetaRepository, mockExperienciaRepo as unknown as IExperienciaRepository);
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -70,7 +73,7 @@ describe('AsociarEtiquetasUseCase', () => {
 });
 
 describe('BuscarPorEtiquetaUseCase', () => {
-  const useCase = new BuscarPorEtiquetaUseCase(mockEtiquetaRepo as any, mockExperienciaRepo as any);
+  const useCase = new BuscarPorEtiquetaUseCase(mockEtiquetaRepo as unknown as IEtiquetaRepository, mockExperienciaRepo as unknown as IExperienciaRepository);
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -86,7 +89,7 @@ describe('BuscarPorEtiquetaUseCase', () => {
     mockEtiquetaRepo.findBySlug.mockResolvedValue(etiqueta);
     mockEtiquetaRepo.findExperienciasByEtiquetaId.mockResolvedValue({ experienciaIds: ['e1', 'e2'], total: 2 });
     mockExperienciaRepo.findById.mockImplementation((id: string) =>
-      Promise.resolve({ isPublicada: () => true, getId: () => id } as any)
+      Promise.resolve({ isPublicada: () => true, getId: () => id } as unknown as Experiencia)
     );
 
     const result = await useCase.execute('etica', 1, 10);
@@ -96,7 +99,7 @@ describe('BuscarPorEtiquetaUseCase', () => {
 });
 
 describe('ListarEtiquetasUseCase', () => {
-  const useCase = new ListarEtiquetasUseCase(mockEtiquetaRepo as any);
+  const useCase = new ListarEtiquetasUseCase(mockEtiquetaRepo as unknown as IEtiquetaRepository);
 
   beforeEach(() => {
     vi.clearAllMocks();

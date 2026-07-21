@@ -1,0 +1,34 @@
+PRETTIER_RESULTS.txt
+Generado: 2026-07-21
+
+============================================================
+ESTADO: Prettier configurado, NO se reformateó el código existente
+============================================================
+
+Este repo nunca tuvo Prettier configurado. Se agregó:
+  - .prettierrc.json (singleQuote, semi, trailingComma: all, printWidth: 100)
+  - .prettierignore (node_modules, dist, coverage, reportes de e2e, lockfile)
+  - Scripts en package.json raíz: `pnpm format` (--write) y `pnpm format:check`
+
+`pnpm exec prettier --check "apps/**/*.{ts,tsx,js,jsx}"` reporta 213 archivos
+con diferencias de estilo respecto al formato por defecto de Prettier (ver
+lista completa más abajo). Se decidió NO correr `--write` en esta auditoría:
+tocaría prácticamente todo el código fuente del repo en un solo commit
+gigante, con riesgo real de conflicto con el trabajo en curso de otros
+compañeros en la misma rama compartida (feature/javier ya recibió pushes
+de terceros durante esta sesión). Formatear el código completo queda como
+una decisión del equipo, para ejecutar en un commit dedicado
+("style: apply prettier formatting") cuando les convenga, no como
+side-effect de una auditoría de calidad.
+
+============================================================
+CÓMO CORRERLO CUANDO EL EQUIPO LO DECIDA
+============================================================
+pnpm format          # aplica --write a todo apps/**/*.{ts,tsx,js,jsx}
+git add -A
+git commit -m "style: apply prettier formatting"
+
+============================================================
+ARCHIVOS CON DIFERENCIAS DE FORMATO (213)
+============================================================
+Ver lista completa ejecutando: pnpm format:check

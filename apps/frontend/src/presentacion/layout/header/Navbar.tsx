@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 import { FaHeart, FaRegSun, FaRegMoon } from 'react-icons/fa';
-import {  } from "react-icons/fa";
 
 import { useAuthStore } from '@/app/store/auth.store';
 
@@ -49,6 +48,7 @@ export function Navbar() {
         <div className="flex items-center gap-4">
           {navbarItems.map(item => (
             <LinkComponent
+              key={item.to}
               to={item.to}
               variant="navbar"
               size="none"

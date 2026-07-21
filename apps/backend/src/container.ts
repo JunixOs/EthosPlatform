@@ -8,7 +8,6 @@ import { ReaccionRepository } from './datos/presistence/repositories/ReaccionRep
 import { RespuestaRepository } from './datos/presistence/repositories/RespuestaRepository';
 import { EtiquetaRepository } from './datos/presistence/repositories/EtiquetaRepository';
 import { ReporteRepository } from './datos/presistence/repositories/ReporteRepository';
-import { AuditoriaRepository } from './datos/presistence/repositories/AuditoriaRepository';
 import { PaginaEquipoRepository } from './datos/presistence/repositories/PaginaEquipoRepository';
 
 // Auth use cases
@@ -70,9 +69,6 @@ import { OcultarContenidoUseCase } from './logica/application/features/reportes/
 import { ObtenerPaginaEquipoUseCase } from './logica/application/features/pagina_equipo/ObtenerPaginaEquipoUseCase';
 import { EditarPaginaEquipoUseCase } from './logica/application/features/pagina_equipo/EditarPaginaEquipoUseCase';
 
-// Services
-import { AuditoriaService } from './logica/application/services/AuditoriaService';
-
 // Controllers
 import { AuthController } from './logica/interface_adapters/features/auth/controllers/AuthController';
 import { ExperienciasController } from './logica/interface_adapters/features/experiencias/controllers/ExperienciasController';
@@ -117,7 +113,6 @@ export async function createContainer(): Promise<Container> {
   const respuestaRepo = new RespuestaRepository(dataSource);
   const etiquetaRepo = new EtiquetaRepository(dataSource);
   const reporteRepo = new ReporteRepository(dataSource);
-  const auditoriaRepo = new AuditoriaRepository(dataSource);
   const paginaEquipoRepo = new PaginaEquipoRepository(dataSource);
 
   // Auth

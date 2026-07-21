@@ -4,6 +4,9 @@ import { ListarReportesUseCase } from '@/logica/application/features/reportes/Li
 import { OcultarContenidoUseCase } from '@/logica/application/features/reportes/OcultarContenidoUseCase';
 import { Reporte } from '@/logica/domain/entities/Reporte';
 import { NotFoundException, ConflictException, ValidationException } from '@/logica/application/exceptions/AppException';
+import { TipoReporteEnum } from '@/logica/domain/enum/index';
+import type { IReporteRepository } from '@/logica/application/gateway/repositories/IReporteRepository';
+import type { IExperienciaRepository } from '@/logica/application/gateway/repositories/IExperienciaRepository';
 
 const mockReporteRepo = {
   findById: vi.fn(),
@@ -19,7 +22,7 @@ const mockExperienciaRepo = {
 };
 
 describe('CrearReporteUseCase', () => {
-  const useCase = new CrearReporteUseCase(mockReporteRepo as any, mockExperienciaRepo as any);
+  const useCase = new CrearReporteUseCase(mockReporteRepo as unknown as IReporteRepository, mockExperienciaRepo as unknown as IExperienciaRepository);
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -27,20 +30,20 @@ describe('CrearReporteUseCase', () => {
 
   it('should throw NotFoundException when experiencia does not exist', async () => {
     mockExperienciaRepo.findById.mockResolvedValue(null);
-    await expect(useCase.execute({ reporterId: 'u1', experienciaId: 'e1', tipo: 'spam' as any }))
+    await expect(useCase.execute({ reporterId: 'u1', experienciaId: 'e1', tipo: TipoReporteEnum.SPAM }))
       .rejects.toThrow(NotFoundException);
   });
 
   it('should throw ValidationException when experiencia is not published', async () => {
     mockExperienciaRepo.findById.mockResolvedValue({ isPublicada: () => false });
-    await expect(useCase.execute({ reporterId: 'u1', experienciaId: 'e1', tipo: 'spam' as any }))
+    await expect(useCase.execute({ reporterId: 'u1', experienciaId: 'e1', tipo: TipoReporteEnum.SPAM }))
       .rejects.toThrow(ValidationException);
   });
 
   it('should throw ConflictException when user already reported', async () => {
     mockExperienciaRepo.findById.mockResolvedValue({ isPublicada: () => true });
     mockReporteRepo.existeReporteDeUsuario.mockResolvedValue(true);
-    await expect(useCase.execute({ reporterId: 'u1', experienciaId: 'e1', tipo: 'spam' as any }))
+    await expect(useCase.execute({ reporterId: 'u1', experienciaId: 'e1', tipo: TipoReporteEnum.SPAM }))
       .rejects.toThrow(ConflictException);
   });
 
@@ -49,21 +52,21 @@ describe('CrearReporteUseCase', () => {
     mockReporteRepo.existeReporteDeUsuario.mockResolvedValue(false);
     mockReporteRepo.save.mockResolvedValue(undefined);
 
-    const result = await useCase.execute({ reporterId: 'u1', experienciaId: 'e1', tipo: 'spam' as any, descripcion: 'Bad content' });
+    const result = await useCase.execute({ reporterId: 'u1', experienciaId: 'e1', tipo: TipoReporteEnum.SPAM, descripcion: 'Bad content' });
     expect(result.estado).toBe('pendiente');
     expect(mockReporteRepo.save).toHaveBeenCalledTimes(1);
   });
 });
 
 describe('ListarReportesUseCase', () => {
-  const useCase = new ListarReportesUseCase(mockReporteRepo as any);
+  const useCase = new ListarReportesUseCase(mockReporteRepo as unknown as IReporteRepository);
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it('should return paginated pending reportes', async () => {
-    const reportes = [new Reporte('r1', 'u1', 'e1', 'spam' as any, 'desc')];
+    const reportes = [new Reporte('r1', 'u1', 'e1', TipoReporteEnum.SPAM, 'desc')];
     mockReporteRepo.findPendientes.mockResolvedValue({ data: reportes, total: 1, page: 1, limit: 10 });
 
     const result = await useCase.execute(1, 10);
@@ -73,7 +76,7 @@ describe('ListarReportesUseCase', () => {
 });
 
 describe('OcultarContenidoUseCase', () => {
-  const useCase = new OcultarContenidoUseCase(mockReporteRepo as any, mockExperienciaRepo as any);
+  const useCase = new OcultarContenidoUseCase(mockReporteRepo as unknown as IReporteRepository, mockExperienciaRepo as unknown as IExperienciaRepository);
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -85,7 +88,7 @@ describe('OcultarContenidoUseCase', () => {
   });
 
   it('should archive experiencia and resolve reporte', async () => {
-    const reporte = new Reporte('r1', 'u1', 'e1', 'spam' as any, 'desc');
+    const reporte = new Reporte('r1', 'u1', 'e1', TipoReporteEnum.SPAM, 'desc');
     mockReporteRepo.findById.mockResolvedValue(reporte);
     const experiencia = { archivar: vi.fn(), getId: () => 'e1' };
     mockExperienciaRepo.findById.mockResolvedValue(experiencia);

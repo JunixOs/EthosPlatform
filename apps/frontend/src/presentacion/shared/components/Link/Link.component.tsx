@@ -16,7 +16,7 @@ export function LinkComponent({
     children,
     className = '',
     ...props
-}: LinkComponentProps) {
+}: Readonly<LinkComponentProps>) {
 
     const variants: Record<Variant , string> = {
         navbar:

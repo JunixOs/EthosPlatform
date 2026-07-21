@@ -8,7 +8,10 @@ export class Email {
   }
 
   private validate(email: string): void {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // Los segmentos entre puntos excluyen el punto explícitamente (`[^\s@.]+`)
+    // para que no se solapen con el separador literal `\.` y evitar el
+    // backtracking exponencial que tenía `[^\s@]+\.[^\s@]+`.
+    const emailRegex = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/;
     if (!emailRegex.test(email)) {
       throw new Error('Email inválido');
     }

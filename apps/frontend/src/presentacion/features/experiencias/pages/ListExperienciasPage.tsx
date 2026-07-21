@@ -22,6 +22,7 @@ export function ListExperienciasPage() {
   const limit = 10;
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch-on-page/sort-change, intentional
     setLoading(true);
     experienciasService
       .listar({ page, limit, sort })
@@ -33,7 +34,7 @@ export function ListExperienciasPage() {
       .finally(() => setLoading(false));
   }, [page, sort]);
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = (e: React.SubmitEvent) => {
     e.preventDefault();
     if (q.trim()) navigate(`/buscar?q=${encodeURIComponent(q.trim())}`);
   };

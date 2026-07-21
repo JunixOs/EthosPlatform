@@ -22,7 +22,7 @@ export class BuscarPorEtiquetaUseCase {
 
     const { experienciaIds, total } = await this.etiquetaRepo.findExperienciasByEtiquetaId(etiqueta.getId(), page, limit);
     const experiencias = await Promise.all(experienciaIds.map((id) => this.experienciaRepo.findById(id)));
-    const data = experiencias.filter((e): e is Experiencia => e !== null && e.isPublicada());
+    const data = experiencias.filter((e): e is Experiencia => e?.isPublicada() ?? false);
 
     return { data, total, page, limit };
   }

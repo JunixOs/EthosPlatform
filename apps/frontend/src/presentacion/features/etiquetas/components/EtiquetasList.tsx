@@ -10,7 +10,7 @@ interface EtiquetasListProps {
   etiquetas: EtiquetaDTO[];
 }
 
-export function EtiquetasList({ etiquetas }: EtiquetasListProps) {
+export function EtiquetasList({ etiquetas }: Readonly<EtiquetasListProps>) {
   if (etiquetas.length === 0) return null;
 
   return (

@@ -20,6 +20,7 @@ export function PerfilPage() {
 
   useEffect(() => {
     if (!id) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch-on-id-change, intentional
     setLoading(true);
     Promise.all([
       usuariosService.getPerfil(id),

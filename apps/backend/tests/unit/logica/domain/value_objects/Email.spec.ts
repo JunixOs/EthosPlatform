@@ -2,39 +2,23 @@ import { describe, it, expect } from 'vitest';
 import { Email } from '@/logica/domain/value_objects/Email';
 
 describe('Email Value Object', () => {
-  it('should create an Email with a valid address', () => {
-    const email = new Email('user@example.com');
+  it.each([
+    ['a valid address', 'user@example.com'],
+    ['uppercase, normalized to lowercase', 'USER@EXAMPLE.COM'],
+    ['surrounding whitespace, trimmed', '  user@example.com  '],
+  ])('should create an Email with %s', (_case, value) => {
+    const email = new Email(value);
     expect(email.getValue()).toBe('user@example.com');
   });
 
-  it('should normalize email to lowercase', () => {
-    const email = new Email('USER@EXAMPLE.COM');
-    expect(email.getValue()).toBe('user@example.com');
-  });
-
-  it('should trim whitespace', () => {
-    const email = new Email('  user@example.com  ');
-    expect(email.getValue()).toBe('user@example.com');
-  });
-
-  it('should throw for missing @ symbol', () => {
-    expect(() => new Email('userexample.com')).toThrow('Email inválido');
-  });
-
-  it('should throw for missing domain', () => {
-    expect(() => new Email('user@')).toThrow('Email inválido');
-  });
-
-  it('should throw for missing local part', () => {
-    expect(() => new Email('@example.com')).toThrow('Email inválido');
-  });
-
-  it('should throw for missing TLD', () => {
-    expect(() => new Email('user@example')).toThrow('Email inválido');
-  });
-
-  it('should throw for spaces in address', () => {
-    expect(() => new Email('user name@example.com')).toThrow('Email inválido');
+  it.each([
+    ['missing @ symbol', 'userexample.com'],
+    ['missing domain', 'user@'],
+    ['missing local part', '@example.com'],
+    ['missing TLD', 'user@example'],
+    ['spaces in address', 'user name@example.com'],
+  ])('should throw for %s', (_case, value) => {
+    expect(() => new Email(value)).toThrow('Email inválido');
   });
 
   it('should consider two emails with same value as equal', () => {

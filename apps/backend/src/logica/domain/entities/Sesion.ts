@@ -1,12 +1,12 @@
 import { TipoSesionEnum } from '../enum/index';
 
 export class Sesion {
-  private id: string;
-  private usuarioId: string;
-  private token: string;
-  private tipo: TipoSesionEnum;
-  private expiraEn: Date;
-  private creadaEn: Date;
+  private readonly id: string;
+  private readonly usuarioId: string;
+  private readonly token: string;
+  private readonly tipo: TipoSesionEnum;
+  private readonly expiraEn: Date;
+  private readonly creadaEn: Date;
 
   constructor(
     id: string,

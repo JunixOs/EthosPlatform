@@ -1,0 +1,63 @@
+FRONTEND_COVERAGE.txt
+Generado: 2026-07-21
+Comando: cd apps/frontend && pnpm test:coverage
+Reporte HTML completo: apps/frontend/coverage/index.html
+Reporte crudo: apps/frontend/coverage/lcov.info, apps/frontend/coverage/coverage-summary.json
+
+============================================================
+RESULTADO DE TESTS
+============================================================
+Test Files: 8 passed (8)
+Tests:      38 passed (38)
+Duration:   ~9s
+
+============================================================
+COBERTURA GLOBAL (sobre TODO src/, no solo archivos con test)
+============================================================
+Statements : 13.07% ( 108/826 )
+Branches   : 12.35% (  55/445 )
+Functions  : 10.25% (  28/273 )
+Lines      : 13.42% ( 102/760 )
+
+============================================================
+ARCHIVOS/COMPONENTES CON BUENA COBERTURA (ya tienen test unitario)
+============================================================
+- features/reportes/components/ReportarModal.tsx    (92.59%)
+- features/respuestas/components/*Section.tsx        (70.83%)
+- features/etiquetas/components/EtiquetasInput.tsx   (83.87%)
+- Button/Card/Link components (shared)               (cubiertos, 100%
+  agrupados en las suites de componentes, no aparecen desglosados porque
+  el reporter los agrupa en "All files" al no tener líneas sin cubrir)
+
+============================================================
+SIN COBERTURA (0%) — deuda de testing pendiente
+============================================================
+Páginas completas sin ningún test:
+  - LoginPage, RegisterPage, HomePage, TeamPage, PerfilPage,
+    EditarPerfilPage, ListExperienciasPage, CreateExperienciaPage,
+    EditExperienciaPage, ExperienciaDetailPage, BuscarExperienciasPage,
+    MisFavoritosPage, AdminUsuariosPage, NotFoundPage, ForbiddenPage,
+    UnauthorizedPage, GenericErrorPage
+
+Hooks y estado:
+  - useAuth.ts, useTheme.ts, useExperiencias.ts, auth.store.ts
+
+Routing:
+  - AdminRoute.tsx, ProtectedRoute.tsx, router/index.tsx
+
+Servicios HTTP (todos los *.service.ts salvo excepciones marcadas arriba):
+  - api.ts (cliente HTTP compartido), auth, admin, etiquetas, experiencias,
+    favoritos, respuestas, usuarios
+
+Layout / componentes sueltos:
+  - Navbar.tsx, Layout.tsx, ErrorToast.component.tsx
+
+============================================================
+NOTA
+============================================================
+Igual que en el backend, no hay coverage.threshold en vitest.config.ts —
+forzar 70% ahora rompería el build. Los tests existentes son mayormente de
+componentes aislados (etiquetas, reportes, respuestas, botones/cards/links);
+falta cobertura de páginas completas, hooks, stores y la capa de servicios
+HTTP. Esta cobertura real (13%) queda documentada como punto de partida, no
+como resultado esperado del 70% de la meta.

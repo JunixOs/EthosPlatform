@@ -1,4 +1,4 @@
-import { useState, useEffect, type FormEvent } from 'react';
+import { useState, useEffect, type SubmitEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import { experienciasService } from '@features/experiencias/services/experiencias.service';
@@ -29,7 +29,7 @@ export function EditExperienciaPage() {
       .finally(() => setLoading(false));
   }, [id]);
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
     setSaving(true);
     setError(null);
