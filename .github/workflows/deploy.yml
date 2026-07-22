@@ -97,5 +97,7 @@ jobs:
           fi
           curl --fail --silent --show-error --max-time 60 -X POST \
             -H "Content-Type: application/json" \
+            -H 'X-Github-Event: Deploy-from-github' \
+            -d '{"ref": "refs/heads/main"}' \
             "$DOCKPLOY_WEBHOOK"
           echo "Deploy webhook triggered successfully."
