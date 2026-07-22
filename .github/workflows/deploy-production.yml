@@ -18,8 +18,8 @@ jobs:
 
   analysis:
     name: Build & Quality Analysis
-    environment: production-env
     runs-on: self-hosted
+    environment: production-env
     timeout-minutes: 30
 
     steps:
@@ -64,6 +64,8 @@ jobs:
           sonar-scanner \
             -Dsonar.host.url="$SONAR_HOST_URL" \
             -Dsonar.token="$SONAR_TOKEN" \
+            -Dsonar.projectKey="com.ethos.backend" \
+            -Dsonar.projectName="EthosPlatform Backend" \
             -Dsonar.qualitygate.wait=true \
             -Dsonar.qualitygate.timeout=300
 
@@ -76,6 +78,8 @@ jobs:
           sonar-scanner \
             -Dsonar.host.url="$SONAR_HOST_URL" \
             -Dsonar.token="$SONAR_TOKEN" \
+            -Dsonar.projectKey="com.ethos.frontend" \
+            -Dsonar.projectName="EthosPlatform Frontend" \
             -Dsonar.qualitygate.wait=true \
             -Dsonar.qualitygate.timeout=300
 
@@ -97,7 +101,7 @@ jobs:
           fi
           curl --fail --silent --show-error --max-time 60 -X POST \
             -H "Content-Type: application/json" \
-            -H 'X-Github-Event: Deploy-from-github' \
-            -d '{"ref": "refs/heads/main"}' \
+            -H "X-GitHub-Event: deploy-from-github" \
+            -d '{"ref": "refs/heads/main", "environment": "production"}' \
             "$DOCKPLOY_WEBHOOK"
-          echo "Deploy webhook triggered successfully."
+          echo "Production deploy webhook triggered successfully."

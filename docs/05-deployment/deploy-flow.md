@@ -1,29 +1,47 @@
 # Flujo de Despliegue
 
-Este documento detalla el proceso completo de despliegue continuo de EthosPlatform, desde el momento en que un desarrollador envía código hasta que la nueva versión está disponible en producción.
+Este documento detalla el proceso completo de despliegue continuo de EthosPlatform, desde el momento en que un desarrollador envía código hasta que la nueva versión está disponible en el entorno correspondiente (desarrollo o producción).
 
 ## Visión General del Flujo
 
+EthosPlatform utiliza **dos ramas principales** que disparan pipelines independientes:
+
+| Rama | Workflow | Entorno | SonarQube | Quality Gate |
+|---|---|---|---|---|
+| `develop` | `deploy-development.yml` | Desarrollo | Proyectos `.dev` | Informativo (no bloquea) |
+| `main` | `deploy-production.yml` | Producción | Proyectos base | Bloqueante (obligatorio) |
+
 ```
-┌──────────┐     ┌─────────────┐     ┌──────────────┐     ┌──────────┐     ┌──────────┐
-│  Push a  │────▶│ GitHub      │────▶│ Self-Hosted  │────▶│ SonarQube│────▶│ Dockploy │
-│  main    │     │ Actions     │     │ Runner       │     │ Quality  │     │ Deploy   │
-└──────────┘     └─────────────┘     └──────────────┘     │   Gate    │     └──────────┘
-                                                         └──────────┘
+┌─────────────┐     ┌─────────────┐     ┌──────────────┐     ┌──────────┐     ┌──────────┐
+│  Push a     │────▶│ GitHub      │────▶│ Self-Hosted  │────▶│ SonarQube│────▶│ Dockploy │
+│  develop    │     │ Actions     │     │ Runner       │     │ .dev     │     │ Dev      │
+│  o main     │     │             │     │              │     │ o prod   │     │ o Prod   │
+└─────────────┘     └─────────────┘     └──────────────┘     └──────────┘     └──────────┘
 ```
 
-## Paso 1: Push a la rama `main`
+---
+
+## Paso 1: Push a la rama de trabajo
 
 **Actor**: Desarrollador / Equipo de desarrollo
-**Trigger**: Evento `push` en la rama `main` del repositorio de GitHub.
+**Trigger**: Evento `push` en la rama `develop` o `main`.
 
-1. El desarrollador finaliza una funcionalidad o corrección en su rama de trabajo.
-2. Realiza merge (o push directo, según política del equipo) hacia la rama `main`.
-3. GitHub detecta el evento `push` en `main` y encola el workflow definido en `.github/workflows/deploy.yml`.
+### 1.1. Rama `develop` (Desarrollo)
 
-**Reglas de concurrencia**:
-- El workflow utiliza `concurrency: group: production-deploy` con `cancel-in-progress: false`.
-- Esto evita que dos despliegues se ejecuten simultáneamente, garantizando orden y predecibilidad.
+1. El desarrollador trabaja en una feature branch.
+2. Realiza merge hacia `develop` mediante Pull Request o merge directo.
+3. GitHub detecta el `push` y dispara `.github/workflows/deploy-development.yml`.
+
+**Concurrencia**: `group: development-deploy` con `cancel-in-progress: true`.
+- Un nuevo push a `develop` cancela cualquier ejecución anterior en curso, priorizando el código más reciente.
+
+### 1.2. Rama `main` (Producción)
+
+1. Cuando el código en `develop` es estable, se promociona a `main` (vía PR o merge).
+2. GitHub detecta el `push` y dispara `.github/workflows/deploy-production.yml`.
+
+**Concurrencia**: `group: production-deploy` con `cancel-in-progress: false`.
+- Nunca se cancela un deploy de producción en curso. Los nuevos pushes esperan en cola para garantizar estabilidad.
 
 ---
 
@@ -74,45 +92,68 @@ GitHub Actions asigna el job al **Self-Hosted Runner** registrado en el reposito
 
 Una vez superados los tests y builds, el runner ejecuta el análisis de calidad de código.
 
-### 3.1. Análisis del Backend
+### 3.1. Proyectos separados por entorno
+
+Para mantener métricas limpias y trazables, cada entorno envía sus análisis a proyectos independientes en SonarQube:
+
+| Aplicación | Rama `develop` | Rama `main` |
+|---|---|---|
+| Backend | `com.ethos.backend.dev` | `com.ethos.backend` |
+| Frontend | `com.ethos.frontend.dev` | `com.ethos.frontend` |
+
+> **Nota sobre SonarQube Community Edition**: La edición Community no soporta Branch Analysis nativo. La única forma de diferenciar métricas entre ramas es mediante proyectos separados.
+
+### 3.2. Análisis del Backend
 
 - Directorio de trabajo: `apps/backend`
-- Comando ejecutado:
+- **Desarrollo** (`develop`):
   ```bash
   sonar-scanner \
     -Dsonar.host.url="$SONAR_HOST_URL" \
     -Dsonar.token="$SONAR_TOKEN" \
+    -Dsonar.projectKey="com.ethos.backend.dev" \
+    -Dsonar.projectName="EthosPlatform Backend (Development)" \
+    -Dsonar.qualitygate.wait=false
+  ```
+- **Producción** (`main`):
+  ```bash
+  sonar-scanner \
+    -Dsonar.host.url="$SONAR_HOST_URL" \
+    -Dsonar.token="$SONAR_TOKEN" \
+    -Dsonar.projectKey="com.ethos.backend" \
+    -Dsonar.projectName="EthosPlatform Backend" \
     -Dsonar.qualitygate.wait=true \
     -Dsonar.qualitygate.timeout=300
   ```
-- Configuración leída desde: `apps/backend/sonar-project.properties`.
-- El scanner envía el código fuente, los tests y el reporte `coverage/lcov.info` a SonarQube.
+- Configuración base leída desde: `apps/backend/sonar-project.properties`.
+- Los parámetros `-Dsonar.projectKey` y `-Dsonar.projectName` **sobrescriben** los valores del archivo de propiedades.
 
-### 3.2. Análisis del Frontend
+### 3.3. Análisis del Frontend
 
 - Directorio de trabajo: `apps/frontend`
-- Comando ejecutado:
-  ```bash
-  sonar-scanner \
-    -Dsonar.host.url="$SONAR_HOST_URL" \
-    -Dsonar.token="$SONAR_TOKEN" \
-    -Dsonar.qualitygate.wait=true \
-    -Dsonar.qualitygate.timeout=300
-  ```
-- Configuración leída desde: `apps/frontend/sonar-project.properties`.
+- **Desarrollo** (`develop`): usa `com.ethos.frontend.dev` con `qualitygate.wait=false`.
+- **Producción** (`main`): usa `com.ethos.frontend` con `qualitygate.wait=true` y `timeout=300`.
+- Configuración base leída desde: `apps/frontend/sonar-project.properties`.
 
-### 3.3. Evaluación del Quality Gate
+### 3.4. Evaluación del Quality Gate
 
-- SonarQube procesa los análisis y evalúa las métricas contra el perfil de Quality Gate configurado.
-- El parámetro `sonar.qualitygate.wait=true` obliga al scanner a permanecer en espera activa hasta recibir el veredicto.
-- **Timeout**: Si después de 300 segundos (5 minutos) no hay respuesta, el comando falla.
+#### En `develop` (Quality Gate informativo)
+
+- `sonar.qualitygate.wait=false`: El scanner envía el análisis y **no espera** el veredicto.
+- El pipeline continúa inmediatamente hacia el despliegue.
+- El equipo puede revisar las métricas en SonarQube como información de mejora, pero un issue no bloquea la iteración rápida.
+
+#### En `main` (Quality Gate bloqueante)
+
+- `sonar.qualitygate.wait=true`: El scanner permanece en espera activa hasta recibir el veredicto.
+- **Timeout**: 300 segundos (5 minutos).
 - **Fallo posible**:
   - Cobertura de código inferior al umbral definido.
   - Presencia de bugs, vulnerabilidades o code smells bloqueantes.
   - Duplicación de código por encima del límite permitido.
   - Timeout de comunicación con SonarQube.
 
-Si el Quality Gate **falla**, el pipeline se detiene completamente y **no se ejecuta el despliegue**.
+Si el Quality Gate **falla en `main`**, el pipeline se detiene completamente y **no se ejecuta el despliegue a producción**.
 
 ---
 
@@ -124,7 +165,9 @@ Si el Quality Gate **falla**, el pipeline se detiene completamente y **no se eje
 
 ### 4.1. Validación del webhook
 
-- El runner verifica que el secreto `DOCKPLOY_WEBHOOK` esté definido.
+- El runner verifica que el secreto del webhook correspondiente esté definido:
+  - `DOCKPLOY_WEBHOOK_DEV` para `develop`.
+  - `DOCKPLOY_WEBHOOK` para `main`.
 - Si falta, el job falla inmediatamente con un mensaje de error claro.
 
 ### 4.2. Disparo del webhook
@@ -133,6 +176,8 @@ Si el Quality Gate **falla**, el pipeline se detiene completamente y **no se eje
   ```bash
   curl --fail --silent --show-error --max-time 60 -X POST \
     -H "Content-Type: application/json" \
+    -H "X-GitHub-Event: deploy-from-github" \
+    -d '{"ref": "refs/heads/<rama>", "environment": "<entorno>"}' \
     "$DOCKPLOY_WEBHOOK"
   ```
 - El runner envía una petición HTTP `POST` a la URL de Dockploy.
@@ -165,10 +210,13 @@ Aunque no es parte automatizada del workflow actual, se recomiendan las siguient
 2. **Verificación del frontend**: Acceso a la URL pública y navegación básica.
 3. **Logs de contenedores**: Revisión de `docker-compose logs` para detectar errores de inicio.
 4. **Base de datos**: Confirmación de que las migraciones se aplicaron correctamente.
+5. **SonarQube**: Revisión de las métricas del proyecto correspondiente (`.dev` o base).
 
 ---
 
 ## Diagrama de Secuencia Detallado
+
+### Desarrollo (`develop`)
 
 ```
 Developer     GitHub      Self-Hosted    SonarQube    Dockploy    Docker
@@ -178,12 +226,30 @@ Developer     GitHub      Self-Hosted    SonarQube    Dockploy    Docker
     |            |            |──checkout──▶|           |         |
     |            |            |──lint/test/build──────▶ |         |
     |            |            |             |           |         |
-    |            |            |──sonar-scan(backend)──▶  |         |
-    |            |            |◀──quality gate──OK      |         |
-    |            |            |──sonar-scan(frontend)──▶|         |
-    |            |            |◀──quality gate──OK       |         |
+    |            |            |──sonar-scan(dev)──────▶ |         |
+    |            |            |  (no espera QG)          |         |
     |            |            |             |           |         |
-    |            |            |──POST webhook──────────▶|         |
+    |            |            |──POST webhook(dev)───▶|         |
+    |            |            |             |           |──build──▶|
+    |            |            |             |           |──up -d──▶|
+    |            |            |◀──success──────────────|         |
+    |            |◀──completed───────────────────────────|         |
+```
+
+### Producción (`main`)
+
+```
+Developer     GitHub      Self-Hosted    SonarQube    Dockploy    Docker
+    |            |           Runner         |           |         |
+    |──push──▶   |            |             |           |         |
+    |            |──trigger──▶ |             |           |         |
+    |            |            |──checkout──▶|           |         |
+    |            |            |──lint/test/build──────▶ |         |
+    |            |            |             |           |         |
+    |            |            |──sonar-scan(prod)─────▶ |         |
+    |            |            |◀──quality gate──OK      |         |
+    |            |            |             |           |         |
+    |            |            |──POST webhook(prod)──▶|         |
     |            |            |             |           |──build──▶|
     |            |            |             |           |──up -d──▶|
     |            |            |◀──success──────────────|         |
@@ -197,17 +263,20 @@ Developer     GitHub      Self-Hosted    SonarQube    Dockploy    Docker
 | Lint | Error de ESLint | Pipeline detenido. No hay despliegue. | Corregir código y push nuevo. |
 | Tests | Test unitario fallido | Pipeline detenido. No hay despliegue. | Corregir test o código y push nuevo. |
 | Build | Error de TypeScript/Vite | Pipeline detenido. No hay despliegue. | Corregir errores de compilación. |
-| SonarQube | Quality Gate no superado | Pipeline detenido. No hay despliegue. | Revisar SonarQube, corregir issues. |
-| SonarQube | Timeout / No conecta | Pipeline detenido. No hay despliegue. | Verificar estado de SonarQube y red. |
+| SonarQube (prod) | Quality Gate no superado | Pipeline detenido. No hay despliegue a producción. | Revisar SonarQube, corregir issues, merge corregido a main. |
+| SonarQube (dev) | Análisis con issues | Pipeline **continúa**. Despliegue no se bloquea. | Corregir issues antes de promocionar a main. |
+| SonarQube | Timeout / No conecta | Pipeline detenido (prod) o continúa (dev). | Verificar estado de SonarQube y red. |
 | Dockploy | Webhook no responde | Pipeline detenido. No hay despliegue. | Verificar estado de Dockploy y URL. |
 | Dockploy | Docker build falla | Servicio previo sigue corriendo. | Revisar logs de Dockploy/Docker. |
 
 ## Registro y Auditabilidad
 
 - Cada ejecución del workflow queda registrada en la pestaña **Actions** del repositorio de GitHub.
-- SonarQube mantiene un histórico de cada análisis, vinculado al commit correspondiente.
+- SonarQube mantiene históricos independientes para cada entorno:
+  - Proyectos `.dev`: evolución de la calidad durante el desarrollo.
+  - Proyectos base: métricas certificadas del código que llega a producción.
 - Los logs de Docker (`docker-compose logs`) y los logs del runner se mantienen en el servidor para troubleshooting.
 
 ---
 
-**Última actualización:** 21-07-2026
+**Última actualización:** 22-07-2026

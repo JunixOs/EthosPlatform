@@ -32,11 +32,17 @@ Un **Self-Hosted Runner** es una máquina virtual o física propiedad del equipo
 
 **SonarQube** es una plataforma de inspección continua de código que permite medir y mejorar la calidad y seguridad del software.
 
-- **Rol en el proyecto**: Actúa como la autoridad de calidad de código antes de permitir que cualquier cambio llegue a producción. Cada push a `main` genera un análisis completo de backend y frontend.
+- **Rol en el proyecto**: Actúa como la autoridad de calidad de código. Analiza cada push a `develop` y `main`, manteniendo métricas separadas por entorno.
 - **Proyectos configurados**:
-  - `com.ethos.backend`: Análisis del código fuente y tests del backend (Node.js/TypeScript).
-  - `com.ethos.frontend`: Análisis del código fuente y tests del frontend (React/TypeScript).
-- **Quality Gate**: Configurado con `sonar.qualitygate.wait=true`, lo que bloquea el pipeline si el código no cumple con los umbrales definidos (cobertura mínima, ausencia de bugs críticos, vulnerabilities, code smells).
+  - **Producción** (`main`):
+    - `com.ethos.backend`: Análisis del backend (Node.js/TypeScript).
+    - `com.ethos.frontend`: Análisis del frontend (React/TypeScript).
+  - **Desarrollo** (`develop`):
+    - `com.ethos.backend.dev`: Análisis del backend en rama de desarrollo.
+    - `com.ethos.frontend.dev`: Análisis del frontend en rama de desarrollo.
+- **Quality Gate**:
+  - **Producción**: `sonar.qualitygate.wait=true` — bloquea el pipeline si no se cumplen los umbrales (cobertura mínima, ausencia de bugs críticos, vulnerabilities).
+  - **Desarrollo**: `sonar.qualitygate.wait=false` — el análisis es informativo, permite iteración rápida sin bloquear el despliegue.
 - **Métricas principales analizadas**:
   - Cobertura de tests (reporte LCOV generado por Vitest).
   - Bugs, vulnerabilidades y hotspots de seguridad.
@@ -96,6 +102,19 @@ Un **Self-Hosted Runner** es una máquina virtual o física propiedad del equipo
 | Dockploy | Despliegue (post-Quality Gate) | Docker Engine, Docker Compose |
 | Docker Compose | Infraestructura de ejecución | Imágenes Docker, volúmenes, redes |
 
+## Secrets de GitHub Actions
+
+Los siguientes secrets deben configurarse en el repositorio (`Settings > Secrets and variables > Actions > Repository secrets`):
+
+| Secret | Entorno | Descripción |
+|---|---|---|
+| `SONAR_HOST_URL` | Global | URL base de la instancia de SonarQube (ej: `http://sonar.tudominio.com:9000`) |
+| `SONAR_TOKEN` | Global | Token de análisis generado en SonarQube. Puede ser un token global o por proyecto. |
+| `DOCKPLOY_WEBHOOK` | Producción | URL del webhook de Dockploy para desplegar el entorno de producción (`main`) |
+| `DOCKPLOY_WEBHOOK_DEV` | Desarrollo | URL del webhook de Dockploy para desplegar el entorno de desarrollo (`develop`) |
+
+> **Nota**: Es recomendable usar webhooks separados para cada entorno, de modo que Dockploy pueda distinguir a qué instancia de Docker Compose debe aplicar el despliegue.
+
 ---
 
-**Última actualización:** 21-07-2026
+**Última actualización:** 22-07-2026

@@ -129,4 +129,4 @@ Runtime de contenedores que ejecuta las imágenes de producción.
 
 ---
 
-**Última actualización:** 21-07-2026
+**Última actualización:** 22-07-2026

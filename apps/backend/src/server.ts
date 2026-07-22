@@ -4,7 +4,7 @@ import { createRoutes } from './routes';
 import { AppDataSource } from './datos/presistence/connections/AppDataSource';
 import { logger } from './infrastructure/logger';
 
-const PORT = process.env['PORT'] ?? 3000;
+const PORT = process.env['BACKEND_PORT'] ?? 3000;
 
 async function startServer(): Promise<void> {
   try {
