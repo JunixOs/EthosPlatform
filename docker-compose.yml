@@ -9,7 +9,9 @@ services:
     container_name: etica_frontend_${ENVIRONMENT_NAME}
     restart: unless-stopped
     ports:
-      - "${FRONTEND_PORT}:80"
+      - "${EXPOSED_CONTAINER_FRONTEND_PORT}:80"
+    environment:
+      EXPOSED_CONTAINER_FRONTEND_PORT: ${EXPOSED_CONTAINER_FRONTEND_PORT}
     depends_on:
       backend:
         condition: service_started
@@ -23,9 +25,10 @@ services:
     container_name: etica_backend_${ENVIRONMENT_NAME}
     restart: unless-stopped
     ports:
-      - "${BACKEND_PORT}:3001"
+      - "${EXPOSED_CONTAINER_BACKEND_PORT}:3001"
     environment:
-      PORT: ${PORT}
+      EXPOSED_CONTAINER_BACKEND_PORT: ${EXPOSED_CONTAINER_BACKEND_PORT}
+      BACKEND_PORT: ${BACKEND_PORT}
       FRONTEND_URL: ${FRONTEND_URL}
       NODE_ENV: production
       DB_HOST: ${DB_HOST}
