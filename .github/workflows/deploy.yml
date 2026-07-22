@@ -18,6 +18,7 @@ jobs:
 
   analysis:
     name: Build & Quality Analysis
+    environment: production-env
     runs-on: self-hosted
     timeout-minutes: 30
 
@@ -80,6 +81,7 @@ jobs:
 
   deploy:
     name: Deploy via Dockploy
+    environment: production-env
     needs: analysis
     runs-on: self-hosted
     timeout-minutes: 10
