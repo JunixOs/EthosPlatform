@@ -1,0 +1,99 @@
+name: Deploy Production
+
+env:
+  NODE_VERSION: 22
+  SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+jobs:
+
+  analysis:
+    name: Build & Quality Analysis
+    runs-on: self-hosted
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          clean: true
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.8.0
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Test with coverage
+        run: pnpm run test:coverage
+
+      - name: Build Backend
+        run: pnpm build:backend
+
+      - name: Build Frontend
+        run: pnpm build:frontend
+
+      - name: Sonar Backend Analysis
+        working-directory: apps/backend
+        env:
+          SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ env.SONAR_HOST_URL }}
+        run: |
+          sonar-scanner \
+            -Dsonar.host.url="$SONAR_HOST_URL" \
+            -Dsonar.token="$SONAR_TOKEN" \
+            -Dsonar.qualitygate.wait=true \
+            -Dsonar.qualitygate.timeout=300
+
+      - name: Sonar Frontend Analysis
+        working-directory: apps/frontend
+        env:
+          SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ env.SONAR_HOST_URL }}
+        run: |
+          sonar-scanner \
+            -Dsonar.host.url="$SONAR_HOST_URL" \
+            -Dsonar.token="$SONAR_TOKEN" \
+            -Dsonar.qualitygate.wait=true \
+            -Dsonar.qualitygate.timeout=300
+
+  deploy:
+    name: Deploy via Dockploy
+    needs: analysis
+    runs-on: self-hosted
+    timeout-minutes: 10
+
+    steps:
+      - name: Trigger Dockploy Webhook
+        env:
+          DOCKPLOY_WEBHOOK: ${{ secrets.DOCKPLOY_WEBHOOK }}
+        run: |
+          if [ -z "$DOCKPLOY_WEBHOOK" ]; then
+            echo "Error: DOCKPLOY_WEBHOOK secret is not configured." >&2
+            exit 1
+          fi
+          curl --fail --silent --show-error --max-time 60 -X POST \
+            -H "Content-Type: application/json" \
+            "$DOCKPLOY_WEBHOOK"
+          echo "Deploy webhook triggered successfully."
