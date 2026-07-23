@@ -22,7 +22,7 @@ async function startServer(): Promise<void> {
 
     // El DataSource ya está inicializado (createContainer lo hace); el seed
     // reutiliza esa misma conexión, no abre una nueva.
-    await runSeed(AppDataSource, logger);
+    // await runSeed(AppDataSource, logger);
 
     const app = createApp();
     const apiRouter = createRoutes(container);
