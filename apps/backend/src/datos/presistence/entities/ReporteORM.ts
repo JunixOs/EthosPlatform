@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryColumn, Column, CreateDateColumn, Index } from 'typeorm';
 import { TipoReporteEnum } from '../../../logica/domain/enum/index';
 
 @Entity('reportes')
@@ -6,9 +6,11 @@ export class ReporteORM {
   @PrimaryColumn({ type: 'uuid' })
   id!: string;
 
+  @Index()
   @Column({ type: 'uuid', name: 'reporter_id' })
   reporterId!: string;
 
+  @Index()
   @Column({ type: 'uuid', name: 'experiencia_id' })
   experienciaId!: string;
 

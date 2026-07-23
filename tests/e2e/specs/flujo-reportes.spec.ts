@@ -28,7 +28,16 @@ test.describe('Flujo de reportes', () => {
 
     await page.getByRole('button', { name: /reportar/i }).last().click();
 
-    // Debe mostrar mensaje de éxito
-    await expect(page.getByText(/reporte enviado/i)).toBeVisible({ timeout: 5000 });
+    // El backend recién informa "ya reportado" al intentar enviar (no al
+    // abrir el modal) si el usuario ya había reportado esta experiencia en
+    // una corrida anterior (ej. reintentos manuales de la suite sin volver
+    // a sembrar la BD) — es el comportamiento correcto, no hay nada más que
+    // probar en ese caso.
+    const exito = page.getByText(/reporte enviado/i);
+    const yaReportado = page.getByText(/ya has reportado/i);
+    await expect(exito.or(yaReportado)).toBeVisible({ timeout: 5000 });
+    if (await yaReportado.count() > 0) {
+      test.skip(true, 'El usuario ya había reportado esta experiencia');
+    }
   });
 });

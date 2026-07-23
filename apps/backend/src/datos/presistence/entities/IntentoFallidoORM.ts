@@ -1,10 +1,11 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryColumn, Column, CreateDateColumn, Index } from 'typeorm';
 
 @Entity('intentos_fallidos')
 export class IntentoFallidoORM {
   @PrimaryColumn({ type: 'uuid' })
   id!: string;
 
+  @Index()
   @Column({ type: 'varchar', length: 255 })
   correo!: string;
 

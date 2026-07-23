@@ -190,13 +190,13 @@ test.describe('TeamPage', () => {
     await page.goto('/equipo');
   });
 
-  test('muestra el encabezado "Nuestro Equipo"', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: 'Nuestro Equipo' })).toBeVisible();
+  test('muestra el encabezado del equipo', async ({ page }) => {
+    await expect(page.getByRole('heading', { name: 'Conoce al Equipo de EthosPlatform' })).toBeVisible();
   });
 
-  test('muestra la tarjeta del miembro Javier', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: 'Javier' })).toBeVisible();
-    await expect(page.getByText('Desarrollador Full Stack')).toBeVisible();
+  test('muestra la tarjeta del líder del proyecto', async ({ page }) => {
+    await expect(page.getByRole('heading', { name: 'Angel Paolo Javier' })).toBeVisible();
+    await expect(page.getByText('Desarrollador Full Stack').first()).toBeVisible();
   });
 
   test('muestra sección "Sobre el proyecto"', async ({ page }) => {

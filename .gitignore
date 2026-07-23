@@ -157,3 +157,4 @@ vite.config.ts.timestamp-*
 
 # Credenciales generadas por el seeder (contienen passwords reales del equipo)
 /CREDENCIALES_ACCESO.txt
+/apps/backend/CREDENCIALES_ACCESO.txt

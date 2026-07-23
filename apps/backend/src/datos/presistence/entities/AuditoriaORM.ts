@@ -1,10 +1,11 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryColumn, Column, CreateDateColumn, Index } from 'typeorm';
 
 @Entity('auditoria')
 export class AuditoriaORM {
   @PrimaryColumn({ type: 'uuid' })
   id!: string;
 
+  @Index()
   @Column({ type: 'uuid', name: 'admin_id' })
   adminId!: string;
 
@@ -14,6 +15,7 @@ export class AuditoriaORM {
   @Column({ type: 'varchar', length: 20 })
   entidad!: string;
 
+  @Index()
   @Column({ type: 'uuid', name: 'entidad_id' })
   entidadId!: string;
 

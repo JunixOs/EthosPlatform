@@ -1,6 +1,7 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryColumn, Column, CreateDateColumn, Index } from 'typeorm';
 
 @Entity('reacciones')
+@Index(['usuarioId', 'experienciaId'], { unique: true })
 export class ReaccionORM {
   @PrimaryColumn({ type: 'uuid' })
   id!: string;
@@ -8,6 +9,7 @@ export class ReaccionORM {
   @Column({ type: 'uuid', name: 'usuario_id' })
   usuarioId!: string;
 
+  @Index()
   @Column({ type: 'uuid', name: 'experiencia_id' })
   experienciaId!: string;
 

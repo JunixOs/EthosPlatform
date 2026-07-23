@@ -2,13 +2,28 @@ import { createApp, globalErrorHandler } from './app';
 import { createContainer } from './container';
 import { createRoutes } from './routes';
 import { AppDataSource } from './datos/presistence/connections/AppDataSource';
+import { runSeed } from './datos/seed';
 import { logger } from './infrastructure/logger';
 
 const PORT = process.env['BACKEND_PORT'] ?? 3000;
 
+process.on('unhandledRejection', (reason) => {
+  logger.error({ reason }, 'Unhandled promise rejection');
+});
+
+process.on('uncaughtException', (err) => {
+  logger.error({ err }, 'Uncaught exception');
+  process.exit(1);
+});
+
 async function startServer(): Promise<void> {
   try {
     const container = await createContainer();
+
+    // El DataSource ya está inicializado (createContainer lo hace); el seed
+    // reutiliza esa misma conexión, no abre una nueva.
+    await runSeed(AppDataSource, logger);
+
     const app = createApp();
     const apiRouter = createRoutes(container);
 

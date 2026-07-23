@@ -1,10 +1,11 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, Index } from 'typeorm';
 
 @Entity('experiencias')
 export class ExperienciaORM {
   @PrimaryColumn({ type: 'uuid' })
   id!: string;
 
+  @Index()
   @Column({ type: 'uuid', name: 'usuario_id' })
   usuarioId!: string;
 
