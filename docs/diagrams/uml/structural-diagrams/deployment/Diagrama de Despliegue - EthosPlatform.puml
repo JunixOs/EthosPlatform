@@ -1,44 +1,109 @@
-@startuml Diagrama-Despliegue-v1-EthosPlatform
+@startuml Diagrama-Despliegue-EthosPlatform
 top to bottom direction
 
 skinparam shadowing false
 skinparam node {
-    BackgroundColor #F8F9FA
-    BorderColor #2C3E50
+    BackgroundColor #F8FAFC
+    BorderColor #334155
+    FontColor #0F172A
 }
-skinparam database {
-    BackgroundColor #FFF4E6
-    BorderColor #D35400
+
+skinparam component {
+    BackgroundColor #EFF6FF
+    BorderColor #2563EB
+    FontColor #1E3A8A
 }
+
+skinparam card {
+    BackgroundColor #FFFFFF
+    BorderColor #64748B
+}
+
 skinparam artifact {
-    BackgroundColor #E8F8F5
-    BorderColor #16A085
+    BackgroundColor #ECFDF5
+    BorderColor #059669
 }
 
-node "Client PC" as client {
-    component "Web Browser" as clientbrowser {
-        
+skinparam database {
+    BackgroundColor #FFF7ED
+    BorderColor #EA580C
+}
+
+
+' ===== Internet =====
+node "Internet" as client #E0F2FE {
+
+    component "GitHub.com\n(Repository + Actions)" as githubdotcom #DBEAFE {
+    }
+
+    component "Cliente Final\n(Navegador Web)" as clientbrowser #DBEAFE {
     }
 }
 
-node "Virtual Private Server (VPS)" as vps {
-    card "Contenedor Docker 24" {
-        artifact "Node.js 22 Frontend" as nodejsfrontend
 
-        artifact "Node.js 22 Backend" as nodejsbackend
-    }
+' ===== VPS =====
+node "Virtual Private Server (VPS)" as vps #F1F5F9 {
 
-    database "PostgreSQL 18" as postgresql {
-        artifact "Application Database Instance" as dbinstance1 {
+
+    component "Dockploy - Docker" as dockploydocker #DCEEFF {
+
+
+        card "Contenedor\nFrontend\n(Node.js 22)" as nodejsfrontend #BFDBFE {
+        }
+
+
+        card "Contenedor\nBackend\n(Node.js 22)" as nodejsbackend #BFDBFE {
+        }
+
+
+        card "Contenedor\nPostgreSQL 18" as postgresql #FED7AA {
+
+            database "Application Database\nInstance" as dbinstance1 #FFEDD5 {
+            }
 
         }
     }
+
+
+    component "SonarQube Server" as sonarqubeserver #DCFCE7 {
+
+    }
+
+
+    component "Self-Hosted Runner\n(CI/CD)" as selfhostedrunner #EDE9FE {
+
+
+        card "Setup Node 22\n+ PNPM" as setupnodeandpnpm #DDD6FE
+
+        card "Verificar proyecto" as verifyproject #DDD6FE
+
+        card "Ejecutar\nSonar Scanner" as executesonnarscanner #DDD6FE
+
+        card "Inicializar\nDeploy" as initializedeploy #DDD6FE
+    }
 }
+
+
+' ===== Relaciones =====
 
 clientbrowser -(0- nodejsfrontend : "HTTPS (443)"
 
-nodejsfrontend -(0- nodejsbackend : "HTTPS (16001)"
+nodejsfrontend -(0- nodejsbackend : "HTTP (3001)"
 
 nodejsbackend -(0- dbinstance1 : "TCP 5432"
+
+
+githubdotcom -(0- selfhostedrunner : "Trigger\npush event"
+
+
+setupnodeandpnpm --> verifyproject
+verifyproject --> executesonnarscanner
+
+executesonnarscanner --> initializedeploy
+
+
+executesonnarscanner -(0- sonarqubeserver : "HTTP (9001)"
+
+initializedeploy --> dockploydocker : "HTTP (3000)"
 
 @enduml
