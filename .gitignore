@@ -154,3 +154,6 @@ vite.config.ts.timestamp-*
 
 # SonarQube scanner cache/work dir
 .scannerwork/
+
+# Credenciales generadas por el seeder (contienen passwords reales del equipo)
+/CREDENCIALES_ACCESO.txt
