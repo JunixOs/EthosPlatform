@@ -2,7 +2,6 @@ import { createApp, globalErrorHandler } from './app';
 import { createContainer } from './container';
 import { createRoutes } from './routes';
 import { AppDataSource } from './datos/presistence/connections/AppDataSource';
-import { runSeed } from './datos/seed';
 import { logger } from './infrastructure/logger';
 
 const PORT = process.env['BACKEND_PORT'] ?? 3000;
