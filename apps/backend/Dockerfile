@@ -37,4 +37,4 @@ WORKDIR /app/apps/backend
 
 EXPOSE 3001
 
-CMD ["sh", "-c", "node node_modules/typeorm/cli.js -d ./dist/datos/presistence/connections/AppDataSource.js migration:run && node dist/server.js"]
+CMD ["sh", "-c", "node node_modules/typeorm/cli.js -d ./dist/datos/presistence/connections/AppDataSource.js migration:run && node dist/datos/seed/seed.js && node dist/server.js"]

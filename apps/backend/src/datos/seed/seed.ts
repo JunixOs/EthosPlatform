@@ -3,11 +3,11 @@ import 'dotenv/config';
 import { DataSource } from 'typeorm';
 import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
-import { UsuarioORM } from '../src/datos/presistence/entities/UsuarioORM';
-import { ExperienciaORM } from '../src/datos/presistence/entities/ExperienciaORM';
-import { EtiquetaORM } from '../src/datos/presistence/entities/EtiquetaORM';
-import { ExperienciaEtiquetaORM } from '../src/datos/presistence/entities/ExperienciaEtiquetaORM';
-import { PaginaEquipoORM } from '../src/datos/presistence/entities/PaginaEquipoORM';
+import { UsuarioORM } from '../presistence/entities/UsuarioORM';
+import { ExperienciaORM } from '../presistence/entities/ExperienciaORM';
+import { EtiquetaORM } from '../presistence/entities/EtiquetaORM';
+import { ExperienciaEtiquetaORM } from '../presistence/entities/ExperienciaEtiquetaORM';
+import { PaginaEquipoORM } from '../presistence/entities/PaginaEquipoORM';
 import { writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
